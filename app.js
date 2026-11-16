@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runCode(); }
     if ((e.ctrlKey || e.metaKey) && e.key === 'n') { e.preventDefault(); newFile(); }
     if (e.shiftKey && e.key === 'F1') { e.preventDefault(); prettyPrinter(); }
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F10') { e.preventDefault(); runUnitTests(); }
     if (e.key === 'F8') { e.preventDefault(); openSelectionScreen(); }
   });
 });
@@ -271,7 +272,7 @@ lo_greeter->greet( iv_name = 'ABAP World' ).`
 function initEditor() {
   editor = CodeMirror(document.getElementById('codeEditor'), {
     mode: 'abap',
-    theme: 'dracula',
+    theme: 'studio',
     lineNumbers: true,
     matchBrackets: true,
     autoCloseBrackets: true,
@@ -546,7 +547,7 @@ function runCode(params) {
     result.errors.sort((a, b) => (a.fatal ? 1 : 0) - (b.fatal ? 1 : 0) || a.line - b.line);
 
     const file = files.find(x => x.id === activeFileId);
-    lastResult = { output: result.output, errors: result.errors, title: interpreter.programName || (file ? file.name : 'Program') };
+    lastResult = { output: result.output, errors: result.errors, stats: result.stats, title: interpreter.programName || (file ? file.name : 'Program') };
     alvGrids = [];
     renderOutput();
     renderVariables(result.variables);
@@ -568,10 +569,12 @@ function runCode(params) {
 function renderOutput(scrollToEnd) {
   const targets = [document.getElementById('outputBody'), document.getElementById('sapBody')].filter(Boolean);
   const result = lastResult || { output: [], errors: [] };
+  const report = result.tests ? unitReportHtml(result.tests) : '';
+  const stats = statsHtml(result.stats);
 
   let html;
   if (!result.output.length && !result.errors.length) {
-    html = `<div class="output-empty">${tr('out.empty')}</div>`;
+    html = (report || `<div class="output-empty">${tr('out.empty')}</div>`) + stats;
     alvGrids = [];
   } else {
     // keep sort / filter / selected column of grids that are already on screen
@@ -599,14 +602,70 @@ function renderOutput(scrollToEnd) {
       }
       lines.push(`</div>`);
     }
-    if (!result.output.length) lines.unshift(`<div class="output-empty">${tr('out.empty')}</div>`);
-    html = lines.join('');
+    if (!result.output.length && !report) lines.unshift(`<div class="output-empty">${tr('out.empty')}</div>`);
+    html = report + lines.join('') + stats;
   }
 
   for (const el of targets) el.innerHTML = html;
   alvGrids.forEach((_, idx) => drawAlvTable(idx));
   for (const el of targets) el.scrollTop = scrollToEnd ? el.scrollHeight : 0;
   updateSapScreenChrome();
+}
+
+// Database accesses of the last run, and SELECT statements that were executed again and again inside a loop
+function statsHtml(st) {
+  if (!st || (!st.dbReads && !st.dbWrites)) return '';
+  const parts = [];
+  if (st.dbReads) parts.push(tr('perf.reads', { n: st.dbReads, rows: st.dbRows }));
+  if (st.dbWrites) parts.push(tr('perf.writes', { n: st.dbWrites }));
+  let html = `<div class="output-stats"><span class="output-stats-title">${tr('perf.title')}</span>${parts.join(' · ')}</div>`;
+  for (const r of st.repeated || []) {
+    html += `<div class="output-stats warn"><a class="output-goto" onclick="gotoLine(${Number(r.line)})" title="${tr('out.goto.tip')}">${tr('out.line', { n: Number(r.line) })}</a>: ${tr('perf.repeated', { n: r.count })}</div>`;
+  }
+  return html;
+}
+
+// Result of the unit tests: one line per test method, the failed checks below it
+function unitReportHtml(tests) {
+  if (!tests.classes.length) return `<div class="output-empty">${tr('unit.none')}</div>`;
+  const failed = tests.failed;
+  let html = `<div class="unit-report"><div class="unit-summary ${failed ? 'fail' : 'ok'}">${failed ? tr('unit.summary.fail', { f: failed, n: tests.total }) : tr('unit.summary.ok', { n: tests.total })}</div>`;
+  for (const c of tests.classes) {
+    html += `<div class="unit-class">${escHtml(c.name.toLowerCase())}</div>`;
+    for (const m of c.methods) {
+      html += `<div class="unit-test ${m.ok ? 'ok' : 'fail'}"><span class="unit-mark">${m.ok ? '✓' : '✕'}</span><a class="unit-name" onclick="gotoLine(${Number(m.line) || 0})">${escHtml(m.name.toLowerCase())}</a><span class="unit-info">${m.ok ? tr('unit.asserts', { n: m.asserts }) : ''}</span></div>`;
+      for (const fl of m.failures) {
+        let what;
+        if (fl.kind === 'assert') {
+          what = `<code>${escHtml(fl.assert.toLowerCase())}</code>` + (fl.msg ? ` — ${escHtml(fl.msg)}` : '') +
+            (fl.hasExp ? ` · ${tr('unit.expected', { exp: `<code>${escHtml(fl.exp)}</code>`, act: `<code>${escHtml(fl.act)}</code>` })}` : '');
+        } else if (fl.kind === 'exception') {
+          what = `${tr('unit.exception', { cls: `<code>${escHtml(fl.cls)}</code>` })} — ${escHtml(msgTr(fl.text))}`;
+        } else if (fl.kind === 'stopped') {
+          what = tr('unit.stopped');
+        } else if (fl.kind === 'noimpl') {
+          what = tr('unit.noimpl');
+        } else {
+          what = escHtml(msgTr(fl.text));
+        }
+        const where = fl.line ? `<a class="output-goto" onclick="gotoLine(${Number(fl.line)})" title="${tr('out.goto.tip')}">${tr('out.line', { n: Number(fl.line) })}</a>: ` : '';
+        html += `<div class="unit-fail">${where}${what}</div>`;
+      }
+    }
+  }
+  return html + '</div>';
+}
+
+// Run the test classes of the program (CLASS ... DEFINITION FOR TESTING) — Ctrl+Shift+F10, as in SAP
+function runUnitTests() {
+  const code = editor?.getValue() || '';
+  const res = interpreter.runUnitTests(code);
+  const file = files.find(x => x.id === activeFileId);
+  lastResult = { output: res.output, errors: res.errors, stats: res.stats, tests: res.tests, title: interpreter.programName || (file ? file.name : 'Program') };
+  alvGrids = [];
+  renderOutput();
+  renderVariables(res.variables);
+  switchPanel('output', document.querySelector('.panel-tab'));
 }
 
 function gotoLine(line) {
@@ -746,10 +805,19 @@ function switchPanel(name, btn) {
 // ───────────────────────────────────────────────────────────
 // Theme
 // ───────────────────────────────────────────────────────────
-function changeTheme(theme) {
-  editor?.setOption('theme', theme);
-  document.querySelectorAll('#themeSwitch button').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
+// Theme of the whole app: 'dark' (ink) or 'light' (paper). The editor theme "studio"
+// takes its colours from the same CSS tokens, so it follows automatically.
+function currentTheme() {
+  try { return localStorage.getItem('abap_studio_theme') === 'light' ? 'light' : 'dark'; } catch (e) { return 'dark'; }
 }
+function changeTheme(theme) {
+  theme = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = theme;
+  try { localStorage.setItem('abap_studio_theme', theme); } catch (e) { /* private mode */ }
+  document.querySelectorAll('#themeSwitch button').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
+  editor?.refresh();
+}
+document.addEventListener('DOMContentLoaded', () => changeTheme(currentTheme()));
 
 // ───────────────────────────────────────────────────────────
 // Overflow menu of the editor bar (⋯)
@@ -937,7 +1005,7 @@ function showLesson(id) {
       </button>
       <button class="btn-secondary" onclick="tryLesson('${l.id}', true)" title="${tr('learn.reset.tip')}">${tr('learn.reset')}</button>
     </div>
-    ${lt.task ? `<div class="learn-task"><div class="learn-task-title">✍ ${tr('learn.task')}</div>${lt.task}</div>` : ''}
+    ${lt.task ? `<div class="learn-task"><div class="learn-task-title">${tr('learn.task')}</div>${lt.task}</div>` : ''}
     <div class="learn-footer">
       ${prev ? `<button class="btn-secondary" onclick="showLesson('${prev.id}')">← ${escHtml(contentFor('lessons', prev).title)}</button>` : '<span></span>'}
       <button class="btn-secondary learn-done-btn${lessonsDone[l.id] ? ' is-done' : ''}" onclick="toggleLessonDone('${l.id}')">${lessonsDone[l.id] ? tr('learn.done') : tr('learn.mark')}</button>
@@ -1029,7 +1097,8 @@ document.addEventListener('langchange', () => {
 // Simulator messages are produced in Indonesian by the interpreter and translated when shown
 // (messages-i18n.js); without that file, or for Indonesian, the text is used as it is.
 const msgTr = s => (window.MSG_I18N ? MSG_I18N.message(s) : String(s == null ? '' : s));
-const msgOut = s => (window.MSG_I18N ? MSG_I18N.output(s) : String(s == null ? '' : s));
+// (the pictograms the interpreter puts in front of its notes are not shown)
+const msgOut = s => (window.MSG_I18N ? MSG_I18N.output(s) : String(s == null ? '' : s)).replace(/^(?:\u{1F4E2}|\u26D4|\u26A0|\u23F3)\uFE0F?\s*/u, '');
 
 // Has item `id` of `type` got a translated `field` for the current language?
 function isContentTranslated(type, id, field) {

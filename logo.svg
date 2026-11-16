@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="136" height="136">
+  <!-- ABAP Code Studio mark: "A." — every ABAP statement ends with a period. Created by jeffrypurwanto -->
+  <rect width="34" height="34" rx="3" fill="#e3a744"/>
+  <g fill="none" stroke="#1b1509" stroke-width="3.2" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M8 25.5 14.6 8.5 21.2 25.5"/>
+    <path d="M10.6 19.6h8"/>
+  </g>
+  <rect x="24.4" y="22.3" width="3.4" height="3.4" fill="#1b1509"/>
+</svg>

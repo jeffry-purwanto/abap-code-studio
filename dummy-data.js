@@ -216,3 +216,197 @@ window.ABAP_DB_SCHEMA = {
   BSEG:    { desc: 'Accounting Doc. Items',    fields: ['MANDT','BUKRS','BELNR','GJAHR','BUZEI','BSCHL','KOART','SHKZG','DMBTR','HKONT','LIFNR','KUNNR','SGTXT'] },
 };
 
+// ============================================================
+// More sample data: the complete sales flow (order -> delivery -> billing),
+// material documents, flight customers, employees. Everything refers to the
+// customers, materials and flights defined above, so joins give real results.
+// ============================================================
+(function () {
+  const DB = window.ABAP_DB, SCHEMA = window.ABAP_DB_SCHEMA;
+  const M = '800';
+  const text = { '1000-100': 'Laptop Pro 15"', '1000-200': 'Wireless Mouse', '1000-300': 'USB-C Hub Adapter',
+    '2000-100': 'Aluminum Sheet 1mm', '2000-200': 'Copper Wire 2.5mm', '3000-100': 'Software Maintenance Service', '4000-100': 'HDMI Cable 2m' };
+  const group = { '1000-100': '001', '1000-200': '001', '1000-300': '002', '2000-100': '003', '2000-200': '003', '3000-100': '004', '4000-100': '005' };
+  const unit = { '1000-100': 'EA', '1000-200': 'EA', '1000-300': 'EA', '2000-100': 'KG', '2000-200': 'KG', '3000-100': 'AU', '4000-100': 'EA' };
+  const price = { '1000-100': 2500000, '1000-200': 250000, '1000-300': 450000, '3000-100': 1500000, '4000-100': 170000 };
+  const n10 = v => String(v).padStart(10, '0');
+  const pos = k => String((k + 1) * 10).padStart(6, '0');
+
+  // ── Sales orders 4 – 12 (1 – 3 exist above) ──────────────
+  // [order, date, time, user, sales org, customer, [[material, quantity], ...]]
+  const orders = [
+    [4,  '20241015', '101500', 'SALES02', '1000', '0000001000', [['1000-300', 20], ['1000-200', 40]]],
+    [5,  '20241021', '093000', 'SALES02', '2000', '0000001003', [['1000-100', 4]]],
+    [6,  '20241028', '160000', 'SALES01', '1000', '0000001005', [['4000-100', 100], ['1000-200', 20]]],
+    [7,  '20241104', '111500', 'SALES03', '1000', '0000001001', [['1000-100', 2], ['1000-300', 10]]],
+    [8,  '20241111', '084500', 'SALES01', '1000', '0000001002', [['3000-100', 6]]],
+    [9,  '20241118', '133000', 'SALES02', '2000', '0000001004', [['1000-100', 12], ['1000-200', 12]]],
+    [10, '20241125', '150000', 'SALES03', '1000', '0000001000', [['4000-100', 30]]],
+    [11, '20241202', '100000', 'SALES01', '1000', '0000001005', [['1000-100', 3], ['4000-100', 20], ['1000-200', 8]]],
+    [12, '20241209', '143000', 'SALES02', '2000', '0000001003', [['1000-300', 40]]]
+  ];
+  const head = DB.VBAK[0];
+  for (const [no, date, time, user, vkorg, kunnr, items] of orders) {
+    const vbeln = n10(no);
+    let total = 0;
+    items.forEach(([matnr, qty], k) => {
+      const value = qty * price[matnr];
+      total += value;
+      DB.VBAP.push({ MANDT: M, VBELN: vbeln, POSNR: pos(k), MATNR: matnr, ARKTX: text[matnr], MATKL: group[matnr],
+        WERKS: vkorg === '2000' ? '2000' : '1000', LGORT: '0001', MEINS: unit[matnr], KWMENG: qty, NETWR: value, WAERK: 'IDR' });
+    });
+    DB.VBAK.push(Object.assign({}, head, { VBELN: vbeln, ERDAT: date, ERZET: time, ERNAM: user, ANGDT: date, BNDDT: date, AUDAT: date,
+      VKORG: vkorg, VKBUR: vkorg, KNUMV: vbeln, AEDAT: date, NETWR: total, KUNNR: kunnr }));
+  }
+  const itemsOf = vbeln => DB.VBAP.filter(r => r.VBELN === vbeln);
+  const orderOf = vbeln => DB.VBAK.find(r => r.VBELN === vbeln);
+
+  // ── Deliveries: orders 1 – 7 and 9. Order 6 is delivered only partly, order 8 is a service,
+  //    orders 10 – 12 are still open. Delivery 8 has not left the warehouse yet (no goods issue date).
+  // [delivery, order, created, goods issue, only these item numbers (optional)]
+  const deliveries = [
+    [1, 1, '20241003', '20241004'], [2, 2, '20241007', '20241008'], [3, 3, '20241012', '20241014'],
+    [4, 4, '20241017', '20241018'], [5, 5, '20241023', '20241025'], [6, 6, '20241030', '20241031', ['000010']],
+    [7, 7, '20241106', '20241107'], [8, 9, '20241120', '00000000']
+  ];
+  DB.LIKP = []; DB.LIPS = [];
+  for (const [no, ord, created, issued, only] of deliveries) {
+    const vbeln = '008' + String(no).padStart(7, '0'), o = orderOf(n10(ord));
+    DB.LIKP.push({ MANDT: M, VBELN: vbeln, ERNAM: 'SHIP01', ERDAT: created, LFART: 'LF', VSTEL: o.VKORG, VKORG: o.VKORG,
+      KUNNR: o.KUNNR, LFDAT: created, WADAT_IST: issued });
+    for (const it of itemsOf(o.VBELN)) {
+      if (only && !only.includes(it.POSNR)) continue;
+      DB.LIPS.push({ MANDT: M, VBELN: vbeln, POSNR: it.POSNR, MATNR: it.MATNR, ARKTX: it.ARKTX, WERKS: it.WERKS, LGORT: it.LGORT,
+        LFIMG: it.KWMENG, MEINS: it.MEINS, VGBEL: o.VBELN, VGPOS: it.POSNR });
+    }
+  }
+
+  // ── Billing documents: deliveries 1 – 7, and the service order 8 billed without a delivery ──
+  // [invoice, order, billing date, delivery (0 = none)]
+  const invoices = [
+    [1, 1, '20241005', 1], [2, 2, '20241009', 2], [3, 3, '20241015', 3], [4, 4, '20241019', 4],
+    [5, 5, '20241026', 5], [6, 6, '20241101', 6], [7, 7, '20241108', 7], [8, 8, '20241112', 0]
+  ];
+  DB.VBRK = []; DB.VBRP = [];
+  for (const [no, ord, date, del] of invoices) {
+    const vbeln = '009' + String(no).padStart(7, '0'), o = orderOf(n10(ord));
+    const delivery = del ? '008' + String(del).padStart(7, '0') : '';
+    const billed = del ? DB.LIPS.filter(r => r.VBELN === delivery).map(r => r.VGPOS) : itemsOf(o.VBELN).map(r => r.POSNR);
+    let total = 0;
+    for (const it of itemsOf(o.VBELN)) {
+      if (!billed.includes(it.POSNR)) continue;
+      total += it.NETWR;
+      DB.VBRP.push({ MANDT: M, VBELN: vbeln, POSNR: it.POSNR, MATNR: it.MATNR, ARKTX: it.ARKTX, FKIMG: it.KWMENG, VRKME: it.MEINS,
+        NETWR: it.NETWR, AUBEL: o.VBELN, AUPOS: it.POSNR, VGBEL: delivery, VGPOS: del ? it.POSNR : '' });
+    }
+    DB.VBRK.push({ MANDT: M, VBELN: vbeln, FKART: 'F2', FKDAT: date, ERNAM: 'BILL01', KUNRG: o.KUNNR, KUNAG: o.KUNNR,
+      BUKRS: o.VKORG === '2000' ? '2000' : '1000', VKORG: o.VKORG, WAERK: 'IDR', NETWR: total, FKSTO: '' });
+  }
+
+  // ── Material documents: goods receipts (101), goods issues for the deliveries (601), issues to production (261) ──
+  DB.MKPF = []; DB.MSEG = [];
+  let doc = 0;
+  const movement = (date, user, ref, lines) => {
+    const mblnr = '49' + String(++doc).padStart(8, '0');
+    DB.MKPF.push({ MANDT: M, MBLNR: mblnr, MJAHR: '2024', BLART: lines[0][0] === '101' ? 'WE' : 'WA', BLDAT: date, BUDAT: date, USNAM: user, XBLNR: ref });
+    lines.forEach(([bwart, matnr, werks, lgort, qty, ebeln], k) => {
+      DB.MSEG.push({ MANDT: M, MBLNR: mblnr, MJAHR: '2024', ZEILE: String(k + 1).padStart(4, '0'), BWART: bwart, MATNR: matnr, WERKS: werks, LGORT: lgort,
+        MENGE: qty, MEINS: unit[matnr], SHKZG: bwart === '101' ? 'S' : 'H', EBELN: ebeln || '' });
+    });
+  };
+  movement('20240910', 'WHSE01', '4500000001', [['101', '2000-100', '1000', '0001', 500, '4500000001'], ['101', '2000-200', '1000', '0001', 300, '4500000001']]);
+  movement('20240925', 'WHSE01', '4500000002', [['101', '1000-100', '1000', '0001', 60, '4500000002'], ['101', '1000-200', '1000', '0001', 400, '4500000002']]);
+  movement('20240930', 'WHSE02', '4500000003', [['101', '4000-100', '1000', '0002', 250, '4500000003']]);
+  movement('20241002', 'PROD01', '', [['261', '2000-100', '1000', '0001', 120], ['261', '2000-200', '1000', '0001', 80]]);
+  for (const d of DB.LIKP) {
+    if (d.WADAT_IST === '00000000') continue;
+    movement(d.WADAT_IST, 'SHIP01', d.VBELN, DB.LIPS.filter(r => r.VBELN === d.VBELN).map(r => ['601', r.MATNR, r.WERKS, r.LGORT, r.LFIMG]));
+  }
+
+  // ── Storage locations and material group texts ──
+  DB.T001L = [
+    { MANDT: M, WERKS: '1000', LGORT: '0001', LGOBE: 'Gudang Utama' },
+    { MANDT: M, WERKS: '1000', LGORT: '0002', LGOBE: 'Gudang Barang Jadi' },
+    { MANDT: M, WERKS: '1100', LGORT: '0001', LGOBE: 'Gudang Surabaya' },
+    { MANDT: M, WERKS: '2000', LGORT: '0001', LGOBE: 'Main Warehouse SG' }
+  ];
+  DB.T023T = [];
+  [['001', 'Computer Hardware', 'Perangkat Komputer'], ['002', 'Semi-finished Parts', 'Barang Setengah Jadi'], ['003', 'Raw Metals', 'Logam Mentah'],
+   ['004', 'Services', 'Jasa'], ['005', 'Cables & Trading Goods', 'Kabel & Barang Dagang']]
+    .forEach(([matkl, en, id]) => { DB.T023T.push({ MANDT: M, SPRAS: 'EN', MATKL: matkl, WGBEZ: en }, { MANDT: M, SPRAS: 'ID', MATKL: matkl, WGBEZ: id }); });
+
+  // ── Flight customers, and more bookings for them ──
+  DB.SCUSTOM = [
+    ['00000001', 'Andi Wijaya', 'Mr', 'Jl. Thamrin 12', 'Jakarta', 'ID', 'B', 10, 'ID'],
+    ['00000002', 'Siti Rahayu', 'Mrs', 'Jl. Dago 45', 'Bandung', 'ID', 'P', 0, 'ID'],
+    ['00000003', 'Budi Santoso', 'Mr', 'Jl. Darmo 8', 'Surabaya', 'ID', 'P', 5, 'ID'],
+    ['00000004', 'Tan Wei Ming', 'Mr', '21 Orchard Road', 'Singapore', 'SG', 'B', 15, 'EN'],
+    ['00000005', 'Hans Mueller', 'Mr', 'Zeil 101', 'Frankfurt', 'DE', 'P', 0, 'DE'],
+    ['00000006', 'Maria Gonzales', 'Mrs', '5th Avenue 700', 'New York', 'US', 'P', 0, 'EN'],
+    ['00000007', 'Kenji Tanaka', 'Mr', 'Ginza 4-2', 'Tokyo', 'JP', 'B', 10, 'EN'],
+    ['00000008', 'Dewi Lestari', 'Mrs', 'Jl. Sunset 3', 'Denpasar', 'ID', 'P', 0, 'ID']
+  ].map(([ID, NAME, FORM, STREET, CITY, COUNTRY, CUSTTYPE, DISCOUNT, LANGU]) => ({ MANDT: M, ID, NAME, FORM, STREET, CITY, COUNTRY, CUSTTYPE, DISCOUNT, LANGU }));
+  const book = DB.SBOOK[0];
+  // [airline, flight, date, booking, customer, class, amount, currency, cancelled]
+  [['GA', '0401', '20241101', 3, 8, 'Y', 850000, 'IDR'], ['GA', '0401', '20241108', 1, 1, 'Y', 850000, 'IDR'], ['GA', '0401', '20241108', 2, 2, 'C', 2500000, 'IDR'],
+   ['GA', '0402', '20241101', 2, 8, 'Y', 650000, 'IDR'], ['GA', '0403', '20241105', 1, 3, 'Y', 2500000, 'IDR'], ['GA', '0403', '20241105', 2, 1, 'C', 5000000, 'IDR'],
+   ['GA', '0403', '20241105', 3, 2, 'Y', 2500000, 'IDR', 'X'], ['SQ', '0001', '20241103', 2, 4, 'C', 3200, 'SGD'], ['SQ', '0001', '20241103', 3, 5, 'Y', 1200, 'SGD'],
+   ['LH', '0400', '20241102', 2, 5, 'C', 2400, 'EUR'], ['AA', '0017', '20241104', 1, 6, 'Y', 720, 'USD'], ['AA', '0017', '20241104', 2, 6, 'F', 3100, 'USD'],
+   ['JL', '0407', '20241106', 1, 7, 'Y', 95000, 'JPY'], ['JL', '0407', '20241106', 2, 7, 'C', 240000, 'JPY']]
+    .forEach(([CARRID, CONNID, FLDATE, bookid, cust, CLASS, amount, cur, cancelled]) => {
+      const customer = DB.SCUSTOM[cust - 1];
+      DB.SBOOK.push(Object.assign({}, book, { CARRID, CONNID, FLDATE, BOOKID: String(bookid).padStart(8, '0'), CUSTOMID: customer.ID, CUSTTYPE: customer.CUSTTYPE,
+        CLASS, FORCURAM: amount, FORCURKEY: cur, LOCCURAM: amount, LOCCURKEY: cur, ORDER_DATE: '20241020', CANCELLED: cancelled || ' ' }));
+    });
+
+  // ── Employees (HR infotypes 0001 organisation, 0002 personal data, 0008 basic pay) ──
+  const END = '99991231';
+  // [number, first name, last name, gender, born, hired, org unit, pay grade, monthly pay]
+  const staff = [
+    ['00001001', 'Rudi', 'Hartono', '1', '19850312', '20150201', '50000010', 'G5', 18000000],
+    ['00001002', 'Sari', 'Dewi', '2', '19900724', '20180901', '50000010', 'G4', 14500000],
+    ['00001003', 'Agus', 'Salim', '1', '19820105', '20120315', '50000020', 'G5', 16000000],
+    ['00001004', 'Maya', 'Putri', '2', '19940918', '20200106', '50000020', 'G3', 11000000],
+    ['00001005', 'Dimas', 'Prakoso', '1', '19910430', '20190701', '50000030', 'G3', 12500000],
+    ['00001006', 'Nina', 'Kartika', '2', '19881111', '20160401', '50000030', 'G4', 13000000],
+    ['00001007', 'Bayu', 'Nugroho', '1', '19970220', '20220801', '50000030', 'G2', 9500000],
+    ['00001008', 'Eko', 'Susanto', '1', '19790606', '20100510', '50000040', 'G2', 8750000]
+  ];
+  DB.PA0001 = []; DB.PA0002 = []; DB.PA0008 = [];
+  for (const [PERNR, first, last, GESCH, GBDAT, hired, ORGEH, grade, pay] of staff) {
+    DB.PA0002.push({ MANDT: M, PERNR, ENDDA: END, BEGDA: hired, NACHN: last, VORNA: first, GESCH, GBDAT, NATIO: 'ID' });
+    DB.PA0001.push({ MANDT: M, PERNR, ENDDA: END, BEGDA: hired, BUKRS: '1000', WERKS: '1000', PERSG: '1', PERSK: 'DN', ORGEH, PLANS: '3' + PERNR.slice(1), ENAME: first + ' ' + last });
+    if (PERNR === '00001002') {
+      // a pay rise: two records with different validity periods
+      DB.PA0008.push({ MANDT: M, PERNR, ENDDA: '20231231', BEGDA: hired, TRFAR: '01', TRFGR: 'G3', BET01: 12000000, WAERS: 'IDR' });
+      DB.PA0008.push({ MANDT: M, PERNR, ENDDA: END, BEGDA: '20240101', TRFAR: '01', TRFGR: grade, BET01: pay, WAERS: 'IDR' });
+    } else {
+      DB.PA0008.push({ MANDT: M, PERNR, ENDDA: END, BEGDA: hired, TRFAR: '01', TRFGR: grade, BET01: pay, WAERS: 'IDR' });
+    }
+  }
+  DB.T527X = [['50000010', 'Information Technology'], ['50000020', 'Finance'], ['50000030', 'Sales'], ['50000040', 'Production']]
+    .map(([ORGEH, ORGTX]) => ({ MANDT: M, SPRAS: 'EN', ORGEH, ENDDA: END, BEGDA: '20100101', ORGTX }));
+
+  Object.assign(SCHEMA, {
+    LIKP:    { desc: 'Delivery Header',          fields: ['MANDT', 'VBELN', 'ERDAT', 'LFART', 'VSTEL', 'KUNNR', 'LFDAT', 'WADAT_IST'] },
+    LIPS:    { desc: 'Delivery Items',           fields: ['MANDT', 'VBELN', 'POSNR', 'MATNR', 'ARKTX', 'LFIMG', 'MEINS', 'VGBEL', 'VGPOS'] },
+    VBRK:    { desc: 'Billing Document Header',  fields: ['MANDT', 'VBELN', 'FKART', 'FKDAT', 'KUNRG', 'BUKRS', 'VKORG', 'WAERK', 'NETWR'] },
+    VBRP:    { desc: 'Billing Document Items',   fields: ['MANDT', 'VBELN', 'POSNR', 'MATNR', 'ARKTX', 'FKIMG', 'NETWR', 'AUBEL', 'VGBEL'] },
+    MKPF:    { desc: 'Material Document Header', fields: ['MANDT', 'MBLNR', 'MJAHR', 'BLART', 'BLDAT', 'BUDAT', 'USNAM', 'XBLNR'] },
+    MSEG:    { desc: 'Material Document Items',  fields: ['MANDT', 'MBLNR', 'MJAHR', 'ZEILE', 'BWART', 'MATNR', 'WERKS', 'LGORT', 'MENGE', 'MEINS', 'SHKZG', 'EBELN'] },
+    T001L:   { desc: 'Storage Locations',        fields: ['MANDT', 'WERKS', 'LGORT', 'LGOBE'] },
+    T023T:   { desc: 'Material Group Texts',     fields: ['MANDT', 'SPRAS', 'MATKL', 'WGBEZ'] },
+    SCUSTOM: { desc: 'Flight Customers',         fields: ['MANDT', 'ID', 'NAME', 'FORM', 'STREET', 'CITY', 'COUNTRY', 'CUSTTYPE', 'DISCOUNT', 'LANGU'] },
+    PA0001:  { desc: 'HR: Org. Assignment',      fields: ['MANDT', 'PERNR', 'ENDDA', 'BEGDA', 'BUKRS', 'WERKS', 'PERSG', 'ORGEH', 'PLANS', 'ENAME'] },
+    PA0002:  { desc: 'HR: Personal Data',        fields: ['MANDT', 'PERNR', 'ENDDA', 'BEGDA', 'NACHN', 'VORNA', 'GESCH', 'GBDAT', 'NATIO'] },
+    PA0008:  { desc: 'HR: Basic Pay',            fields: ['MANDT', 'PERNR', 'ENDDA', 'BEGDA', 'TRFAR', 'TRFGR', 'BET01', 'WAERS'] },
+    T527X:   { desc: 'Organisational Units',     fields: ['MANDT', 'SPRAS', 'ORGEH', 'ENDDA', 'BEGDA', 'ORGTX'] }
+  });
+
+  // Lock entries held by other users (see ENQUEUE_... in the simulator): asking for a lock on one of
+  // these values fails with FOREIGN_LOCK, the way it happens when a colleague has the document open.
+  window.ABAP_LOCKS = [
+    { object: 'EVVBAKE', value: '0000000012', user: 'BUDI' },
+    { object: 'EMMARAE', value: '2000-200', user: 'SARI' }
+  ];
+})();

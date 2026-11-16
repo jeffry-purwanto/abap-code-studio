@@ -61,17 +61,24 @@
     'IF_SALV_C_SORT=>SORT_UP': 1, 'IF_SALV_C_SORT=>SORT_DOWN': 2, 'IF_SALV_C_AGGREGATION=>TOTAL': 1,
     'IF_SALV_C_BOOL_SAP=>TRUE': 'X', 'IF_SALV_C_BOOL_SAP=>FALSE': '',
     'CL_ABAP_CHAR_UTILITIES=>NEWLINE': '\n', 'CL_ABAP_CHAR_UTILITIES=>CR_LF': '\r\n', 'CL_ABAP_CHAR_UTILITIES=>HORIZONTAL_TAB': '\t',
-    'CL_GUI_CONTAINER=>SCREEN0': '(screen0)', 'CL_GUI_CONTAINER=>DEFAULT_SCREEN': '(default_screen)'
+    'CL_GUI_CONTAINER=>SCREEN0': '(screen0)', 'CL_GUI_CONTAINER=>DEFAULT_SCREEN': '(default_screen)',
+    'CL_ABAP_TYPEDESCR=>TYPEKIND_INT': 'I', 'CL_ABAP_TYPEDESCR=>TYPEKIND_PACKED': 'P', 'CL_ABAP_TYPEDESCR=>TYPEKIND_FLOAT': 'F',
+    'CL_ABAP_TYPEDESCR=>TYPEKIND_CHAR': 'C', 'CL_ABAP_TYPEDESCR=>TYPEKIND_NUM': 'N', 'CL_ABAP_TYPEDESCR=>TYPEKIND_STRING': 'g',
+    'CL_ABAP_TYPEDESCR=>TYPEKIND_DATE': 'D', 'CL_ABAP_TYPEDESCR=>TYPEKIND_TIME': 'T', 'CL_ABAP_TYPEDESCR=>TYPEKIND_STRUCT1': 'u',
+    'CL_ABAP_TYPEDESCR=>TYPEKIND_STRUCT2': 'v', 'CL_ABAP_TYPEDESCR=>TYPEKIND_TABLE': 'h', 'CL_ABAP_TYPEDESCR=>TYPEKIND_OREF': 'r',
+    'CL_ABAP_TYPEDESCR=>TYPEKIND_DREF': 'l',
+    'CL_ABAP_TYPEDESCR=>KIND_ELEM': 'E', 'CL_ABAP_TYPEDESCR=>KIND_STRUCT': 'S', 'CL_ABAP_TYPEDESCR=>KIND_TABLE': 'T', 'CL_ABAP_TYPEDESCR=>KIND_REF': 'R'
   };
 
   // structure value: a plain object — not a table, not an object / data reference / SALV object
   const isObj = v => v !== null && typeof v === 'object' && !Array.isArray(v) && Object.getPrototypeOf(v) === Object.prototype;
 
   // Columns of the dummy tables that hold dates / times (shown as DD.MM.YYYY / HH:MM:SS)
-  const DATE_FIELDS = new Set(['ERSDA', 'FLDATE', 'ERDAT', 'AEDAT', 'AUDAT', 'ORDER_DATE', 'ANGDT', 'BNDDT', 'GWLDT', 'LAEDA', 'BUDAT', 'BLDAT', 'BEDAT', 'CPUDT', 'EINDT']);
+  const DATE_FIELDS = new Set(['ERSDA', 'FLDATE', 'ERDAT', 'AEDAT', 'AUDAT', 'ORDER_DATE', 'ANGDT', 'BNDDT', 'GWLDT', 'LAEDA', 'BUDAT', 'BLDAT', 'BEDAT', 'CPUDT', 'EINDT',
+    'LFDAT', 'WADAT_IST', 'FKDAT', 'BEGDA', 'ENDDA', 'GBDAT']);
   const TIME_FIELDS = new Set(['DEPTIME', 'ARRTIME', 'ERZET']);
   const AGG_FUNCS = new Set(['SUM', 'MAX', 'MIN', 'AVG', 'COUNT']);
-  const CTOR_OPS = new Set(['VALUE', 'COND', 'SWITCH', 'CONV', 'EXACT', 'CAST', 'REF', 'REDUCE', 'CORRESPONDING']);
+  const CTOR_OPS = new Set(['VALUE', 'COND', 'SWITCH', 'CONV', 'EXACT', 'CAST', 'REF', 'REDUCE', 'CORRESPONDING', 'FILTER']);
 
   const pad2 = n => String(n).padStart(2, '0');
   // 'YYYYMMDD' -> Date (UTC) or null
@@ -120,7 +127,9 @@
     LVC_S_SORT: 'SPOS:i FIELDNAME UP DOWN GROUP SUBTOT COMP EXPA LEVEL:i OBLIGATORY',
     DISVARIANT: 'REPORT HANDLE LOG_GROUP USERNAME VARIANT TEXT DEPENDVARS',
     BAPIRET2: 'TYPE ID NUMBER MESSAGE LOG_NO LOG_MSG_NO MESSAGE_V1 MESSAGE_V2 MESSAGE_V3 MESSAGE_V4 PARAMETER ROW:i FIELD SYSTEM',
-    BAPIRETURN: 'TYPE CODE MESSAGE LOG_NO LOG_MSG_NO MESSAGE_V1 MESSAGE_V2 MESSAGE_V3 MESSAGE_V4'
+    BAPIRETURN: 'TYPE CODE MESSAGE LOG_NO LOG_MSG_NO MESSAGE_V1 MESSAGE_V2 MESSAGE_V3 MESSAGE_V4',
+    BAPIMATDOA: 'MATL_DESC OLD_MAT_NO MATL_TYPE IND_SECTOR DIVISION MATL_GROUP PROD_HIER BASE_UOM GROSS_WT:f NET_WEIGHT:f UNIT_OF_WT CREATED_ON CREATED_BY',
+    BAPISFLDAT: 'AIRLINEID AIRLINE CONNECTID FLIGHTDATE AIRPORTFR CITYFROM AIRPORTTO CITYTO DEPTIME ARRTIME PRICE:f CURR'
   };
 
   const DDIC_TABLE_TYPES = {
@@ -138,11 +147,16 @@
     KNA1: ['KUNNR'], LFA1: ['LIFNR'], T001: ['BUKRS'], T005: ['LAND1'],
     VBAK: ['VBELN'], VBAP: ['VBELN', 'POSNR'],
     EKKO: ['EBELN'], EKPO: ['EBELN', 'EBELP'], T001W: ['WERKS'], MARC: ['MATNR', 'WERKS'],
-    MARD: ['MATNR', 'WERKS', 'LGORT'], BKPF: ['BUKRS', 'BELNR', 'GJAHR'], BSEG: ['BUKRS', 'BELNR', 'GJAHR', 'BUZEI']
+    MARD: ['MATNR', 'WERKS', 'LGORT'], BKPF: ['BUKRS', 'BELNR', 'GJAHR'], BSEG: ['BUKRS', 'BELNR', 'GJAHR', 'BUZEI'],
+    LIKP: ['VBELN'], LIPS: ['VBELN', 'POSNR'], VBRK: ['VBELN'], VBRP: ['VBELN', 'POSNR'],
+    MKPF: ['MBLNR', 'MJAHR'], MSEG: ['MBLNR', 'MJAHR', 'ZEILE'], T001L: ['WERKS', 'LGORT'], T023T: ['SPRAS', 'MATKL'],
+    SCUSTOM: ['ID'], PA0001: ['PERNR', 'ENDDA', 'BEGDA'], PA0002: ['PERNR', 'ENDDA', 'BEGDA'], PA0008: ['PERNR', 'ENDDA', 'BEGDA'],
+    T527X: ['SPRAS', 'ORGEH', 'ENDDA']
   };
 
   // Output lengths of well-known data elements (for ALPHA conversion)
-  const DDIC_LEN = { MATNR: 18, KUNNR: 10, LIFNR: 10, VBELN: 10, POSNR: 6, BUKRS: 4, BOOKID: 8, CUSTOMID: 8, CONNID: 4 };
+  const DDIC_LEN = { MATNR: 18, KUNNR: 10, LIFNR: 10, VBELN: 10, POSNR: 6, BUKRS: 4, BOOKID: 8, CUSTOMID: 8, CONNID: 4,
+    MBLNR: 10, PERNR: 8, ORGEH: 8, ZEILE: 4, VGBEL: 10, AUBEL: 10, VGPOS: 6, AUPOS: 6, KUNRG: 10, KUNAG: 10 };
 
   // Field labels as the SAP data dictionary would deliver them
   const DDIC_LABELS = {
@@ -171,7 +185,16 @@
     DISMM: 'MRP Type', DISPO: 'MRP Controller', BESKZ: 'Procurement Type', EISBE: 'Safety Stock', PLIFZ: 'Planned Deliv. Time',
     BELNR: 'Document Number', GJAHR: 'Fiscal Year', BLART: 'Document Type', BLDAT: 'Document Date', BUDAT: 'Posting Date',
     XBLNR: 'Reference', BKTXT: 'Header Text', BUZEI: 'Line Item', BSCHL: 'Posting Key', KOART: 'Account Type',
-    SHKZG: 'Debit/Credit', DMBTR: 'Amount in LC', WRBTR: 'Amount', HKONT: 'G/L Account', SGTXT: 'Text', USNAM: 'User Name'
+    SHKZG: 'Debit/Credit', DMBTR: 'Amount in LC', WRBTR: 'Amount', HKONT: 'G/L Account', SGTXT: 'Text', USNAM: 'User Name',
+    LFART: 'Delivery Type', VSTEL: 'Shipping Point', LFDAT: 'Delivery Date', WADAT_IST: 'Actual GI Date', LFIMG: 'Delivery Quantity',
+    VGBEL: 'Reference Document', VGPOS: 'Reference Item', FKART: 'Billing Type', FKDAT: 'Billing Date', KUNRG: 'Payer', KUNAG: 'Sold-to Party',
+    FKIMG: 'Billed Quantity', VRKME: 'Sales Unit', AUBEL: 'Sales Document', AUPOS: 'Sales Document Item', FKSTO: 'Cancelled',
+    MBLNR: 'Material Document', MJAHR: 'Material Doc. Year', ZEILE: 'Item', BWART: 'Movement Type', LGOBE: 'Storage Loc. Description',
+    WGBEZ: 'Material Group Desc.', ID: 'Customer Number', NAME: 'Customer Name', FORM: 'Form of Address', STREET: 'Street', CITY: 'City',
+    COUNTRY: 'Country', DISCOUNT: 'Discount (%)', LANGU: 'Language', CANCELLED: 'Cancelled',
+    PERNR: 'Personnel Number', BEGDA: 'Start Date', ENDDA: 'End Date', NACHN: 'Last Name', VORNA: 'First Name', GESCH: 'Gender',
+    GBDAT: 'Date of Birth', NATIO: 'Nationality', PERSG: 'Employee Group', PERSK: 'Employee Subgroup', ORGEH: 'Organizational Unit',
+    PLANS: 'Position', ENAME: 'Employee Name', TRFAR: 'Pay Scale Type', TRFGR: 'Pay Scale Group', BET01: 'Wage Type Amount', ORGTX: 'Org. Unit Text'
   };
 
   // Importing/exporting parameters of the classic ALV display function modules
@@ -218,6 +241,16 @@
       this.frames      = [];  // local scopes of running FORMs / methods / functions
       this.loopStack   = [];  // running LOOP AT statements
       this.loopDepth   = 0;
+      this.groupMembers = {}; // NAME of a group binding -> { rows, lineDesc } (LOOP AT ... GROUP BY)
+      this.hashClass   = null; // class meant by NEW #( ) in the assignment being executed
+      this.sqlDepth    = 0;    // > 0 while a subquery / UNION branch is being read
+      this.repeatDepth = 0;    // nesting of running loops, across FORM / method calls
+      this.locks       = new Map();   // lock entries set with ENQUEUE_... in this run
+      this.numberRanges = {};  // object|range -> last number given out by NUMBER_GET_NEXT
+      this.unitRun     = null; // set while runUnitTests() executes a test method
+      this.subqCache   = null; // results of uncorrelated subqueries of the SELECT being executed
+      this.subqSeq     = 0;
+      this.stats       = { dbReads: 0, dbRows: 0, dbWrites: 0, inLoop: {} };   // database accesses of this run
       this.structBuild = [];  // open BEGIN OF ... blocks
       this.params      = {};  // selection-screen input (NAME -> value)
       this.rowCtx      = null;
@@ -265,7 +298,14 @@
         this.runEvent('START-OF-SELECTION');
         this.runEvent('END-OF-SELECTION');
       });
-      return { output: this.output, variables: this.variables, errors: this.errors };
+      return { output: this.output, variables: this.variables, errors: this.errors, stats: this.runStats() };
+    }
+
+    // Database accesses of the run; `repeated` lists SELECT statements executed again and again inside a loop
+    runStats() {
+      const st = this.stats;
+      const repeated = Object.keys(st.inLoop).map(Number).filter(line => st.inLoop[line] > 1).sort((a, b) => a - b).map(line => ({ line, count: st.inLoop[line] }));
+      return { dbReads: st.dbReads, dbRows: st.dbRows, dbWrites: st.dbWrites, steps: this.steps, repeated };
     }
 
     // Record a problem that does not stop the simulation
@@ -578,8 +618,17 @@
             this.dbCopy = this.dbCommitted ? this.clone(this.dbCommitted) : {};
             this.setSy('SUBRC', 0); i++; break;
 
-          case 'AUTHORITY-CHECK':
-            this.setSy('SUBRC', 0); i++; break;      // the learner is always authorised
+          case 'AUTHORITY-CHECK': {
+            // the simulated user DEVELOPER may create / change / display (ACTVT 01, 02, 03) but not delete (06)
+            const aw = t.words, au = aw.map(U);
+            let denied = false;
+            for (let k = 0; k + 3 < au.length; k++) {
+              if (au[k] === 'ID' && au[k + 2] === 'FIELD'
+                  && this.formatOut(this.evalExpr([aw[k + 1]])).trim().toUpperCase() === 'ACTVT'
+                  && this.formatOut(this.evalExpr([aw[k + 3]])).trim() === '06') denied = true;
+            }
+            this.setSy('SUBRC', denied ? 4 : 0); i++; break;
+          }
 
           case 'ASSERT':
             if (!this.evalCond(t.words.slice(1))) throw { message: `ASSERT gagal: kondisi "${t.words.slice(1).join(' ')}" tidak terpenuhi (di SAP: short dump ASSERTION_FAILED)`, line: t.lineNo };
@@ -835,8 +884,21 @@
         if (lhs.length === 1 && /^TEXT-\w{3}$/i.test(lhs[0])) {
           this.problem(t, `Text symbol ${lhs[0].toUpperCase()} tidak bisa diisi lewat kode — di SAP teksnya diisi di menu Goto → Text Elements (assignment ini syntax error). Simulator tetap menyimpan nilainya.`, 'warning');
         }
+        // lo = NEW #( ... ): the class is taken from the type of the target
+        const prevHash = this.hashClass;
+        if (U(rhs[0]) === 'NEW' && rhs[1] === '#') {
+          let d = null;
+          if (lhs.length === 1) { const tr = this.ref(lhs[0]); d = tr && tr.desc; }
+          else if (this.isChain(lhs)) { const c = this.resolveChain(lhs, t); d = c.rec && c.rec.desc; }
+          this.hashClass = d && d.kind === 'ref' && d.target && d.target !== 'DATA' ? d.target : null;
+        }
         // a += 1  ->  a = a + ( 1 );  lo ?= x  ->  lo = x
-        const value = op && op !== '?' ? this.evalExpr([...lhs, op, '(', ...rhs, ')']) : this.evalExpr(rhs);
+        let value;
+        try {
+          value = op && op !== '?' ? this.evalExpr([...lhs, op, '(', ...rhs, ')']) : this.evalExpr(rhs);
+        } finally {
+          this.hashClass = prevHash;
+        }
         // a = b = c: multiple assignment
         if (this.assignChain(lhs, value, t) === false && lhs.length > 1 && !this.isChain(lhs) && this.closeBracket(lhs, 0) === -1) {
           this.problem(t, `Statement "${t.raw.slice(0, 50)}" tidak dikenali simulator — dilewati`, 'warning');
@@ -933,7 +995,7 @@
       if (this._dbDesc[key]) return this._dbDesc[key];
       const fields = DDIC_STRUCTS[N].split(' ').map(f => {
         const [name, ty] = f.split(':');
-        return { name, desc: { kind: 'elem', base: ty === 'i' ? 'int' : 'string' } };
+        return { name, desc: { kind: 'elem', base: ty === 'i' ? 'int' : ty === 'f' ? 'float' : 'string' } };
       });
       return (this._dbDesc[key] = { kind: 'struct', fields, ddic: N, open: true });
     }
@@ -2086,9 +2148,27 @@
       const r = target && this.ref(target);
       if (!r || !pat) { this.setSy('SUBRC', 4); return; }
       const src = this.formatOut(r.get());
-      const res = src.replace(new RegExp(esc(pat), flags), () => repl);
+      // REPLACE ... REGEX | PCRE pattern: the replacement may use $1, $2 ... and $0 (whole match)
+      const isRegex = inIdx > 1 && ['REGEX', 'PCRE'].includes(up[inIdx - 2]);
+      const re = isRegex ? this.abapRegex(pat, flags) : new RegExp(esc(pat), flags);
+      const hits = (src.match(new RegExp(re.source, re.flags.includes('g') ? re.flags : re.flags + 'g')) || []).length;
+      const res = isRegex ? src.replace(re, repl.replace(/\$0/g, '$$&')) : src.replace(re, () => repl);
       r.set(res);
-      this.setSy('SUBRC', res === src && !src.includes(pat) ? 4 : 0);
+      const cntIdx = up.indexOf('COUNT');
+      if (cntIdx !== -1 && up[cntIdx - 1] === 'REPLACEMENT' && w[cntIdx + 1]) this.assignTo(this.targetName(w, cntIdx + 1), hits ? (flags.includes('g') ? hits : 1) : 0, t);
+      this.setSy('SUBRC', hits ? 0 : 4);
+    }
+
+    // ABAP regular expression (POSIX / PCRE subset) -> JavaScript RegExp
+    abapRegex(pattern, flags) {
+      const POSIX = { digit: '\\d', alpha: 'A-Za-z', alnum: 'A-Za-z0-9', space: '\\s', upper: 'A-Z', lower: 'a-z', punct: '!-\\/:-@\\[-`{-~', word: '\\w', xdigit: '0-9A-Fa-f' };
+      const src = String(pattern).replace(/\[:(\w+):\]/g, (m, n) => (POSIX[n] !== undefined ? POSIX[n] : m));
+      try {
+        return new RegExp(src, flags || '');
+      } catch (e) {
+        this.raiseSys('CX_SY_REGEX', `Regular expression "${String(pattern).slice(0, 40)}" tidak valid`);
+        return /$^/;
+      }
     }
 
     // FIND [FIRST OCCURRENCE OF] sub IN dobj [IGNORING CASE] [MATCH OFFSET off] [MATCH COUNT cnt]
@@ -2097,14 +2177,41 @@
       const inIdx = up.indexOf('IN');
       if (inIdx < 2) return;
       const sub = this.formatOut(this.evalExpr([w[inIdx - 1]]));
-      let src = this.formatOut(this.evalExpr([w[inIdx + 1]]));
-      let needle = sub;
-      if (up.includes('IGNORING')) { src = src.toUpperCase(); needle = needle.toUpperCase(); }
-      const pos = needle ? src.indexOf(needle) : -1;
-      const oi = up.indexOf('OFFSET'), ci = up.indexOf('COUNT');
-      if (pos !== -1 && oi !== -1 && w[oi + 1]) this.assignTo(this.targetName(w, oi + 1), pos, t);
-      if (ci !== -1 && w[ci + 1]) this.assignTo(this.targetName(w, ci + 1), pos === -1 ? 0 : src.split(needle).length - 1, t);
-      this.setSy('SUBRC', pos === -1 ? 4 : 0);
+      const src = this.formatOut(this.evalExpr([w[inIdx + 1]]));
+      // FIND [ALL OCCURRENCES OF] [REGEX | PCRE] pattern IN dobj
+      //   [MATCH COUNT c] [MATCH OFFSET o] [MATCH LENGTH l] [SUBMATCHES s1 s2 ...]
+      const isRegex = ['REGEX', 'PCRE'].includes(up[inIdx - 2]);
+      const all = up[1] === 'ALL';
+      const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = sub ? (isRegex ? this.abapRegex(sub, 'g' + (up.includes('IGNORING') ? 'i' : '')) : new RegExp(esc(sub), 'g' + (up.includes('IGNORING') ? 'i' : ''))) : null;
+      const found = [];
+      if (re) {
+        let m;
+        while ((m = re.exec(src)) !== null) {
+          found.push(m);
+          if (m[0] === '') re.lastIndex++;
+          if (!all) break;
+        }
+      }
+      const hit = found.length ? found[all ? found.length - 1 : 0] : null;      // ALL OCCURRENCES: the last one
+      const target = kw => { const k = up.indexOf(kw); return k !== -1 && up[k - 1] === 'MATCH' && w[k + 1] ? this.targetName(w, k + 1) : null; };
+      const to = (name, v) => { if (name) this.assignTo(name, v, t); };
+      to(target('COUNT'), found.length);
+      if (hit) {
+        to(target('OFFSET'), hit.index);
+        to(target('LENGTH'), hit[0].length);
+        const si = up.indexOf('SUBMATCHES');
+        if (si !== -1) {
+          let g = 1;
+          for (let k = si + 1; k < w.length && !['MATCH', 'IGNORING', 'RESPECTING'].includes(up[k]); k++) {
+            const inline = (up[k] === 'DATA' || up[k] === 'FINAL') && w[k + 1] === '(';
+            this.assignTo(this.targetName(w, k), hit[g] === undefined ? '' : hit[g], t);
+            g++;
+            if (inline) k += 3;
+          }
+        }
+      }
+      this.setSy('SUBRC', hit ? 0 : 4);
     }
 
     // SHIFT dobj [LEFT|RIGHT] [BY n PLACES] [DELETING LEADING|TRAILING c]
@@ -2190,7 +2297,16 @@
 
     // ── OpenSQL SELECT (simulated from window.ABAP_DB) ─────
     execSelect(t) {
-      const words = t.words.filter(x => x !== ',');
+      const words = t.words;
+      const top = this.sqlDepth === 0;
+      if (top) {
+        this.subqCache = new Map();
+        // SELECT ... UNION [ALL | DISTINCT] SELECT ...
+        const wl = this.levels(words);
+        if (words.some((x, k) => wl[k] === 0 && U(x) === 'UNION')) return this.execUnion(t, wl);
+        this.stats.dbReads++;
+        if (this.repeatDepth > 0) this.stats.inLoop[t.lineNo] = (this.stats.inLoop[t.lineNo] || 0) + 1;
+      }
       const cl = { FIELDS: [], FROM: [], INTO: [], WHERE: [], ORDER: [], UPTO: [], FAE: [], GROUP: [], HAVING: [], OTHER: [] };
       let cur = 'FIELDS', single = false, appending = false, distinctRows = false, i = 1;
       if (U(words[i]) === 'SINGLE') { single = true; i++; }
@@ -2208,8 +2324,19 @@
         if (W === 'FIELDS' && cur === 'FROM') { cur = 'FIELDS'; continue; }
         if (W === 'FOR' && N === 'ALL') { cur = 'FAE'; i++; continue; }
         if (W === 'BYPASSING' || W === 'CLIENT') { cur = 'OTHER'; continue; }
+        if (words[i] === ',' && cur !== 'FIELDS') continue;      // the field list keeps its commas: they separate expressions
         cl[cur].push(words[i]);
       }
+
+      // dynamic table name / condition: FROM (lv_table) ... WHERE (lv_condition)
+      const dynamic = toks => {
+        if (toks.length !== 3 || toks[0] !== '(' || toks[2] !== ')' || !this.ref(toks[1])) return null;
+        const v = this.evalExpr([toks[1]]);
+        return Array.isArray(v) ? v.map(x => this.formatOut(x)).join(' ') : this.formatOut(v);
+      };
+      const dynFrom = dynamic(cl.FROM), dynWhere = dynamic(cl.WHERE);
+      if (dynFrom !== null) cl.FROM = this.words(dynFrom.trim());
+      if (dynWhere !== null) cl.WHERE = this.words(dynWhere.trim()).filter(x => x !== ',');
 
       const sources = this.parseFrom(cl.FROM);
       if (!sources.length) return null;
@@ -2272,13 +2399,22 @@
       }
 
       // Field list: columns and aggregate functions
-      const ft = cl.FIELDS;
-      const isStar = ft.length === 1 && ft[0] === '*';
+      const isStar = cl.FIELDS.filter(x => x !== ',').length === 1 && cl.FIELDS[0] === '*';
       const items = [];
-      if (!isStar) {
+      const computed = toks => items.push({ computed: true, expr: toks, src: '*', col: 'EXPR', name: `EXPR${items.length + 1}` });
+      // one field (or, in the old syntax without commas, several fields) made of plain columns / aggregates
+      const scan = ft => {
         for (let j = 0; j < ft.length; j++) {
           const X = U(ft[j]);
           if (X === 'AS') { if (items.length) { const it = items[items.length - 1]; it.name = U(ft[++j]); it.aliased = true; } continue; }
+          if (X === 'CASE') {
+            // CASE ... END as a column
+            let depth = 0, e = j;
+            for (; e < ft.length; e++) { const Y = U(ft[e]); if (Y === 'CASE') depth++; else if (Y === 'END' && --depth === 0) break; }
+            computed(ft.slice(j, e + 1));
+            j = e;
+            continue;
+          }
           if (AGG_FUNCS.has(X) && ft[j + 1] === '(') {
             const c = this.matchParen(ft, j + 1);
             let inner = ft.slice(j + 2, c === -1 ? ft.length : c).map(U);
@@ -2297,12 +2433,33 @@
           const src = X.replace(/^@/, '');
           items.push({ src, col: src.replace(/^.*~/, ''), name: src.replace(/^.*~/, '') });
         }
+      };
+      if (!isStar) {
+        const flv = this.levels(cl.FIELDS);
+        if (cl.FIELDS.some((x, k) => x === ',' && flv[k] === 0)) {
+          // new syntax: comma-separated fields, each may be an expression:  a - b AS rest,  concat( a, b ) AS key
+          let group = [];
+          const flush = () => {
+            if (!group.length) return;
+            const glv = this.levels(group);
+            let body = group, alias = null;
+            if (group.length > 2 && U(group[group.length - 2]) === 'AS' && glv[group.length - 2] === 0) { alias = U(group[group.length - 1]); body = group.slice(0, -2); }
+            const isAgg = AGG_FUNCS.has(U(body[0])) && body[1] === '(' && this.matchParen(body, 1) === body.length - 1;
+            if (body.length === 1 || isAgg) scan(group);
+            else { computed(body); if (alias) { items[items.length - 1].name = alias; items[items.length - 1].aliased = true; } }
+            group = [];
+          };
+          cl.FIELDS.forEach((x, k) => { if (x === ',' && flv[k] === 0) flush(); else group.push(x); });
+          flush();
+        } else {
+          scan(cl.FIELDS);
+        }
         for (const f of items) {
           if (f.src !== '*' && !known.has(f.src)) this.problem(t, `SELECT: kolom "${f.src}" tidak ada di tabel ${tableName}`, 'error');
         }
       }
       const rowVal = (row, name) => row[this.ciKey(row, name)];
-      const itemVal = (row, f) => (f.lit ? f.value : rowVal(row, f.src));
+      const itemVal = (row, f) => (f.lit ? f.value : f.computed ? this.sqlValue(f.expr, row) : rowVal(row, f.src));
 
       // WHERE (optionally FOR ALL ENTRIES)
       let rows;
@@ -2340,7 +2497,7 @@
       const gcols = cl.GROUP.map(U);
       if (hasAgg || gcols.length) {
         for (const f of items) {
-          if (!f.agg && !f.lit && !gcols.includes(f.src) && !gcols.includes(f.col)) {
+          if (!f.agg && !f.lit && !f.computed && !gcols.includes(f.src) && !gcols.includes(f.col)) {
             this.problem(t, `SELECT: kolom "${f.src}" dipakai bersama fungsi agregat, jadi harus disebut di GROUP BY`, 'error');
           }
         }
@@ -2377,7 +2534,14 @@
           const having = this.foldAgg(cl.HAVING);
           rows = rows.filter(r => this.evalRowWhere(r, having));
         }
-        for (const it of items) it.src = it.name;       // from here on read the aggregated rows
+        for (const it of items) { it.src = it.name; it.computed = false; }       // from here on read the aggregated rows
+      }
+
+      // computed columns become part of the row, so ORDER BY can use their alias
+      const comp = items.filter(x => x.computed);
+      if (comp.length) {
+        rows = rows.map(r => { const o = Object.assign({}, r); for (const it of comp) o[it.name] = this.sqlValue(it.expr, r); return o; });
+        for (const it of comp) { it.computed = false; it.src = it.name; }
       }
 
       // ORDER BY, UP TO n ROWS
@@ -2403,7 +2567,7 @@
       }
       if (limit) rows = rows.slice(0, limit);
 
-      const setCounts = n => { this.setSy('SUBRC', n > 0 ? 0 : 4); this.setSy('DBCNT', n); };
+      const setCounts = n => { this.setSy('SUBRC', n > 0 ? 0 : 4); this.setSy('DBCNT', n); if (top) this.stats.dbRows += n; };
 
       // Shape of the target line
       const tref = targets.length === 1 ? this.ref(targets[0]) : null;
@@ -2491,6 +2655,205 @@
       };
     }
 
+    // Rows of a SELECT without INTO (subquery, UNION branch): array of row objects
+    selectRows(toks, lineNo) {
+      const tmp = '__SUBQUERY' + (++this.subqSeq);
+      const keep = ['SY-SUBRC', 'SY-DBCNT'].map(k => (this.variables[k] ? this.variables[k].value : undefined));
+      this.sqlDepth++;
+      try {
+        this.execSelect({ words: [...toks, 'INTO', 'TABLE', '@DATA', '(', tmp, ')'], lineNo, raw: '' });
+        const rec = this.variables[tmp];
+        return rec && Array.isArray(rec.value) ? rec.value : [];
+      } finally {
+        this.sqlDepth--;
+        delete this.variables[tmp];
+        ['SY-SUBRC', 'SY-DBCNT'].forEach((k, pos) => { if (keep[pos] !== undefined && this.variables[k]) this.variables[k].value = keep[pos]; });
+      }
+    }
+
+    // ( SELECT col FROM ... ) inside a condition -> the values of its first column.
+    // A subquery that mentions no alias~column cannot depend on the outer row, so it is read only once.
+    subquery(toks) {
+      const key = toks.join(' ');
+      const cacheable = this.subqCache && !toks.some(x => x.includes('~') && !/^['`|]/.test(x));
+      if (cacheable && this.subqCache.has(key)) return this.subqCache.get(key);
+      const vals = this.selectRows(toks, this.curLine).map(r => (isObj(r) ? r[Object.keys(r)[0]] : r));
+      if (cacheable) this.subqCache.set(key, vals);
+      return vals;
+    }
+
+    // SELECT ... UNION [ALL | DISTINCT] SELECT ... INTO TABLE target
+    execUnion(t, wl) {
+      const words = t.words;
+      const parts = [];
+      let cur = [], all = false;
+      const flags = [];
+      for (let k = 0; k < words.length; k++) {
+        if (wl[k] === 0 && U(words[k]) === 'UNION') {
+          parts.push(cur); cur = [];
+          const nx = U(words[k + 1]);
+          flags.push(nx === 'ALL');
+          if (nx === 'ALL' || nx === 'DISTINCT') k++;
+          continue;
+        }
+        cur.push(words[k]);
+      }
+      parts.push(cur);
+      all = flags.length > 0 && flags.every(Boolean);
+      // the INTO clause stands in one of the branches (normally the last): take it out
+      let into = [];
+      const branches = parts.map(p => {
+        const lv = this.levels(p);
+        const ii = p.findIndex((x, k) => lv[k] === 0 && (U(x) === 'INTO' || U(x) === 'APPENDING'));
+        if (ii === -1) return p;
+        let e = ii + 1;
+        while (e < p.length && !(lv[e] === 0 && ['WHERE', 'GROUP', 'ORDER', 'HAVING', 'UP'].includes(U(p[e])))) e++;
+        into = p.slice(ii + 1, e);
+        return p.slice(0, ii).concat(p.slice(e));
+      });
+      this.stats.dbReads++;
+      if (this.repeatDepth > 0) this.stats.inLoop[t.lineNo] = (this.stats.inLoop[t.lineNo] || 0) + 1;
+      let names = null;
+      let result = [];
+      for (const b of branches) {
+        for (const row of this.selectRows(b, t.lineNo)) {
+          const keys = Object.keys(row);
+          if (!names) names = keys;                          // column names come from the first SELECT
+          const o = {};
+          names.forEach((nm, pos) => { o[nm] = row[keys[pos]]; });
+          result.push(o);
+        }
+      }
+      if (!all) {
+        const seen = new Set();
+        result = result.filter(r => { const key = JSON.stringify(r); return seen.has(key) ? false : seen.add(key); });
+      }
+      const up = into.map(U);
+      let k = 0;
+      if (up[k] === 'CORRESPONDING') k += 3;
+      if (up[k] === 'TABLE') k++;
+      const inline = /^@?(DATA|FINAL)$/.test(up[k] || '') && into[k + 1] === '(';
+      const target = inline ? into[k + 2] : into[k];
+      if (target) {
+        const tref = inline ? null : this.ref(target);
+        if (!tref) this.declareVar(target, this.inferDesc(result), result);
+        else this.assignTo(target, result, t);
+      }
+      this.setSy('SUBRC', result.length ? 0 : 4); this.setSy('DBCNT', result.length);
+      this.stats.dbRows += result.length;
+      return null;
+    }
+
+    // Value of an expression of the SELECT list for one row
+    sqlValue(toks, row) {
+      const prev = this.rowCtx;
+      this.rowCtx = { row, outer: prev };
+      try {
+        return this.sqlExpr(toks);
+      } finally {
+        this.rowCtx = prev;
+      }
+    }
+
+    // SQL expression: CASE ... END, functions, + - * /, && ; evaluated with the columns of the current row visible
+    sqlExpr(toks) {
+      const w = this.stripParens(toks);
+      if (!w.length) return '';
+      if (w.length === 1) return this.evalAtom(w[0]);
+      const up = w.map(U);
+      // depth of every token: parentheses and CASE ... END both nest
+      const depth = [];
+      let p = 0, c = 0;
+      w.forEach((x, k) => {
+        if (x === ')') p--;
+        if (up[k] === 'END' && c > 0 && !/^['`|]/.test(x)) c--;
+        depth[k] = p + c;
+        if (x === '(') p++;
+        if (up[k] === 'CASE' && !/^['`|]/.test(x)) c++;
+      });
+      const endOfCase = () => { for (let k = 1; k < w.length; k++) if (up[k] === 'END' && depth[k] === 0) return k; return -1; };
+      if (up[0] === 'CASE' && endOfCase() === w.length - 1) return this.sqlCase(w.slice(1, -1));
+
+      for (const ops of [['&&'], ['+', '-'], ['*', '/']]) {
+        for (let k = w.length - 1; k > 0; k--) {
+          if (depth[k] !== 0 || !ops.includes(w[k]) || /^['`|]/.test(w[k])) continue;
+          const a = this.sqlExpr(w.slice(0, k)), b = this.sqlExpr(w.slice(k + 1));
+          if (w[k] === '&&') return this.formatOut(a) + this.formatOut(b);
+          const x = this.num(a), y = this.num(b);
+          switch (w[k]) {
+            case '+': return Number((x + y).toPrecision(15));
+            case '-': return Number((x - y).toPrecision(15));
+            case '*': return Number((x * y).toPrecision(15));
+            default:  return y === 0 ? 0 : Number((x / y).toPrecision(15));
+          }
+        }
+      }
+
+      // function( arg, arg )
+      if (w[1] === '(' && this.matchParen(w, 1) === w.length - 1 && /^[A-Za-z_]\w*$/.test(w[0])) {
+        const inner = w.slice(2, -1), il = this.levels(inner);
+        const args = [];
+        let part = [];
+        inner.forEach((x, k) => { if (x === ',' && il[k] === 0) { args.push(part); part = []; } else part.push(x); });
+        if (part.length) args.push(part);
+        const F = up[0];
+        if (F === 'CAST') { const ai = inner.findIndex(x => U(x) === 'AS'); return this.sqlExpr(ai === -1 ? inner : inner.slice(0, ai)); }
+        const v = args.map(a => this.sqlExpr(a));
+        const str = k => this.formatOut(v[k] === undefined ? '' : v[k]);
+        const num = k => this.num(v[k] === undefined ? 0 : v[k]);
+        switch (F) {
+          case 'CONCAT': return str(0).trimEnd() + str(1).trimEnd();
+          case 'CONCAT_WITH_SPACE': return str(0).trimEnd() + ' '.repeat(num(2) || 1) + str(1).trimEnd();
+          case 'UPPER': return str(0).toUpperCase();
+          case 'LOWER': return str(0).toLowerCase();
+          case 'LENGTH': return str(0).trimEnd().length;
+          case 'SUBSTRING': return str(0).substr(Math.max(0, num(1) - 1), v[2] === undefined ? undefined : num(2));
+          case 'LEFT': return str(0).slice(0, num(1));
+          case 'RIGHT': return str(0).slice(-num(1));
+          case 'LTRIM': { let x = str(0); const ch = str(1) || ' '; while (x.startsWith(ch)) x = x.slice(ch.length); return x; }
+          case 'RTRIM': { let x = str(0); const ch = str(1) || ' '; while (x.endsWith(ch)) x = x.slice(0, -ch.length); return x; }
+          case 'REPLACE': return str(0).split(str(1)).join(str(2));
+          case 'COALESCE': { const hit = v.find(x => x !== undefined && x !== null && x !== ''); return hit === undefined ? '' : hit; }
+          case 'ABS': return Math.abs(num(0));
+          case 'CEIL': return Math.ceil(num(0));
+          case 'FLOOR': return Math.floor(num(0));
+          case 'ROUND': { const m = Math.pow(10, num(1) || 0); return Math.round(num(0) * m) / m; }
+          case 'DIV': return num(1) === 0 ? 0 : Math.floor(num(0) / num(1));
+          case 'MOD': return num(1) === 0 ? 0 : num(0) % num(1);
+          case 'DIVISION': { const m = Math.pow(10, num(2) || 0); return num(1) === 0 ? 0 : Math.round(num(0) / num(1) * m) / m; }
+        }
+      }
+      return this.evalExpr(w);
+    }
+
+    // body of CASE ... END:  WHEN cond THEN v ... [ELSE v]   or   operand WHEN value THEN v ... [ELSE v]
+    sqlCase(body) {
+      const up = body.map(U);
+      const marks = [];
+      let p = 0, c = 0;
+      body.forEach((x, k) => {
+        if (x === ')') p--;
+        if (up[k] === 'END' && c > 0) c--;
+        if (p === 0 && c === 0 && ['WHEN', 'THEN', 'ELSE'].includes(up[k]) && !/^['`|]/.test(x)) marks.push(k);
+        if (x === '(') p++;
+        if (up[k] === 'CASE') c++;
+      });
+      if (!marks.length) return '';
+      const operand = body.slice(0, marks[0]);
+      for (let m = 0; m < marks.length; m++) {
+        const at = marks[m], next = m + 1 < marks.length ? marks[m + 1] : body.length;
+        if (up[at] === 'ELSE') return this.sqlExpr(body.slice(at + 1, next));
+        if (up[at] !== 'WHEN') continue;
+        const thenAt = marks[m + 1];
+        if (thenAt === undefined || up[thenAt] !== 'THEN') continue;
+        const after = m + 2 < marks.length ? marks[m + 2] : body.length;
+        const cond = body.slice(at + 1, thenAt);
+        const hit = operand.length ? this.compare(this.sqlExpr(operand), '=', this.sqlExpr(cond)) : this.evalCond(cond);
+        if (hit) return this.sqlExpr(body.slice(thenAt + 1, after));
+      }
+      return '';
+    }
+
     // FROM t1 [AS a] [INNER | LEFT [OUTER]] JOIN t2 [AS b] ON cond ...
     parseFrom(F) {
       const up = F.map(U);
@@ -2524,7 +2887,7 @@
     }
 
     runSelectLoop(tokens, start, end, res) {
-      this.loopDepth++;
+      this.loopDepth++; this.repeatDepth++;
       try {
         let n = 0;
         for (const row of res.loopRows) {
@@ -2538,7 +2901,7 @@
           }
         }
       } finally {
-        this.loopDepth--;
+        this.loopDepth--; this.repeatDepth--;
       }
       this.setSy('SUBRC', res.loopRows.length ? 0 : 4);
       this.setSy('DBCNT', res.loopRows.length);
@@ -2548,7 +2911,7 @@
     evalRowWhere(row, words) {
       if (!words || !words.length) return true;
       const prev = this.rowCtx;
-      this.rowCtx = { row };
+      this.rowCtx = { row, outer: prev };
       try {
         return this.evalCond(words);
       } finally {
@@ -2625,14 +2988,14 @@
       const timesIdx = words.findIndex(x => U(x) === 'TIMES');
       const times = timesIdx !== -1 ? Number(this.evalExpr(words.slice(1, timesIdx))) : Infinity;
       const prevIndex = this.variables['SY-INDEX'];
-      this.loopDepth++;
+      this.loopDepth++; this.repeatDepth++;
       try {
         for (let n = 1; n <= times; n++) {
           this.setSy('INDEX', n);
           if (this.runBody(tokens, start + 1, end - 1) === 'break') break;
         }
       } finally {
-        this.loopDepth--;
+        this.loopDepth--; this.repeatDepth--;
       }
       if (this.loopDepth > 0 && prevIndex) this.variables['SY-INDEX'] = prevIndex;
       return end - start + 1;
@@ -2643,7 +3006,7 @@
       const cond = tokens[start].words.slice(1);
       const prevIndex = this.variables['SY-INDEX'];
       let n = 0;
-      this.loopDepth++;
+      this.loopDepth++; this.repeatDepth++;
       try {
         while (this.evalCond(cond)) {
           if (++n > 10000) { this.output.push({ text: '⚠ Infinite WHILE loop stopped', cls: 'warning' }); break; }
@@ -2651,7 +3014,7 @@
           if (this.runBody(tokens, start + 1, end - 1) === 'break') break;
         }
       } finally {
-        this.loopDepth--;
+        this.loopDepth--; this.repeatDepth--;
       }
       if (this.loopDepth > 0 && prevIndex) this.variables['SY-INDEX'] = prevIndex;
       return end - start + 1;
@@ -2659,11 +3022,32 @@
 
     // ── LOOP AT itab [INTO wa | ASSIGNING <fs> | REFERENCE INTO dref] [FROM n] [TO m] [WHERE cond] ... ENDLOOP ──
     execLoop(tokens, start, end) {
-      const t = tokens[start], w = t.words, up = w.map(U);
+      const t = tokens[start];
+      let w = t.words, up = w.map(U);
       const span = end - start + 1;
       if (up[1] !== 'AT' || !w[2] || up[2] === 'SCREEN') return span;      // LOOP AT SCREEN: dynpro only
 
-      const r = this.ref(w[2]);
+      let r;
+      if (up[2] === 'GROUP' && w[3] && up[3] !== 'BY') {
+        // LOOP AT GROUP grp ...: the members of the current group
+        const mem = this.groupMembers[up[3]];
+        if (!mem) {
+          this.problem(t, `LOOP AT GROUP ${up[3]}: "${up[3]}" bukan group dari LOOP AT ... GROUP BY yang sedang berjalan`, 'error');
+          return span;
+        }
+        w = [w[0], w[1], 'GROUP ' + w[3], ...w.slice(4)]; up = w.map(U);
+        r = { get: () => mem.rows, desc: { kind: 'table', line: mem.lineDesc }, rec: {} };
+      } else if (w[3] === '->' || w[3] === '=>') {
+        // LOOP AT obj->attr / obj->method( ) / cls=>attr
+        const lvw = this.levels(w);
+        let e = 3;
+        while (e < w.length && !(lvw[e] === 0 && ['INTO', 'ASSIGNING', 'REFERENCE', 'WHERE', 'FROM', 'TO', 'GROUP', 'TRANSPORTING', 'USING'].includes(up[e]))) e++;
+        const cur = this.resolveChain(w.slice(2, e), t);
+        r = { get: () => cur.value, desc: cur.rec ? cur.rec.desc : null, rec: {} };
+        w = [w[0], w[1], w.slice(2, e).join(''), ...w.slice(e)]; up = w.map(U);
+      } else {
+        r = this.ref(w[2]);
+      }
       const itab = r ? r.get() : undefined;
       if (!Array.isArray(itab)) {
         this.problem(t, `LOOP AT ${U(w[2])}: bukan internal table${r ? '' : ' (belum dideklarasikan)'}`, 'error');
@@ -2685,9 +3069,8 @@
         const cut = where.findIndex(x => ['INTO', 'ASSIGNING', 'REFERENCE', 'GROUP'].includes(U(x)));
         if (cut !== -1) where = where.slice(0, cut);
       }
-      if (up.includes('GROUP') && up[up.indexOf('GROUP') + 1] === 'BY') {
-        this.problem(t, 'LOOP AT ... GROUP BY belum didukung simulator — loop dijalankan tanpa pengelompokan', 'warning');
-      }
+      const gi = up.findIndex((x, pos) => pos > 2 && x === 'GROUP' && up[pos + 1] === 'BY');
+      if (gi !== -1) return this.execLoopGroups(tokens, start, end, { t, w, up, itab, lineDesc, waName, fsName, refName, where, gi });
       const useHeader = !waName && !fsName && !refName && !up.includes('TRANSPORTING') && r.rec.header !== undefined;
       if (!waName && !fsName && !refName && !useHeader && !up.includes('TRANSPORTING')) {
         this.problem(t, `LOOP AT ${U(w[2])} tanpa INTO / ASSIGNING hanya berlaku untuk tabel dengan header line`, 'error');
@@ -2704,7 +3087,7 @@
         match: idx => !where.length || this.evalRowWhere(itab[idx], where),
         next: idx => { for (let m = idx + 1; m < itab.length && m <= to; m++) if (entry.match(m)) return m; return -1; }
       };
-      this.loopDepth++;
+      this.loopDepth++; this.repeatDepth++;
       this.loopStack.push(entry);
       try {
         for (entry.index = from; entry.index < itab.length && entry.index <= to; entry.index++) {
@@ -2722,10 +3105,102 @@
         }
       } finally {
         this.loopStack.pop();
-        this.loopDepth--;
+        this.loopDepth--; this.repeatDepth--;
       }
       if (this.loopDepth > 0 && prevTabix) this.variables['SY-TABIX'] = prevTabix;
       this.setSy('SUBRC', entry.pass ? 0 : 4);
+      return span;
+    }
+
+    // Groups of LOOP AT ... GROUP BY / FOR GROUPS: [{ key, rows, idx }] in the order of first appearance, or sorted.
+    // keyToks is one expression (wa-comp) or ( k1 = wa-c1 k2 = wa-c2 size = GROUP SIZE index = GROUP INDEX )
+    buildGroups(items, bind, keyToks, order) {
+      const struct = keyToks[0] === '(';
+      const pairs = struct ? this.parsePairs(keyToks.slice(1, -1)) : null;
+      const special = v => isObj(v) && v.__group;
+      const groups = [], byKey = new Map();
+      for (const it of items) {
+        bind(it);
+        let key, id;
+        if (struct) {
+          key = {};
+          for (const [name, toks] of pairs) {
+            const T = toks.map(U).join(' ');
+            key[name] = T === 'GROUP SIZE' ? { __group: 'size' } : T === 'GROUP INDEX' ? { __group: 'index' } : this.clone(this.evalExpr(toks));
+          }
+          id = JSON.stringify(Object.keys(key).filter(k => !special(key[k])).map(k => key[k]));
+        } else {
+          key = this.clone(this.evalExpr(keyToks));
+          id = JSON.stringify(key);
+        }
+        let g = byKey.get(id);
+        if (!g) { g = { key, rows: [], idx: [] }; byKey.set(id, g); groups.push(g); }
+        g.rows.push(it.row); g.idx.push(it.index);
+      }
+      if (order) {
+        const parts = g => (struct ? Object.keys(g.key).filter(k => !special(g.key[k])).map(k => g.key[k]) : [g.key]);
+        groups.sort((a, b) => {
+          const x = parts(a), y = parts(b);
+          for (let k = 0; k < x.length; k++) { const c = this.cmpValues(x[k], y[k]); if (c) return order === 'DESCENDING' ? -c : c; }
+          return 0;
+        });
+      }
+      groups.forEach((g, pos) => {
+        if (!struct) return;
+        for (const k of Object.keys(g.key)) if (special(g.key[k])) g.key[k] = g.key[k].__group === 'size' ? g.rows.length : pos + 1;
+      });
+      return groups;
+    }
+
+    // LOOP AT itab INTO wa [WHERE ...] GROUP BY key [ASCENDING | DESCENDING] [WITHOUT MEMBERS] [INTO grp | ASSIGNING <grp>]
+    execLoopGroups(tokens, start, end, L) {
+      const { t, w, up, itab, lineDesc, where, gi } = L;
+      const span = end - start + 1;
+      const lv = this.levels(w);
+      let ke = gi + 2;
+      while (ke < w.length && !(lv[ke] === lv[gi] && ['ASCENDING', 'DESCENDING', 'WITHOUT', 'INTO', 'ASSIGNING', 'REFERENCE'].includes(up[ke]))) ke++;
+      const keyToks = w.slice(gi + 2, ke);
+      const tail = up.slice(ke);
+      const order = tail.includes('DESCENDING') ? 'DESCENDING' : tail.includes('ASCENDING') ? 'ASCENDING' : null;
+      let grpName = null, grpFs = null;
+      for (let k = ke; k < w.length; k++) {
+        if (up[k] === 'INTO') grpName = this.targetName(w, k + 1);
+        if (up[k] === 'ASSIGNING') grpFs = this.targetName(w, k + 1);
+      }
+      const bindRow = (row, pos) => {
+        if (L.waName) this.assignTo(L.waName, row, t);
+        if (L.fsName) this.bindFieldSymbol(L.fsName, itab, pos, lineDesc);
+        if (L.refName) this.assignTo(L.refName, new DataRef(this.rowRec(itab, pos, lineDesc)), t);
+      };
+      const items = [];
+      itab.forEach((row, pos) => { if (!where.length || this.evalRowWhere(row, where)) items.push({ row, index: pos }); });
+      const groups = this.buildGroups(items, it => bindRow(it.row, it.index), keyToks, order);
+
+      const prevTabix = this.variables['SY-TABIX'];
+      const names = [grpName, grpFs, L.waName, L.fsName].filter(Boolean).map(U);
+      const savedMembers = names.map(nm => this.groupMembers[nm]);
+      this.loopDepth++; this.repeatDepth++;
+      try {
+        for (const g of groups) {
+          this.setSy('TABIX', g.idx[0] + 1);
+          const members = { rows: g.rows, lineDesc };
+          if (grpName || grpFs) {
+            if (grpName) this.assignTo(grpName, g.key, t);
+            if (grpFs) this.bindFieldSymbol(grpFs, [g.key], 0, null);
+            this.groupMembers[U(grpName || grpFs)] = members;
+          } else {
+            bindRow(g.rows[0], g.idx[0]);            // representative binding: the first row stands for its group
+            if (L.waName) this.groupMembers[U(L.waName)] = members;
+            if (L.fsName) this.groupMembers[U(L.fsName)] = members;
+          }
+          if (this.runBody(tokens, start + 1, end - 1) === 'break') break;
+        }
+      } finally {
+        this.loopDepth--; this.repeatDepth--;
+        names.forEach((nm, k) => { if (savedMembers[k] === undefined) delete this.groupMembers[nm]; else this.groupMembers[nm] = savedMembers[k]; });
+      }
+      if (this.loopDepth > 0 && prevTabix) this.variables['SY-TABIX'] = prevTabix;
+      this.setSy('SUBRC', groups.length ? 0 : 4);
       return span;
     }
 
@@ -2901,7 +3376,7 @@
       const fn = U(this.evalExpr([w[2]]));
       const params = this.parseCallParams(w, 3);
       const uf = this.userFunctions[fn];
-      const impl = this.functionModules()[fn];
+      const impl = this.functionModules()[fn] || this.lockModule(fn);
       this.setSy('SUBRC', 0);
 
       if (!uf && !impl) {
@@ -3036,10 +3511,262 @@
         },
 
         // ── BAPI helpers ──
-        BAPI_TRANSACTION_COMMIT:   () => info('[BAPI] COMMIT WORK dijalankan (simulasi)'),
-        BAPI_TRANSACTION_ROLLBACK: () => info('[BAPI] ROLLBACK WORK dijalankan (simulasi)')
+        BAPI_TRANSACTION_COMMIT:   () => { this.dbCommitted = this.clone(this.dbCopy); info('[BAPI] COMMIT WORK dijalankan (simulasi)'); },
+        BAPI_TRANSACTION_ROLLBACK: () => { this.dbCopy = this.dbCommitted ? this.clone(this.dbCommitted) : {}; info('[BAPI] ROLLBACK WORK dijalankan (simulasi)'); },
+        // read BAPIs: they never raise exceptions, problems are reported in the RETURN parameter
+        BAPI_MATERIAL_GET_DETAIL: c => {
+          const matnr = this.formatOut(c.exp('MATERIAL', '')).trim();
+          const same = r => String(r.MATNR).trim() === matnr;
+          const mara = (this.dbTable('MARA') || []).find(same);
+          const ret = this.initValue(this.resolveNamed('BAPIRETURN'));
+          if (!mara) {
+            Object.assign(ret, { TYPE: 'E', CODE: 'MM305', MESSAGE: `Material ${matnr} does not exist` });
+          } else {
+            const texts = (this.dbTable('MAKT') || []).filter(same);
+            const makt = texts.find(r => r.SPRAS === 'EN') || texts[0];
+            c.imp('MATERIAL_GENERAL_DATA', Object.assign(this.initValue(this.resolveNamed('BAPIMATDOA')), {
+              MATL_DESC: makt ? makt.MAKTX : '', MATL_TYPE: mara.MTART, IND_SECTOR: mara.MBRSH, MATL_GROUP: mara.MATKL,
+              BASE_UOM: mara.MEINS, GROSS_WT: mara.BRGEW, NET_WEIGHT: mara.NTGEW, UNIT_OF_WT: mara.GEWEI,
+              CREATED_ON: mara.ERSDA, CREATED_BY: mara.ERNAM
+            }));
+          }
+          c.imp('RETURN', ret);
+        },
+        BAPI_FLIGHT_GETLIST: c => {
+          const airline = U(this.formatOut(c.exp('AIRLINE', '')).trim());
+          const max = Number(c.exp('MAX_ROWS', 0)) || 0;
+          const out = c.table('FLIGHT_LIST'), ret = c.table('RETURN');
+          const scarr = this.dbTable('SCARR') || [], spfli = this.dbTable('SPFLI') || [];
+          let rows = (this.dbTable('SFLIGHT') || []).filter(fl => !airline || fl.CARRID === airline);
+          if (max) rows = rows.slice(0, max);
+          if (out) {
+            const line = this.resolveNamed('BAPISFLDAT');
+            out.arr.length = 0;
+            for (const fl of rows) {
+              const p = spfli.find(x => x.CARRID === fl.CARRID && x.CONNID === fl.CONNID) || {};
+              const a = scarr.find(x => x.CARRID === fl.CARRID) || {};
+              out.arr.push(Object.assign(this.initValue(line), {
+                AIRLINEID: fl.CARRID, AIRLINE: a.CARRNAME || '', CONNECTID: fl.CONNID, FLIGHTDATE: fl.FLDATE,
+                AIRPORTFR: p.AIRPFROM || '', CITYFROM: p.CITYFROM || '', AIRPORTTO: p.AIRPTO || '', CITYTO: p.CITYTO || '',
+                DEPTIME: p.DEPTIME || '', ARRTIME: p.ARRTIME || '', PRICE: fl.PRICE, CURR: fl.CURRENCY
+              }));
+            }
+          }
+          if (ret) {
+            ret.arr.length = 0;
+            ret.arr.push(Object.assign(this.initValue(this.resolveNamed('BAPIRET2')), rows.length
+              ? { TYPE: 'S', ID: 'BC_IBF', NUMBER: '000', MESSAGE: 'Method was executed successfully' }
+              : { TYPE: 'E', ID: 'BC_IBF', NUMBER: '150', MESSAGE: `No flights found for airline ${airline}` }));
+          }
+        },
+
+        // ── Number ranges ──
+        NUMBER_GET_NEXT: c => {
+          const object = U(this.formatOut(c.exp('OBJECT', '')).trim());
+          if (!object) c.raise('OBJECT_NOT_FOUND');
+          const key = object + '|' + this.formatOut(c.exp('NR_RANGE_NR', '01')).trim();
+          const next = (this.numberRanges[key] || 0) + 1;
+          this.numberRanges[key] = next;
+          c.imp('NUMBER', next);
+          c.imp('RETURNCODE', '');
+        }
       };
       return this._fms;
+    }
+
+    // ENQUEUE_<object> / DEQUEUE_<object>: lock entries of this run. A value listed in window.ABAP_LOCKS
+    // is "being edited by another user": asking for a lock on it raises FOREIGN_LOCK (sy-msgv1 = that user).
+    lockModule(fn) {
+      const m = /^(EN|DE)QUEUE_(.+)$/.exec(fn);
+      if (!m) return null;
+      return c => {
+        if (fn === 'DEQUEUE_ALL') { this.locks.clear(); return; }
+        const args = Object.keys(c.params.EXPORTING).filter(k => !k.startsWith('_') && !/^(MODE_|X_)/.test(k)).sort()
+          .map(k => this.formatOut(c.exp(k, '')).trim()).filter(v => v !== '');
+        const key = m[2] + '|' + args.join('|');
+        if (m[1] === 'DE') { this.locks.delete(key); return; }
+        const foreign = ((typeof window !== 'undefined' && window.ABAP_LOCKS) || []).find(l => args.includes(String(l.value)));
+        if (foreign) {
+          this.variables['SY-MSGV1'] = { type: 'string', value: foreign.user };
+          c.raise('FOREIGN_LOCK');
+        }
+        this.locks.set(key, 'DEVELOPER');
+      };
+    }
+
+    // ── ABAP Unit ─────────────────────────────────────────
+    // cl_abap_unit_assert=>assert_...( ): inside a test run a failed check ends the test method
+    unitAssert(M, argWords, t) {
+      const call = this.parseArgs(argWords);
+      const P = call.params.EXPORTING;
+      const has = k => k in P;
+      const val = (k, dflt) => (has(k) ? this.evalExpr(P[k]) : dflt);
+      let act = has('ACT') ? val('ACT') : (call.positional ? this.evalExpr(call.positional) : undefined);
+      const deep = v => Array.isArray(v) || isObj(v);
+      const same = (a, b) => (deep(a) || deep(b) ? JSON.stringify(a) === JSON.stringify(b) : this.compare(a, '=', b));
+      const truthy = v => v === true || v === 'X' || v === 'x';
+      const show = v => (v === undefined ? '' : Array.isArray(v) ? `[${v.length}]` : isObj(v) ? JSON.stringify(v) : this.formatOut(v));
+      let ok = true, exp;
+      switch (M) {
+        case 'ASSERT_EQUALS': exp = val('EXP'); ok = same(act, exp); break;
+        case 'ASSERT_DIFFERS': exp = val('EXP'); ok = !same(act, exp); break;
+        case 'ASSERT_TRUE': exp = 'X'; ok = truthy(act); break;
+        case 'ASSERT_FALSE': exp = ''; ok = !truthy(act); break;
+        case 'ASSERT_INITIAL': ok = this.isInitial(act, null); break;
+        case 'ASSERT_NOT_INITIAL': ok = !this.isInitial(act, null); break;
+        case 'ASSERT_BOUND': ok = act !== null && act !== undefined && act !== ''; break;
+        case 'ASSERT_NOT_BOUND': ok = act === null || act === undefined || act === ''; break;
+        case 'ASSERT_SUBRC': exp = val('EXP', 0); if (!has('ACT')) act = this.evalAtom('sy-subrc'); ok = this.compare(act, '=', exp); break;
+        case 'ASSERT_TABLE_CONTAINS': { const line = val('LINE'), tab = val('TABLE', []); act = line; ok = Array.isArray(tab) && tab.some(r => same(r, line)); break; }
+        case 'ASSERT_TABLE_NOT_CONTAINS': { const line = val('LINE'), tab = val('TABLE', []); act = line; ok = !(Array.isArray(tab) && tab.some(r => same(r, line))); break; }
+        case 'ASSERT_NUMBER_BETWEEN': { act = val('NUMBER', 0); const x = this.num(act); ok = x >= this.num(val('LOWER', 0)) && x <= this.num(val('UPPER', 0)); break; }
+        case 'FAIL': ok = false; if (!has('MSG') && call.positional) P.MSG = call.positional; act = ''; break;      // fail( 'text' ): the text is the message
+        default:
+          this.problem(t, `cl_abap_unit_assert=>${M.toLowerCase()}( ) belum disimulasikan — dilewati`, 'warning');
+          return '';
+      }
+      if (ok) { if (this.unitRun) this.unitRun.current.asserts++; return ''; }
+      const failure = { kind: 'assert', assert: M, msg: has('MSG') ? this.formatOut(val('MSG')) : '', act: show(act), exp: show(exp), hasExp: exp !== undefined, line: (t && t.lineNo) || this.curLine };
+      if (this.unitRun) { this.unitRun.current.failures.push(failure); throw { unitFail: true }; }
+      this.problem(t, `cl_abap_unit_assert=>${M.toLowerCase()}( ): pemeriksaan gagal${failure.msg ? ' — ' + failure.msg : ''} (test class dijalankan lewat menu Unit Test, bukan lewat Run)`, 'warning');
+      return 'X';
+    }
+
+    // Run every METHODS ... FOR TESTING of the classes declared FOR TESTING: a fresh object per test method,
+    // with setup / teardown around it (class_setup / class_teardown once per class).
+    runUnitTests(code) {
+      this.reset();
+      this.source = String(code || '');
+      const report = { classes: [], total: 0, failed: 0 };
+      this.guard(() => {
+        this.prepare(this.source);
+        this.hoistDeclarations();
+        this.runEvent('LOAD-OF-PROGRAM');
+        for (const name of Object.keys(this.classes)) {
+          const cls = this.prepareClass(name);
+          if (!cls || !cls.testing || !cls.def) continue;
+          const head = cls.def.tokens[cls.def.from - 1] || null;
+          const tests = Object.keys(cls.sigs).filter(k => cls.sigs[k].testing);
+          const cr = { name, methods: [] };
+          report.classes.push(cr);
+          const callIf = (obj, mname) => {
+            const m = this.findMethod(name, mname);
+            if (m && m.impl) this.invokeMethod(m.sig && m.sig.static ? null : obj, m, this.parseArgs([]), head);
+          };
+          const guarded = (res, fn) => {
+            try {
+              fn();
+            } catch (e) {
+              if (e && e.unitFail) return;
+              if (e && e.abapException) res.failures.push({ kind: 'exception', cls: e.abapException.cls, text: this.excText(e.abapException), line: this.curLine });
+              else if (e && e.signal) res.failures.push({ kind: 'stopped', line: this.curLine });
+              else res.failures.push({ kind: 'error', text: (e && (e.message || e.fmException)) || String(e), line: (e && e.line) || this.curLine });
+            }
+          };
+          const classRes = { name: '', failures: [], asserts: 0 };
+          this.unitRun = { current: classRes };
+          guarded(classRes, () => callIf(null, 'CLASS_SETUP'));
+          for (const mname of tests) {
+            const impl = cls.impls[mname];
+            const res = { name: mname, failures: classRes.failures.slice(), asserts: 0, line: impl ? impl.line : 0 };
+            this.unitRun = { current: res };
+            let obj = null;
+            if (!res.failures.length) {
+              guarded(res, () => {
+                obj = this.instantiate(name, this.parseArgs([]), head);
+                callIf(obj, 'SETUP');
+                const m = this.findMethod(name, mname);
+                if (m && m.impl) this.invokeMethod(obj, m, this.parseArgs([]), head);
+                else res.failures.push({ kind: 'noimpl', line: res.line });
+              });
+              if (obj) guarded(res, () => callIf(obj, 'TEARDOWN'));
+            }
+            res.ok = !res.failures.length;
+            cr.methods.push(res);
+            report.total++;
+            if (!res.ok) report.failed++;
+          }
+          this.unitRun = { current: classRes };
+          guarded(classRes, () => callIf(null, 'CLASS_TEARDOWN'));
+          this.unitRun = null;
+        }
+      });
+      this.unitRun = null;
+      return { tests: report, output: this.output, variables: this.variables, errors: this.errors, stats: this.runStats() };
+    }
+
+    // ── Run time type services (RTTS): type description objects ──
+    rttiObject(desc, name) {
+      const d = desc || { kind: 'elem', base: 'string' };
+      const kindOf = x => (!x ? 'C' : x.kind === 'table' ? 'h' : x.kind === 'struct' ? 'u' : x.kind === 'ref' ? 'r'
+        : ({ int: 'I', float: x.packed ? 'P' : 'F', char: 'C', numc: 'N', string: 'g', date: 'D', time: 'T' })[x.base] || 'C');
+      const lenOf = x => (!x || x.kind !== 'elem' ? 0 : x.len || ({ int: 4, float: 8, date: 8, time: 6 })[x.base] || 0);
+      const cls = d.kind === 'struct' ? 'CL_ABAP_STRUCTDESCR' : d.kind === 'table' ? 'CL_ABAP_TABLEDESCR' : d.kind === 'ref' ? 'CL_ABAP_REFDESCR' : 'CL_ABAP_ELEMDESCR';
+      const o = new AbapObject(cls, ++this.objCount);
+      const attr = (N, value, type) => { o.attrs[N] = { type: type || 'string', value, vis: 'PUBLIC', readonly: true }; };
+      const rel = name || d.ddic || '';
+      attr('TYPE_KIND', kindOf(d));
+      attr('KIND', d.kind === 'struct' ? 'S' : d.kind === 'table' ? 'T' : d.kind === 'ref' ? 'R' : 'E');
+      attr('LENGTH', lenOf(d), 'int');
+      attr('DECIMALS', d.decimals || 0, 'int');
+      attr('ABSOLUTE_NAME', '\\TYPE=' + (rel || '%_T00004S00000000'));
+      if (d.kind === 'struct') {
+        const rows = d.ddic && !DDIC_STRUCTS[d.ddic] ? (this.dbTable(d.ddic) || []) : [];
+        const width = fname => rows.reduce((m, r) => Math.max(m, String(r[fname] === undefined ? '' : r[fname]).length), 0);
+        attr('COMPONENTS', d.fields.map(fd => {
+          const dbChar = rows.length && fd.desc && fd.desc.kind === 'elem' && fd.desc.base === 'string';      // text column of a database table
+          return { NAME: fd.name, TYPE_KIND: dbChar ? 'C' : kindOf(fd.desc), LENGTH: dbChar ? (fd.desc.len || width(fd.name)) : lenOf(fd.desc), DECIMALS: (fd.desc && fd.desc.decimals) || 0 };
+        }), 'table');
+      }
+      if (d.kind === 'table') attr('TABLE_KIND', d.tkind === 'SORTED' ? 'O' : d.tkind === 'HASHED' ? 'H' : 'S');
+      Object.defineProperty(o, 'rtti', { value: { desc: d, name: rel }, enumerable: false });
+      return o;
+    }
+
+    // cl_abap_typedescr=>describe_by_data( x ) / describe_by_name( 'NAME' ) / describe_by_data_ref( ref )
+    rttiStatic(M, argWords, t) {
+      const call = this.parseArgs(argWords);
+      const toks = call.positional || Object.values(call.params.EXPORTING)[0] || [];
+      if (M === 'DESCRIBE_BY_NAME') {
+        const name = U(this.formatOut(this.evalExpr(toks)).trim());
+        const d = this.resolveNamed(name);
+        if (!d || d.unknown) { this.problem(t, `describe_by_name( ): tipe "${name}" tidak dikenal (di SAP: exception TYPE_NOT_FOUND)`, 'error'); return null; }
+        return this.rttiObject(d, name);
+      }
+      if (M === 'DESCRIBE_BY_DATA' || M === 'DESCRIBE_BY_DATA_REF') {
+        const r = toks.length === 1 ? this.ref(toks[0]) : null;
+        let d = r ? r.desc : null;
+        let v = r ? r.get() : this.evalExpr(toks);
+        if (v instanceof DataRef && M === 'DESCRIBE_BY_DATA_REF') { d = v.rec.desc; v = v.rec.value; }
+        if (!d || (d.kind === 'elem' && d.base === 'any')) {
+          d = this.inferDesc(v);
+          if (d.kind === 'elem' && d.base === 'any') d = { kind: 'elem', base: 'string' };
+        }
+        return this.rttiObject(d, d.ddic || '');
+      }
+      this.problem(t, `cl_abap_typedescr=>${M.toLowerCase()}( ) belum disimulasikan — dilewati`, 'warning');
+      return null;
+    }
+
+    // methods of a type description object
+    rttiCall(obj, M, argWords, t) {
+      const d = obj.rtti.desc;
+      const arg = () => { const c = this.parseArgs(argWords); const toks = c.positional || Object.values(c.params.EXPORTING)[0]; return toks ? this.evalExpr(toks) : ''; };
+      switch (M) {
+        case 'GET_RELATIVE_NAME': return obj.rtti.name;
+        case 'IS_DDIC_TYPE': return d.ddic ? 'X' : '';
+        case 'GET_COMPONENTS':
+          return d.kind === 'struct' ? d.fields.map(fd => ({ NAME: fd.name, TYPE: this.rttiObject(fd.desc, ''), AS_INCLUDE: '', SUFFIX: '' })) : [];
+        case 'GET_COMPONENT_TYPE': {
+          const name = U(this.formatOut(arg()).trim());
+          const fd = d.kind === 'struct' ? d.fields.find(x => x.name === name) : null;
+          if (!fd) { this.problem(t, `get_component_type( ): struktur tidak punya komponen "${name}"`, 'error'); return null; }
+          return this.rttiObject(fd.desc, '');
+        }
+        case 'GET_TABLE_LINE_TYPE': return d.kind === 'table' ? this.rttiObject(d.line, (d.line && d.line.ddic) || '') : null;
+      }
+      this.problem(t, `${obj.cls}->${M.toLowerCase()}( ) belum disimulasikan — dilewati`, 'warning');
+      return '';
     }
 
     // ── ALV ───────────────────────────────────────────────
@@ -3158,6 +3885,8 @@
             const ii = up.indexOf('INHERITING');
             if (ii !== -1) cls.super = up[ii + 2];
             cls.abstract = up.includes('ABSTRACT');
+            cls.createPrivate = up.includes('CREATE') && up[up.indexOf('CREATE') + 1] === 'PRIVATE';
+            cls.testing = up.includes('TESTING') && up[up.indexOf('TESTING') - 1] === 'FOR';
             cls.def = { tokens, from: i + 1, to: end - 1 };
           } else {
             for (let k = i + 1; k < end; k++) {
@@ -3176,7 +3905,8 @@
     // METHODS name [IMPORTING ...] [EXPORTING ...] [CHANGING ...] [RETURNING VALUE(r) TYPE t]
     parseMethodSig(w) {
       const up = w.map(U);
-      const sig = { name: up[1], params: [], returning: null, redefinition: up.includes('REDEFINITION'), abstract: up.includes('ABSTRACT') };
+      const sig = { name: up[1], params: [], returning: null, redefinition: up.includes('REDEFINITION'), abstract: up.includes('ABSTRACT'),
+        testing: up.includes('TESTING') && up[up.indexOf('TESTING') - 1] === 'FOR' };
       // METHODS on_x FOR EVENT evt OF cls IMPORTING p1 p2 sender
       const ei = up.indexOf('EVENT');
       if (ei > 1 && up[ei - 1] === 'FOR') sig.event = up[ei + 1];
@@ -3340,6 +4070,10 @@
     // NEW cls( ... ) / CREATE OBJECT
     instantiate(clsName, call, t) {
       const N = U(clsName);
+      if (N === '#') {
+        this.problem(t, 'NEW #( ): class tidak bisa ditentukan dari target — tulis nama class-nya: NEW nama_class( )', 'error');
+        return null;
+      }
       const cls = this.prepareClass(N);
       if (!cls) {
         if (/^(Z|Y)?CX_/.test(N)) {
@@ -3358,6 +4092,10 @@
         return null;
       }
       if (cls.abstract) this.problem(t, `Class "${N}" bersifat ABSTRACT dan tidak boleh dibuat objeknya langsung`, 'error');
+      if (cls.createPrivate && this.currentClass() !== N) {
+        this.problem(t, `Class "${N}" dideklarasikan CREATE PRIVATE — objeknya hanya boleh dibuat di dalam class itu sendiri (biasanya lewat method static)`, 'error');
+        return null;
+      }
 
       const obj = new AbapObject(cls.name, ++this.objCount);
       for (const c of this.classChain(N).reverse()) {
@@ -3561,6 +4299,8 @@
       if (cur.cls) {
         if (cur.cls === 'CL_DEMO_OUTPUT') { this.demoOutput(argWords); return ''; }
         if (cur.cls === 'CL_SALV_TABLE' && M === 'FACTORY') { this.salvFactory(this.parseArgs(argWords).params, t); return ''; }
+        if (cur.cls === 'CL_ABAP_UNIT_ASSERT' || cur.cls === 'CL_AUNIT_ASSERT') return this.unitAssert(M, argWords, t);
+        if (/^CL_ABAP_(TYPE|DATA|ELEM|STRUCT|TABLE|REF)DESCR$/.test(cur.cls)) return this.rttiStatic(M, argWords, t);
         if (!this.prepareClass(cur.cls)) {
           this.problem(t, `${cur.cls}=>${M.toLowerCase()}( ): class tidak dikenal / tidak disimulasikan — pemanggilan dilewati`, 'warning');
           return '';
@@ -3577,6 +4317,7 @@
         this.raiseSys('CX_SY_REF_IS_INITIAL', `Method "${M}" dipanggil lewat reference yang masih kosong (objek belum dibuat dengan NEW / CREATE OBJECT)`);
       }
       if (obj instanceof SalvProxy) return this.salvCall(obj, M, argWords, t);
+      if (obj instanceof AbapObject && obj.rtti) return this.rttiCall(obj, M, argWords, t);
       if (!(obj instanceof AbapObject)) return obj;    // placeholder of a standard class: ignore silently
 
       // super->meth( ): start the search above the class of the running method
@@ -3608,7 +4349,7 @@
       let cur, i;
       if (U(w[0]) === 'NEW' && w[2] === '(') {
         const close = this.matchParen(w, 2);
-        cur = { value: this.instantiate(w[1], this.parseArgs(w.slice(3, close)), t) };
+        cur = { value: this.instantiate(w[1] === '#' && this.hashClass ? this.hashClass : w[1], this.parseArgs(w.slice(3, close)), t) };
         i = close + 1;
       } else if (U(w[0]) === 'CAST' && w[2] === '(') {
         const close = this.matchParen(w, 2);
@@ -3930,6 +4671,7 @@
       idx = this.findLogical(w, 'AND');
       if (idx > 0) return this.evalCond(w.slice(0, idx)) && this.evalCond(w.slice(idx + 1));
       if (U(w[0]) === 'NOT') return !this.evalCond(w.slice(1));
+      if (U(w[0]) === 'EXISTS' && w[1] === '(' && U(w[2]) === 'SELECT' && this.matchParen(w, 1) === w.length - 1) return this.subquery(w.slice(2, -1)).length > 0;
       return this.evalComparison(w);
     }
 
@@ -3981,13 +4723,16 @@
       if (op === 'IN') {
         if (rest[0] === '(') {
           const end = this.matchParen(rest, 0);
+          if (U(rest[1]) === 'SELECT') return done(this.subquery(rest.slice(1, end === -1 ? rest.length : end)).some(x => this.compare(lhs, '=', x)));
           const items = rest.slice(1, end === -1 ? rest.length : end).filter(x => x !== ',');
           return done(items.some(x => this.compare(lhs, '=', this.evalExpr([x]))));
         }
         const rr = rest.length === 1 ? this.ref(rest[0]) : null;      // range table (not its header line)
         return done(this.inRange(lhs, rr ? rr.get() : this.evalExpr(rest)));
       }
-      const rhs = this.evalExpr(rest);
+      // x = ( SELECT MAX( col ) FROM ... ): the single value of a scalar subquery
+      const scalarSub = rest[0] === '(' && U(rest[1]) === 'SELECT' && this.matchParen(rest, 0) === rest.length - 1;
+      const rhs = scalarSub ? (v => (v.length ? v[0] : ''))(this.subquery(rest.slice(1, -1))) : this.evalExpr(rest);
       const L = this.formatOut(lhs), R = this.formatOut(rhs);
       const pattern = (p, many, one) => new RegExp('^' + p.replace(/[.*+?^${}()|[\]\\]/g, m => (m === many ? '.*' : m === one ? '.' : '\\' + m)) + '$', 'i');
       switch (op) {
@@ -4273,8 +5018,14 @@
         if (isObj(row)) {
           let key = this.ciKey(row, name);
           if (key in row) return row[key];
-          key = this.ciKey(row, name.replace(/^.*~/, ''));
-          if (name.includes('~') && key in row) return row[key];
+          if (name.includes('~')) {
+            // alias~column of an outer query (correlated subquery)
+            for (let ctx = this.rowCtx.outer; ctx; ctx = ctx.outer) {
+              if (isObj(ctx.row)) { const ok = this.ciKey(ctx.row, name); if (ok in ctx.row) return ctx.row[ok]; }
+            }
+            key = this.ciKey(row, name.replace(/^.*~/, ''));
+            if (key in row) return row[key];
+          }
         }
       }
 
@@ -4837,6 +5588,7 @@
     // OpenSQL changes: INSERT dbtab FROM wa | FROM TABLE itab, INSERT INTO dbtab VALUES wa, UPDATE dbtab SET ... WHERE ...,
     // UPDATE dbtab FROM wa, MODIFY dbtab FROM wa | FROM TABLE itab, DELETE FROM dbtab WHERE ..., DELETE dbtab FROM wa
     execDbWrite(t, kw) {
+      this.stats.dbWrites++;
       const w = t.words, up = w.map(U);
       const name = (kw === 'INSERT' && up[1] === 'INTO') || (kw === 'DELETE' && up[1] === 'FROM') ? up[2] : up[1];
       const rows = this.dbTable(name);
@@ -5124,6 +5876,10 @@
       const s = () => this.formatOut(A.VAL);
       const str = k => (A[k] === undefined ? '' : this.formatOut(A[k]));
       const n = k => (A[k] === undefined ? undefined : this.num(A[k]));
+      // regex = '...' / pcre = '...' ; case = abap_false makes it ignore upper / lower case
+      const hasRx = A.REGEX !== undefined || A.PCRE !== undefined;
+      const rxFlags = A.CASE !== undefined && !A.CASE ? 'i' : '';
+      const rx = extra => this.abapRegex(str(A.REGEX !== undefined ? 'REGEX' : 'PCRE'), extra + rxFlags);
       switch (name) {
         case 'STRLEN': case 'NUMOFCHAR': return s().length;
         case 'ABS':    return Math.abs(this.num(A.VAL));
@@ -5145,7 +5901,31 @@
         case 'SUBSTRING': return A.LEN === undefined ? s().substr(n('OFF') || 0) : s().substr(n('OFF') || 0, n('LEN'));
         case 'SUBSTRING_BEFORE': { const p = s().indexOf(str('SUB')); return p === -1 ? '' : s().slice(0, p); }
         case 'SUBSTRING_AFTER': { const p = s().indexOf(str('SUB')); return p === -1 ? '' : s().slice(p + str('SUB').length); }
-        case 'REPLACE': return n('OCC') === 0 ? s().split(str('SUB')).join(str('WITH')) : s().replace(str('SUB'), () => str('WITH'));
+        case 'REPLACE':
+          if (hasRx) return s().replace(rx(n('OCC') === 0 ? 'g' : ''), str('WITH').replace(/\$0/g, '$$&'));
+          return n('OCC') === 0 ? s().split(str('SUB')).join(str('WITH')) : s().replace(str('SUB'), () => str('WITH'));
+        case 'MATCHES': return hasRx ? new RegExp('^(?:' + rx('').source + ')$', rxFlags).test(s()) : false;
+        case 'MATCH': {
+          if (!hasRx) return '';
+          const all = s().match(rx('g')) || [];
+          const occ = n('OCC') === undefined ? 1 : n('OCC');
+          const hit = occ > 0 ? all[occ - 1] : all[all.length + occ];
+          return hit === undefined ? '' : hit;
+        }
+        case 'TO_MIXED': {
+          const sep = A.SEP === undefined ? '_' : str('SEP');
+          return s().toLowerCase().split(sep).map((p, k) => (k === 0 ? p.toUpperCase().slice(0, 1) + p.slice(1) : p.slice(0, 1).toUpperCase() + p.slice(1))).join('');
+        }
+        case 'FROM_MIXED': {
+          const sep = A.SEP === undefined ? '_' : str('SEP');
+          return s().replace(/([a-z0-9])([A-Z])/g, '$1' + sep + '$2').toUpperCase();
+        }
+        case 'SEGMENT': {
+          const parts = s().split(A.SEP === undefined ? ' ' : str('SEP'));
+          const k = n('INDEX') || 1;
+          const hit = k > 0 ? parts[k - 1] : parts[parts.length + k];
+          return hit === undefined ? '' : hit;
+        }
         case 'SHIFT_LEFT': {
           if (A.SUB !== undefined) { let v = s(); while (str('SUB') && v.startsWith(str('SUB'))) v = v.slice(str('SUB').length); return v; }
           return s().slice(n('PLACES') === undefined ? 1 : n('PLACES'));
@@ -5155,12 +5935,13 @@
           return s().slice(0, Math.max(0, s().length - (n('PLACES') === undefined ? 1 : n('PLACES'))));
         }
         case 'CONTAINS':
+          if (hasRx) return rx('').test(s());
           if (A.SUB !== undefined) return s().includes(str('SUB'));
           if (A.START !== undefined) return s().startsWith(str('START'));
           if (A.END !== undefined) return s().endsWith(str('END'));
           return false;
-        case 'FIND': return s().indexOf(str('SUB'));
-        case 'COUNT': return str('SUB') ? s().split(str('SUB')).length - 1 : 0;
+        case 'FIND': return hasRx ? s().search(rx('')) : s().indexOf(str('SUB'));
+        case 'COUNT': return hasRx ? (s().match(rx('g')) || []).length : (str('SUB') ? s().split(str('SUB')).length - 1 : 0);
         case 'CONCAT_LINES_OF': return (Array.isArray(A.TABLE) ? A.TABLE : (Array.isArray(A.VAL) ? A.VAL : [])).map(x => this.formatOut(x)).join(str('SEP'));
       }
       return w.join(' ');
@@ -5174,7 +5955,45 @@
       const at0 = (k, word) => lv[k] === 0 && up[k] === word && !/^['`|]/.test(inner[k]);
       const nextOf = (from, list) => { for (let k = from; k < inner.length; k++) if (lv[k] === 0 && list.includes(up[k])) return k; return inner.length; };
 
+      // LET a = expr b = expr IN ... : helper variables that live only inside this expression
+      if (up[0] === 'LET') {
+        const inIdx = nextOf(1, ['IN']);
+        const saved = {};
+        try {
+          for (const [name, toks] of this.parsePairs(inner.slice(1, inIdx))) {
+            if (!(name in saved)) saved[name] = this.variables[name];
+            const v = this.evalExpr(toks);
+            this.variables[name] = { type: this.typeLabelOf(v), value: this.clone(v) };
+          }
+          return this.evalCtor(op, type, inner.slice(inIdx + 1));
+        } finally {
+          for (const name of Object.keys(saved)) { if (saved[name] === undefined) delete this.variables[name]; else this.variables[name] = saved[name]; }
+        }
+      }
+
       switch (op) {
+        case 'FILTER': {
+          // FILTER type( itab [EXCEPT] [USING KEY k] WHERE c = v [AND ...] )
+          // FILTER type( itab [EXCEPT] IN ftab WHERE c = f )
+          const tab = inner.length ? this.tableValue(inner[0]) : null;
+          if (!Array.isArray(tab)) return [];
+          const wi = nextOf(1, ['WHERE']);
+          const head = up.slice(1, wi);
+          const except = head.includes('EXCEPT');
+          const ii = head.indexOf('IN');
+          const where = inner.slice(wi + 1);
+          let keep;
+          if (ii !== -1) {
+            const ftab = this.tableValue(inner[ii + 2]);
+            const fl = Array.isArray(ftab) ? ftab : [];
+            const pairs = this.parsePairs(where.filter(x => U(x) !== 'AND'));
+            const of = (o, name) => (name === 'TABLE_LINE' || !isObj(o) ? o : o[this.ciKey(o, name)]);
+            keep = row => fl.some(fr => pairs.every(([c, toks]) => this.compare(of(row, c), '=', of(fr, U(toks[0])))));
+          } else {
+            keep = row => !where.length || this.evalRowWhere(row, where);
+          }
+          return tab.filter(row => !!keep(row) !== except).map(row => this.clone(row));
+        }
         case 'VALUE': {
           // VALUE #( itab[ ... ] OPTIONAL | DEFAULT x ): no exception when the row does not exist
           if (inner.length && /\[$/.test(inner[0]) && (up.includes('OPTIONAL') || up.includes('DEFAULT'))) {
@@ -5304,8 +6123,37 @@
       const NAME = up[0];
       const saved = this.variables[NAME];
       try {
-        if (up[1] === 'IN') {
-          const tab = this.tableValue(forToks[2]);
+        if (NAME === 'GROUPS' && up[2] === 'OF' && up[4] === 'IN') {
+          // FOR GROUPS g OF r IN itab [WHERE ( cond )] GROUP BY key [ASCENDING | DESCENDING]
+          const G = up[1], R = up[3];
+          const tab = this.tableValue(forToks[5]);
+          if (!Array.isArray(tab)) return;
+          const lv = this.levels(forToks);
+          const gi = up.findIndex((x, pos) => pos > 5 && lv[pos] === 0 && x === 'GROUP' && up[pos + 1] === 'BY');
+          if (gi === -1) return;
+          const wi = up.indexOf('WHERE');
+          const where = wi !== -1 && wi < gi ? this.stripParens(forToks.slice(wi + 1, gi)) : [];
+          let ke = gi + 2;
+          while (ke < forToks.length && !(lv[ke] === 0 && ['ASCENDING', 'DESCENDING', 'WITHOUT'].includes(up[ke]))) ke++;
+          const order = up.slice(ke).includes('DESCENDING') ? 'DESCENDING' : up.slice(ke).includes('ASCENDING') ? 'ASCENDING' : null;
+          const savedR = this.variables[R], savedG = this.variables[G], savedM = this.groupMembers[G];
+          try {
+            const items = [];
+            tab.forEach((row, pos) => { if (!where.length || this.evalRowWhere(row, where)) items.push({ row, index: pos }); });
+            const groups = this.buildGroups(items, it => { this.variables[R] = { type: this.typeLabelOf(it.row), value: it.row }; }, forToks.slice(gi + 2, ke), order);
+            for (const g of groups) {
+              this.variables[G] = { type: this.typeLabelOf(g.key), value: g.key };
+              this.groupMembers[G] = { rows: g.rows, lineDesc: null };
+              fn();
+            }
+          } finally {
+            if (savedR === undefined) delete this.variables[R]; else this.variables[R] = savedR;
+            if (savedG === undefined) delete this.variables[G]; else this.variables[G] = savedG;
+            if (savedM === undefined) delete this.groupMembers[G]; else this.groupMembers[G] = savedM;
+          }
+        } else if (up[1] === 'IN') {
+          const inGroup = up[2] === 'GROUP' && this.groupMembers[up[3]];
+          const tab = inGroup ? inGroup.rows : this.tableValue(forToks[2]);
           if (!Array.isArray(tab)) return;
           const wi = up.indexOf('WHERE'), xi = up.indexOf('INDEX');
           const where = wi !== -1 ? this.stripParens(forToks.slice(wi + 1)) : [];
@@ -5565,7 +6413,15 @@
         }
 
         // Strip inline comments
-        const noComment = raw.replace(/".*$/, '').trim();
+        // a " inside a literal ('...', `...`, |...|) is not a comment
+        let cut = -1, quote = '';
+        for (let p = 0; p < raw.length; p++) {
+          const ch = raw[p];
+          if (quote) { if (ch === quote) quote = ''; }
+          else if (ch === "'" || ch === '`' || ch === '|') quote = ch;
+          else if (ch === '"') { cut = p; break; }
+        }
+        const noComment = (cut < 0 ? raw : raw.slice(0, cut)).trim();
         if (!noComment) continue;
 
         const words = noComment.toUpperCase().split(/\s+/);
@@ -5573,9 +6429,10 @@
         const kw = words[0].replace(/[:.]+$/, '');
 
         // a new statement begins although the previous one was never closed
-        if (openLine && starters.has(kw)) {
+        if (openLine && starters.has(kw) && words[1] !== '=') {      // "return = gs_ret" is a parameter, not RETURN
           issues.push({ line: openLine, type: 'error', msg: `Statement di baris ${openLine} tidak diakhiri titik (.) — baris berikutnya ikut terbaca sebagai lanjutannya` });
         }
+        const continued = stmtOpen;      // this line continues the statement of the previous line
         stmtOpen = !/\.$/.test(noComment);
         openLine = stmtOpen && !/[,:]$/.test(noComment) ? i + 1 : 0;
 
@@ -5584,7 +6441,7 @@
           'INITIALIZATION', 'AT-SELECTION-SCREEN', 'END-OF-PAGE', 'TOP-OF-PAGE']);
         const noBlock = (kw === 'CLASS' || kw === 'INTERFACE') && /\b(DEFERRED|LOAD)\b/.test(noComment.toUpperCase());
         if (!skipKws.has(kw) && !noBlock) {
-          if (pairs[kw]) stack.push({ kw, line: i + 1 });
+          if (pairs[kw] && !(kw === 'CASE' && continued)) stack.push({ kw, line: i + 1 });      // CASE ... END inside a SELECT is an expression
           if (closers.has(kw)) {
             if (!stack.length) {
               issues.push({ line: i + 1, msg: `Unexpected "${kw}" without matching opener`, type: 'error' });
@@ -5622,7 +6479,7 @@
           }
           if (kw === 'CALL' && U(t.words[1]) === 'FUNCTION' && /^'/.test(t.words[2] || '')) {
             const fn = U(t.words[2].slice(1, -1));
-            if (!fms[fn]) issues.push({ line: t.lineNo, msg: `Function module "${fn}" belum disimulasikan di studio ini (akan dilewati saat Run)`, type: 'warning' });
+            if (!fms[fn] && !/^(EN|DE)QUEUE_/.test(fn)) issues.push({ line: t.lineNo, msg: `Function module "${fn}" belum disimulasikan di studio ini (akan dilewati saat Run)`, type: 'warning' });
           }
         }
       } catch (e) { /* statement checks are best-effort */ }

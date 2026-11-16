@@ -1,3 +1,5 @@
+<img src="logo.svg" alt="ABAP Code Studio logo" width="72" height="72">
+
 # ABAP Code Studio
 
 **Learn SAP ABAP in your browser — no SAP system required.**
@@ -29,6 +31,7 @@ An internet connection is needed on first load, because the code editor (CodeMir
 | **Tables** | 19 sample copies of standard SAP tables (SCARR, SFLIGHT, MARA, KNA1, VBAK, EKKO and more) to practise `SELECT` |
 | **Snippets** | 23 ready-to-run examples, from Hello World to ALV and function modules |
 | **Docs** | A quick reference for syntax, internal tables, Open SQL, ALV and function modules |
+| **Themes** | A dark ("ink") and a light ("paper") theme, switched from the ⋯ menu |
 
 ### Languages
 
@@ -79,7 +82,8 @@ Plain HTML, CSS and JavaScript with no build step and no dependencies to install
 | File | Purpose |
 |---|---|
 | `index.html` | Page shell: navigation rail, views, dialogs |
-| `style.css` | All styles |
+| `style.css` | All styles, including the dark and light theme tokens and the editor theme |
+| `logo.svg` | The "A." mark — an ABAP statement always ends with a period |
 | `app.js` | UI controller: editor, output rendering, ALV grids, views |
 | `abap-interpreter.js` | The ABAP interpreter |
 | `abap-mode.js` | ABAP syntax highlighting for CodeMirror |

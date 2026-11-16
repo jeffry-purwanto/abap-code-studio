@@ -2005,4 +2005,508 @@
     </ul>`
   });
 
+  // ============================================================
+  // LEVEL 5 — Expert (e01–e10)
+  // ============================================================
+
+  // ---- e01: Regular expressions: FIND, REPLACE, matches ----
+  add('en', 'e01', {
+    body: `<p>A <b>regular expression</b> (regex) is a pattern that describes the shape of a text: "ten digits in a row", "two capital letters followed by a hyphen". With a single pattern you can check an input format, extract part of a text, or mask data.</p>
+      <ul>
+        <li>Pattern elements: <tt>\\d</tt> one digit, <tt>\\w</tt> a letter, digit or underscore, <tt>.</tt> any character, <tt>[A-Z]</tt> one character from the list. Repetition: <tt>+</tt> one or more, <tt>*</tt> zero or more, <tt>{10}</tt> exactly ten times.</li>
+        <li><tt>FIND REGEX pattern IN text</tt> sets <tt>sy-subrc</tt> (0 = found). <tt>MATCH OFFSET</tt> and <tt>MATCH LENGTH</tt> return the position and the length; <tt>FIND ALL OCCURRENCES … MATCH COUNT</tt> counts all matches.</li>
+        <li>Parentheses <tt>( )</tt> form groups. <tt>SUBMATCHES</tt> fills one variable per group; in <tt>REPLACE … WITH</tt> the content of a group is referred to as <tt>$1</tt>, <tt>$2</tt>.</li>
+        <li>The function <tt>matches( )</tt> is true only if the <b>whole</b> text fits the pattern — exactly what input validation needs. <tt>match( )</tt> returns the matching part, <tt>replace( … regex = … occ = 0 )</tt> replaces every match, and <tt>count( )</tt> counts them.</li>
+      </ul>
+      <p>On newer systems (from ABAP 7.55) the word <tt>REGEX</tt> is replaced by <tt>PCRE</tt>, written the same way: <tt>FIND PCRE …</tt>, <tt>matches( val = … pcre = … )</tt>. The simulator accepts both.</p>`,
+    task: `<ul>
+      <li>Change the order number pattern so that it only matches numbers starting with <tt>45</tt>.</li>
+      <li>Add the code <tt>ZZ-12A</tt> to <tt>gt_kode</tt>. Predict the result first, then run it.</li>
+      <li>Write a postal code validation (exactly five digits) with <tt>matches( )</tt>.</li>
+    </ul>`
+  });
+  add('de', 'e01', {
+    body: `<p>Ein <b>regulärer Ausdruck</b> (Regex) ist ein Muster, das die Form eines Textes beschreibt: „zehn Ziffern hintereinander“, „zwei Großbuchstaben, dann ein Bindestrich“. Mit einem einzigen Muster können Sie ein Eingabeformat prüfen, einen Teil eines Textes herauslösen oder Daten maskieren.</p>
+      <ul>
+        <li>Musterelemente: <tt>\\d</tt> eine Ziffer, <tt>\\w</tt> Buchstabe, Ziffer oder Unterstrich, <tt>.</tt> ein beliebiges Zeichen, <tt>[A-Z]</tt> ein Zeichen aus der Liste. Wiederholung: <tt>+</tt> einmal oder öfter, <tt>*</tt> keinmal oder öfter, <tt>{10}</tt> genau zehnmal.</li>
+        <li><tt>FIND REGEX muster IN text</tt> setzt <tt>sy-subrc</tt> (0 = gefunden). <tt>MATCH OFFSET</tt> und <tt>MATCH LENGTH</tt> liefern Position und Länge; <tt>FIND ALL OCCURRENCES … MATCH COUNT</tt> zählt alle Treffer.</li>
+        <li>Klammern <tt>( )</tt> bilden Gruppen. <tt>SUBMATCHES</tt> füllt eine Variable je Gruppe; in <tt>REPLACE … WITH</tt> wird der Inhalt einer Gruppe mit <tt>$1</tt>, <tt>$2</tt> wieder angesprochen.</li>
+        <li>Die Funktion <tt>matches( )</tt> ist nur dann wahr, wenn der <b>gesamte</b> Text zum Muster passt — genau richtig für die Eingabeprüfung. <tt>match( )</tt> liefert den passenden Teil, <tt>replace( … regex = … occ = 0 )</tt> ersetzt alle Treffer, und <tt>count( )</tt> zählt sie.</li>
+      </ul>
+      <p>In neueren Systemen (ab ABAP 7.55) wird das Wort <tt>REGEX</tt> durch <tt>PCRE</tt> ersetzt, bei gleicher Schreibweise: <tt>FIND PCRE …</tt>, <tt>matches( val = … pcre = … )</tt>. Der Simulator akzeptiert beides.</p>`,
+    task: `<ul>
+      <li>Ändern Sie das Muster für die Auftragsnummer so, dass es nur auf Nummern passt, die mit <tt>45</tt> beginnen.</li>
+      <li>Fügen Sie den Code <tt>ZZ-12A</tt> zu <tt>gt_kode</tt> hinzu. Sagen Sie das Ergebnis zuerst voraus, führen Sie dann aus.</li>
+      <li>Schreiben Sie eine Prüfung für Postleitzahlen (genau fünf Ziffern) mit <tt>matches( )</tt>.</li>
+    </ul>`
+  });
+  add('zh', 'e01', {
+    body: `<p><b>正则表达式</b>（regex）是描述文本形状的模式：“连续十位数字”“两个大写字母后跟一个连字符”。只用一个模式，就可以检查输入格式、取出文本的一部分，或者对数据做脱敏处理。</p>
+      <ul>
+        <li>模式元素：<tt>\\d</tt> 一位数字，<tt>\\w</tt> 字母、数字或下划线，<tt>.</tt> 任意字符，<tt>[A-Z]</tt> 列表中的一个字符。重复：<tt>+</tt> 一次或多次，<tt>*</tt> 零次或多次，<tt>{10}</tt> 恰好十次。</li>
+        <li><tt>FIND REGEX 模式 IN 文本</tt> 会设置 <tt>sy-subrc</tt>（0 = 找到）。<tt>MATCH OFFSET</tt> 和 <tt>MATCH LENGTH</tt> 给出位置和长度；<tt>FIND ALL OCCURRENCES … MATCH COUNT</tt> 统计所有匹配。</li>
+        <li>圆括号 <tt>( )</tt> 构成分组。<tt>SUBMATCHES</tt> 为每个分组填充一个变量；在 <tt>REPLACE … WITH</tt> 中用 <tt>$1</tt>、<tt>$2</tt> 再次引用分组的内容。</li>
+        <li>函数 <tt>matches( )</tt> 只有在<b>整个</b>文本都符合模式时才为真——正适合输入校验。<tt>match( )</tt> 返回匹配的部分，<tt>replace( … regex = … occ = 0 )</tt> 替换所有匹配，<tt>count( )</tt> 统计匹配数。</li>
+      </ul>
+      <p>在较新的系统中（自 ABAP 7.55 起），关键字 <tt>REGEX</tt> 被 <tt>PCRE</tt> 取代，写法相同：<tt>FIND PCRE …</tt>、<tt>matches( val = … pcre = … )</tt>。模拟器两者都接受。</p>`,
+    task: `<ul>
+      <li>修改订单号的模式，使它只匹配以 <tt>45</tt> 开头的号码。</li>
+      <li>把代码 <tt>ZZ-12A</tt> 加入 <tt>gt_kode</tt>。先预测结果，再运行。</li>
+      <li>用 <tt>matches( )</tt> 编写邮政编码校验（恰好五位数字）。</li>
+    </ul>`
+  });
+
+  // ---- e02: LOOP AT … GROUP BY ----
+  add('en', 'e02', {
+    body: `<p>At the Basics level, subtotals were built with <tt>SORT</tt> plus <tt>AT NEW</tt> / <tt>AT END OF</tt>. That approach requires a sorted table with the key columns on the far left. <tt>LOOP AT … GROUP BY</tt> has neither requirement: the system itself collects the rows with the same key.</p>
+      <ul>
+        <li>The outer loop runs once per <b>group</b>, not once per row. <tt>LOOP AT GROUP</tt> inside it reads the members of that group.</li>
+        <li><tt>GROUP BY gs_order-ernam … INTO DATA(gv_sales)</tt>: the variable after <tt>INTO</tt> (the group binding) holds the key value.</li>
+        <li>The key may be a structure: <tt>GROUP BY ( kunnr = … jumlah = GROUP SIZE )</tt>. <tt>GROUP SIZE</tt> holds the number of members, <tt>GROUP INDEX</tt> the sequence number of the group.</li>
+        <li><tt>ASCENDING</tt> / <tt>DESCENDING</tt> sorts the groups by their key. Without it, groups appear in the order of their first occurrence in the table.</li>
+        <li>Without a trailing <tt>INTO</tt> (representative binding), the work area holds the first row of the group and serves as the group name: <tt>LOOP AT GROUP gs_order</tt>.</li>
+      </ul>
+      <p>The original table is not changed and does not have to be sorted first.</p>`,
+    task: `<ul>
+      <li>Add the field <tt>vkorg</tt> to <tt>ty_order</tt>, then print the number of orders and their total value per sales organization.</li>
+      <li>In part 2, add <tt>urut = GROUP INDEX</tt> to the key and print the number.</li>
+      <li>Change part 3 so that it shows the <b>smallest</b> order of each customer.</li>
+    </ul>`
+  });
+  add('de', 'e02', {
+    body: `<p>In der Stufe Grundlagen wurden Zwischensummen mit <tt>SORT</tt> plus <tt>AT NEW</tt> / <tt>AT END OF</tt> gebildet. Dieser Weg verlangt eine sortierte Tabelle, deren Schlüsselspalten ganz links stehen. <tt>LOOP AT … GROUP BY</tt> kennt beide Bedingungen nicht: Das System sammelt die Zeilen mit gleichem Schlüssel selbst.</p>
+      <ul>
+        <li>Die äußere Schleife läuft einmal je <b>Gruppe</b>, nicht einmal je Zeile. <tt>LOOP AT GROUP</tt> darin liest die Mitglieder dieser Gruppe.</li>
+        <li><tt>GROUP BY gs_order-ernam … INTO DATA(gv_sales)</tt>: Die Variable hinter <tt>INTO</tt> (Gruppenbindung) enthält den Schlüsselwert.</li>
+        <li>Der Schlüssel darf eine Struktur sein: <tt>GROUP BY ( kunnr = … jumlah = GROUP SIZE )</tt>. <tt>GROUP SIZE</tt> enthält die Anzahl der Mitglieder, <tt>GROUP INDEX</tt> die laufende Nummer der Gruppe.</li>
+        <li><tt>ASCENDING</tt> / <tt>DESCENDING</tt> sortiert die Gruppen nach ihrem Schlüssel. Ohne diese Angabe erscheinen die Gruppen in der Reihenfolge ihres ersten Auftretens in der Tabelle.</li>
+        <li>Ohne nachgestelltes <tt>INTO</tt> (repräsentative Bindung) enthält der Arbeitsbereich die erste Zeile der Gruppe und dient als Gruppenname: <tt>LOOP AT GROUP gs_order</tt>.</li>
+      </ul>
+      <p>Die ursprüngliche Tabelle bleibt unverändert und muss vorher nicht sortiert werden.</p>`,
+    task: `<ul>
+      <li>Fügen Sie das Feld <tt>vkorg</tt> zu <tt>ty_order</tt> hinzu und geben Sie dann die Anzahl der Aufträge und ihren Gesamtwert je Verkaufsorganisation aus.</li>
+      <li>Ergänzen Sie in Teil 2 den Schlüssel um <tt>urut = GROUP INDEX</tt> und geben Sie die Nummer aus.</li>
+      <li>Ändern Sie Teil 3 so, dass der <b>kleinste</b> Auftrag jedes Kunden angezeigt wird.</li>
+    </ul>`
+  });
+  add('zh', 'e02', {
+    body: `<p>在“基础”级别，小计是用 <tt>SORT</tt> 加 <tt>AT NEW</tt> / <tt>AT END OF</tt> 实现的。这种方式要求表已排序，并且键列位于最左侧。<tt>LOOP AT … GROUP BY</tt> 没有这两个要求：系统自己把键相同的行归到一起。</p>
+      <ul>
+        <li>外层循环对每个<b>组</b>执行一次，而不是对每一行执行一次。其中的 <tt>LOOP AT GROUP</tt> 读取该组的成员。</li>
+        <li><tt>GROUP BY gs_order-ernam … INTO DATA(gv_sales)</tt>：<tt>INTO</tt> 后面的变量（组绑定）保存键值。</li>
+        <li>键可以是一个结构：<tt>GROUP BY ( kunnr = … jumlah = GROUP SIZE )</tt>。<tt>GROUP SIZE</tt> 保存成员数量，<tt>GROUP INDEX</tt> 保存组的序号。</li>
+        <li><tt>ASCENDING</tt> / <tt>DESCENDING</tt> 按键对组排序。不写时，各组按它在表中首次出现的顺序出现。</li>
+        <li>末尾不写 <tt>INTO</tt> 时（代表绑定），工作区保存该组的第一行，并用作组名：<tt>LOOP AT GROUP gs_order</tt>。</li>
+      </ul>
+      <p>原表不会被改变，也不必事先排序。</p>`,
+    task: `<ul>
+      <li>在 <tt>ty_order</tt> 中加入字段 <tt>vkorg</tt>，然后按销售组织输出订单数量及其总金额。</li>
+      <li>在第 2 部分的键中加入 <tt>urut = GROUP INDEX</tt>，并输出这个序号。</li>
+      <li>修改第 3 部分，使它显示每个客户<b>最小</b>的订单。</li>
+    </ul>`
+  });
+
+  // ---- e03: FILTER, LET, FOR GROUPS and CORRESPONDING ----
+  add('en', 'e03', {
+    body: `<p>The Advanced level introduced <tt>VALUE</tt>, <tt>FOR</tt> and <tt>REDUCE</tt>. The four tools below complete the set, so that table processing can be written as a single expression.</p>
+      <ul>
+        <li><tt>FILTER #( table WHERE … )</tt> extracts the matching rows. The requirement: the source table is <tt>SORTED</tt> or <tt>HASHED</tt>, and the <tt>WHERE</tt> condition uses its key columns. The addition <tt>EXCEPT</tt> inverts the result.</li>
+        <li><tt>LET name = … IN</tt> creates a helper variable that lives only inside that expression — a value used several times is calculated only once.</li>
+        <li><tt>FOR GROUPS grp OF e IN table GROUP BY …</tt> is the expression form of <tt>LOOP AT … GROUP BY</tt>; <tt>FOR m IN GROUP grp</tt> reads the members of the group.</li>
+        <li><tt>CORRESPONDING type( source MAPPING new = old EXCEPT column )</tt> copies fields with the same name, maps differing names, and skips the listed columns.</li>
+      </ul>
+      <p>An expression that is too long is hard to read and hard to debug. Once an expression grows beyond a few lines, split it into named steps.</p>`,
+    task: `<ul>
+      <li>Create <tt>gt_bukan_sales</tt> with <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> and print its number of rows.</li>
+      <li>Add a column <tt>rata</tt> (average salary) to <tt>ty_rekap</tt> and fill it within the same expression.</li>
+      <li>Remove <tt>EXCEPT gaji</tt> in part 4, run it, and see how the output changes.</li>
+    </ul>`
+  });
+  add('de', 'e03', {
+    body: `<p>Die Stufe Profi hat <tt>VALUE</tt>, <tt>FOR</tt> und <tt>REDUCE</tt> eingeführt. Die folgenden vier Werkzeuge ergänzen sie, sodass sich Tabellenverarbeitung als ein einziger Ausdruck schreiben lässt.</p>
+      <ul>
+        <li><tt>FILTER #( tabelle WHERE … )</tt> entnimmt die passenden Zeilen. Voraussetzung: Die Quelltabelle ist <tt>SORTED</tt> oder <tt>HASHED</tt>, und die <tt>WHERE</tt>-Bedingung verwendet ihre Schlüsselspalten. Der Zusatz <tt>EXCEPT</tt> kehrt das Ergebnis um.</li>
+        <li><tt>LET name = … IN</tt> legt eine Hilfsvariable an, die nur innerhalb dieses Ausdrucks lebt — ein mehrfach verwendeter Wert wird nur einmal berechnet.</li>
+        <li><tt>FOR GROUPS grp OF e IN tabelle GROUP BY …</tt> ist die Ausdrucksform von <tt>LOOP AT … GROUP BY</tt>; <tt>FOR m IN GROUP grp</tt> liest die Mitglieder der Gruppe.</li>
+        <li><tt>CORRESPONDING typ( quelle MAPPING neu = alt EXCEPT spalte )</tt> kopiert gleichnamige Felder, bildet abweichende Namen ab und überspringt die genannten Spalten.</li>
+      </ul>
+      <p>Ein zu langer Ausdruck ist schwer zu lesen und schwer zu debuggen. Sobald ein Ausdruck über einige Zeilen hinauswächst, zerlegen Sie ihn in benannte Schritte.</p>`,
+    task: `<ul>
+      <li>Erzeugen Sie <tt>gt_bukan_sales</tt> mit <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> und geben Sie die Zeilenzahl aus.</li>
+      <li>Fügen Sie <tt>ty_rekap</tt> eine Spalte <tt>rata</tt> (Durchschnittsgehalt) hinzu und füllen Sie sie im selben Ausdruck.</li>
+      <li>Entfernen Sie <tt>EXCEPT gaji</tt> in Teil 4, führen Sie aus und sehen Sie, wie sich die Ausgabe ändert.</li>
+    </ul>`
+  });
+  add('zh', 'e03', {
+    body: `<p>“高级”级别介绍了 <tt>VALUE</tt>、<tt>FOR</tt> 和 <tt>REDUCE</tt>。下面四个工具与它们配合，使内表处理可以写成一个表达式。</p>
+      <ul>
+        <li><tt>FILTER #( 表 WHERE … )</tt> 取出符合条件的行。前提：源表是 <tt>SORTED</tt> 或 <tt>HASHED</tt> 类型，并且 <tt>WHERE</tt> 条件使用它的键列。附加项 <tt>EXCEPT</tt> 把结果反过来。</li>
+        <li><tt>LET 名称 = … IN</tt> 创建只在该表达式内部存在的辅助变量——多次使用的值只需计算一次。</li>
+        <li><tt>FOR GROUPS grp OF e IN 表 GROUP BY …</tt> 是 <tt>LOOP AT … GROUP BY</tt> 的表达式形式；<tt>FOR m IN GROUP grp</tt> 读取组的成员。</li>
+        <li><tt>CORRESPONDING 类型( 源 MAPPING 新 = 旧 EXCEPT 列 )</tt> 复制同名字段，映射名称不同的字段，并跳过指定的列。</li>
+      </ul>
+      <p>过长的表达式难以阅读，也难以调试。一个表达式超过几行时，就把它拆成有名称的步骤。</p>`,
+    task: `<ul>
+      <li>用 <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> 创建 <tt>gt_bukan_sales</tt>，并输出它的行数。</li>
+      <li>在 <tt>ty_rekap</tt> 中加入列 <tt>rata</tt>（平均工资），并在同一个表达式中填充它。</li>
+      <li>删除第 4 部分中的 <tt>EXCEPT gaji</tt>，运行并观察输出的变化。</li>
+    </ul>`
+  });
+
+  // ---- e04: Advanced SQL: subqueries, CASE, UNION ----
+  add('en', 'e04', {
+    body: `<p>The principle is called <b>code pushdown</b>: the more work the database does, the less data travels to the program, and the faster the report. Modern Open SQL (comma separators, program variables prefixed with <tt>@</tt>) provides the tools.</p>
+      <ul>
+        <li><b>Subquery</b>: <tt>WHERE column [NOT] IN ( SELECT … )</tt> compares with the result of another SELECT. <tt>EXISTS ( SELECT … )</tt> is true if the subquery returns at least one row.</li>
+        <li>A <b>correlated</b> subquery refers to the row of the outer query, for example <tt>WHERE kunrg = kna1~kunnr</tt> — the subquery is evaluated for every outer row.</li>
+        <li><tt>CASE WHEN … THEN … ELSE … END AS name</tt> creates a result column based on conditions.</li>
+        <li>Calculations and functions may be written directly in the column list: <tt>seatsmax - seatsocc AS sisa</tt>, <tt>concat( carrid, connid )</tt>. The alias name can be used in <tt>ORDER BY</tt>.</li>
+        <li><tt>UNION</tt> combines the results of two SELECTs with the same column layout and removes duplicate rows; <tt>UNION ALL</tt> keeps all of them.</li>
+      </ul>
+      <p>Look at the <b>Database</b> line below the output: five SELECTs, five accesses — and not a single SELECT inside a loop.</p>`,
+    task: `<ul>
+      <li>Reverse question 1: show the orders that <b>already</b> have a delivery.</li>
+      <li>Add a class <tt>MIKRO</tt> for orders below 5 million.</li>
+      <li>Replace <tt>UNION</tt> with <tt>UNION ALL</tt>. Does the number of partners change? Why?</li>
+    </ul>`
+  });
+  add('de', 'e04', {
+    body: `<p>Das Prinzip heißt <b>Code Pushdown</b>: Je mehr Arbeit die Datenbank erledigt, desto weniger Daten wandern zum Programm, und desto schneller ist der Bericht. Modernes Open SQL (Kommas als Trenner, Programmvariablen mit vorangestelltem <tt>@</tt>) liefert die Werkzeuge.</p>
+      <ul>
+        <li><b>Subquery</b>: <tt>WHERE spalte [NOT] IN ( SELECT … )</tt> vergleicht mit dem Ergebnis eines anderen SELECT. <tt>EXISTS ( SELECT … )</tt> ist wahr, wenn die Subquery mindestens eine Zeile liefert.</li>
+        <li>Eine <b>korrelierte</b> Subquery bezieht sich auf die Zeile der äußeren Abfrage, zum Beispiel <tt>WHERE kunrg = kna1~kunnr</tt> — die Subquery wird für jede äußere Zeile ausgewertet.</li>
+        <li><tt>CASE WHEN … THEN … ELSE … END AS name</tt> erzeugt eine Ergebnisspalte anhand von Bedingungen.</li>
+        <li>Berechnungen und Funktionen dürfen direkt in der Spaltenliste stehen: <tt>seatsmax - seatsocc AS sisa</tt>, <tt>concat( carrid, connid )</tt>. Der Aliasname kann in <tt>ORDER BY</tt> verwendet werden.</li>
+        <li><tt>UNION</tt> vereinigt die Ergebnisse zweier SELECTs mit gleichem Spaltenaufbau und entfernt doppelte Zeilen; <tt>UNION ALL</tt> behält alle.</li>
+      </ul>
+      <p>Sehen Sie sich die Zeile <b>Datenbank</b> unter der Ausgabe an: fünf SELECTs, fünf Zugriffe — und kein einziges SELECT in einer Schleife.</p>`,
+    task: `<ul>
+      <li>Kehren Sie Frage 1 um: Zeigen Sie die Aufträge, die <b>bereits</b> eine Lieferung haben.</li>
+      <li>Fügen Sie eine Klasse <tt>MIKRO</tt> für Aufträge unter 5 Millionen hinzu.</li>
+      <li>Ersetzen Sie <tt>UNION</tt> durch <tt>UNION ALL</tt>. Ändert sich die Anzahl der Partner? Warum?</li>
+    </ul>`
+  });
+  add('zh', 'e04', {
+    body: `<p>这个原则叫做 <b>code pushdown</b>：数据库完成的工作越多，传给程序的数据就越少，报表也就越快。现代 Open SQL（逗号分隔，程序变量前加 <tt>@</tt>）提供了相应的工具。</p>
+      <ul>
+        <li><b>子查询</b>：<tt>WHERE 列 [NOT] IN ( SELECT … )</tt> 与另一个 SELECT 的结果比较。子查询至少返回一行时，<tt>EXISTS ( SELECT … )</tt> 为真。</li>
+        <li><b>相关</b>子查询引用外层查询的行，例如 <tt>WHERE kunrg = kna1~kunnr</tt>——子查询会针对每一个外层行求值。</li>
+        <li><tt>CASE WHEN … THEN … ELSE … END AS 名称</tt> 根据条件生成结果列。</li>
+        <li>计算和函数可以直接写在列清单中：<tt>seatsmax - seatsocc AS sisa</tt>、<tt>concat( carrid, connid )</tt>。别名可以用在 <tt>ORDER BY</tt> 中。</li>
+        <li><tt>UNION</tt> 合并两个列结构相同的 SELECT 的结果，并去掉重复行；<tt>UNION ALL</tt> 保留全部行。</li>
+      </ul>
+      <p>看输出下方的<b>数据库</b>一行：五个 SELECT，五次访问——没有任何一个 SELECT 位于循环之中。</p>`,
+    task: `<ul>
+      <li>把问题 1 反过来：显示<b>已经</b>有交货单的订单。</li>
+      <li>为 500 万以下的订单增加类别 <tt>MIKRO</tt>。</li>
+      <li>把 <tt>UNION</tt> 换成 <tt>UNION ALL</tt>。伙伴数量有变化吗？为什么？</li>
+    </ul>`
+  });
+
+  // ---- e05: Performance: reading the database economically ----
+  add('en', 'e05', {
+    body: `<p>A slow ABAP program is almost always slow because of how it reads its data, not because of its calculations. Every <tt>SELECT</tt> is a round trip to the database server: 10,000 rows inside a loop mean 10,000 trips.</p>
+      <ul>
+        <li>Do not write a <tt>SELECT</tt> inside a <tt>LOOP</tt>. Read the supporting data once outside the loop, then look it up in memory.</li>
+        <li>For repeated lookups by key, keep the data in a <tt>HASHED</tt> (or <tt>SORTED</tt>) table and read it with <tt>READ TABLE … WITH TABLE KEY</tt>. On a standard table, <tt>WITH KEY</tt> checks the rows one by one.</li>
+        <li>If you only need to combine two tables, a <tt>JOIN</tt> does it in a single access.</li>
+        <li><tt>FOR ALL ENTRIES IN</tt> is the middle way when a JOIN is not possible — first make sure the driver table is not empty.</li>
+        <li>Fetch only what you use: name the columns, add a <tt>WHERE</tt>, and avoid <tt>SELECT *</tt> on wide tables.</li>
+        <li><tt>GET RUN TIME FIELD</tt> measures time in microseconds (in the simulator the figure does not represent a real system). In SAP, transactions <tt>SAT</tt> and <tt>ST05</tt> show where the time is lost.</li>
+      </ul>
+      <p>The simulator counts database accesses on every run. The <b>Database</b> line below the output shows the totals and flags any <tt>SELECT</tt> that ran repeatedly inside a loop.</p>`,
+    task: `<ul>
+      <li>Run it and read the <b>Database</b> line: which line of code is flagged, and how many times did it run?</li>
+      <li>Delete method 1 (Cara 1), run it again, and compare the number of database accesses.</li>
+      <li>Write a method 4 with <tt>FOR ALL ENTRIES IN gt_item</tt>.</li>
+    </ul>`
+  });
+  add('de', 'e05', {
+    body: `<p>Ein langsames ABAP-Programm ist fast immer wegen der Art langsam, wie es seine Daten liest, nicht wegen seiner Berechnungen. Jedes <tt>SELECT</tt> ist ein Hin- und Rückweg zum Datenbankserver: 10.000 Zeilen in einer Schleife bedeuten 10.000 Wege.</p>
+      <ul>
+        <li>Schreiben Sie kein <tt>SELECT</tt> in einen <tt>LOOP</tt>. Lesen Sie die Zusatzdaten einmal außerhalb der Schleife und suchen Sie dann im Speicher.</li>
+        <li>Für wiederholte Suchen über den Schlüssel legen Sie die Daten in einer <tt>HASHED</tt>-Tabelle (oder <tt>SORTED</tt>) ab und lesen mit <tt>READ TABLE … WITH TABLE KEY</tt>. Bei einer Standardtabelle prüft <tt>WITH KEY</tt> die Zeilen einzeln.</li>
+        <li>Wenn nur zwei Tabellen zu verbinden sind, erledigt ein <tt>JOIN</tt> das in einem einzigen Zugriff.</li>
+        <li><tt>FOR ALL ENTRIES IN</tt> ist der Mittelweg, wenn kein JOIN möglich ist — stellen Sie vorher sicher, dass die Treibertabelle nicht leer ist.</li>
+        <li>Holen Sie nur, was Sie verwenden: Spalten nennen, ein <tt>WHERE</tt> angeben und <tt>SELECT *</tt> bei breiten Tabellen vermeiden.</li>
+        <li><tt>GET RUN TIME FIELD</tt> misst die Zeit in Mikrosekunden (im Simulator entspricht der Wert keinem echten System). In SAP zeigen die Transaktionen <tt>SAT</tt> und <tt>ST05</tt>, wo die Zeit verloren geht.</li>
+      </ul>
+      <p>Der Simulator zählt die Datenbankzugriffe bei jeder Ausführung. Die Zeile <b>Datenbank</b> unter der Ausgabe zeigt die Summen und markiert jedes <tt>SELECT</tt>, das wiederholt in einer Schleife lief.</p>`,
+    task: `<ul>
+      <li>Führen Sie aus und lesen Sie die Zeile <b>Datenbank</b>: Welche Codezeile ist markiert, und wie oft lief sie?</li>
+      <li>Löschen Sie Weg 1 (Cara 1), führen Sie erneut aus und vergleichen Sie die Anzahl der Datenbankzugriffe.</li>
+      <li>Schreiben Sie einen Weg 4 mit <tt>FOR ALL ENTRIES IN gt_item</tt>.</li>
+    </ul>`
+  });
+  add('zh', 'e05', {
+    body: `<p>ABAP 程序慢，几乎总是因为读取数据的方式，而不是因为计算。每一个 <tt>SELECT</tt> 都是到数据库服务器的一次往返：循环中的 10,000 行就意味着 10,000 次往返。</p>
+      <ul>
+        <li>不要在 <tt>LOOP</tt> 里写 <tt>SELECT</tt>。在循环外一次读出辅助数据，然后在内存中查找。</li>
+        <li>需要按键反复查找时，把数据放进 <tt>HASHED</tt>（或 <tt>SORTED</tt>）表，并用 <tt>READ TABLE … WITH TABLE KEY</tt> 读取。对标准表，<tt>WITH KEY</tt> 会逐行检查。</li>
+        <li>如果只是要连接两张表，<tt>JOIN</tt> 一次访问就能完成。</li>
+        <li>无法使用 JOIN 时，<tt>FOR ALL ENTRIES IN</tt> 是折中办法——先确认驱动表不为空。</li>
+        <li>只取用得到的数据：写出列名，加上 <tt>WHERE</tt>，对宽表避免使用 <tt>SELECT *</tt>。</li>
+        <li><tt>GET RUN TIME FIELD</tt> 以微秒为单位测量时间（模拟器中的数值不代表真实系统）。在 SAP 中，事务 <tt>SAT</tt> 和 <tt>ST05</tt> 可以显示时间耗费在哪里。</li>
+      </ul>
+      <p>模拟器在每次运行时统计数据库访问次数。输出下方的<b>数据库</b>一行显示总数，并标出在循环中重复执行的 <tt>SELECT</tt>。</p>`,
+    task: `<ul>
+      <li>运行并阅读<b>数据库</b>一行：哪一行代码被标出？它执行了多少次？</li>
+      <li>删除方法 1（Cara 1），再次运行，比较数据库访问次数。</li>
+      <li>用 <tt>FOR ALL ENTRIES IN gt_item</tt> 编写方法 4。</li>
+    </ul>`
+  });
+
+  // ---- e06: ABAP Unit: testing code automatically ----
+  add('en', 'e06', {
+    body: `<p>A <b>unit test</b> is code that calls your code and checks the result. Once written, a test can be run at any time: after every change you know immediately whether something broke.</p>
+      <ul>
+        <li>A test class is marked with <tt>FOR TESTING</tt> on <tt>CLASS … DEFINITION</tt>. The additions <tt>DURATION SHORT</tt> and <tt>RISK LEVEL HARMLESS</tt> state that the test is fast and does not change data.</li>
+        <li>Every <tt>FOR TESTING</tt> method is one test: no parameters, and ideally checking one thing only.</li>
+        <li>The special method <tt>setup</tt> runs before <b>every</b> test, so each test starts with a fresh object. Its counterpart, <tt>teardown</tt>, runs after every test.</li>
+        <li><tt>cl_abap_unit_assert=>assert_equals( act = … exp = … msg = … )</tt> compares the actual result with the expected one. There are also <tt>assert_true</tt>, <tt>assert_false</tt>, <tt>assert_initial</tt>, <tt>assert_not_initial</tt>, <tt>assert_bound</tt>, <tt>assert_subrc</tt> and <tt>fail</tt>.</li>
+        <li>Test the boundary values: exactly at the threshold (5,000,000), just below it (4,999,999), and far above it.</li>
+      </ul>
+      <p>Test classes do not run when the program is executed with Run. In SAP tests are started with <tt>Ctrl+Shift+F10</tt>; in the simulator through the ⋯ menu → <b>Run unit tests</b>, with the same shortcut.</p>`,
+    task: `<ul>
+      <li>Run the unit tests: all four tests must pass.</li>
+      <li>Change <tt>&gt;= 5000000</tt> to <tt>&gt; 5000000</tt> in the method <tt>persen</tt>, run the tests again, and read the failure report.</li>
+      <li>Add a 15 percent discount rule for totals from 50 million — write the test first, then the code.</li>
+    </ul>`
+  });
+  add('de', 'e06', {
+    body: `<p>Ein <b>Unit-Test</b> ist Code, der Ihren Code aufruft und das Ergebnis prüft. Einmal geschrieben, lässt sich ein Test jederzeit ausführen: Nach jeder Änderung wissen Sie sofort, ob etwas kaputtgegangen ist.</p>
+      <ul>
+        <li>Eine Testklasse wird mit <tt>FOR TESTING</tt> an <tt>CLASS … DEFINITION</tt> gekennzeichnet. Die Zusätze <tt>DURATION SHORT</tt> und <tt>RISK LEVEL HARMLESS</tt> sagen aus, dass der Test schnell ist und keine Daten ändert.</li>
+        <li>Jede Methode mit <tt>FOR TESTING</tt> ist ein Test: ohne Parameter, und am besten prüft sie nur eine Sache.</li>
+        <li>Die besondere Methode <tt>setup</tt> läuft vor <b>jedem</b> Test, sodass jeder Test mit einem frischen Objekt beginnt. Ihr Gegenstück, <tt>teardown</tt>, läuft nach jedem Test.</li>
+        <li><tt>cl_abap_unit_assert=>assert_equals( act = … exp = … msg = … )</tt> vergleicht das tatsächliche Ergebnis mit dem erwarteten. Außerdem gibt es <tt>assert_true</tt>, <tt>assert_false</tt>, <tt>assert_initial</tt>, <tt>assert_not_initial</tt>, <tt>assert_bound</tt>, <tt>assert_subrc</tt> und <tt>fail</tt>.</li>
+        <li>Testen Sie die Grenzwerte: genau an der Schwelle (5.000.000), knapp darunter (4.999.999) und weit darüber.</li>
+      </ul>
+      <p>Testklassen laufen nicht mit, wenn das Programm mit Run ausgeführt wird. In SAP startet man Tests mit <tt>Ctrl+Shift+F10</tt>; im Simulator über das Menü ⋯ → <b>Unit-Tests ausführen</b>, mit derselben Tastenkombination.</p>`,
+    task: `<ul>
+      <li>Führen Sie die Unit-Tests aus: Alle vier Tests müssen bestehen.</li>
+      <li>Ändern Sie <tt>&gt;= 5000000</tt> in <tt>&gt; 5000000</tt> in der Methode <tt>persen</tt>, führen Sie die Tests erneut aus und lesen Sie den Fehlerbericht.</li>
+      <li>Fügen Sie eine Rabattregel von 15 Prozent für Summen ab 50 Millionen hinzu — schreiben Sie zuerst den Test, dann den Code.</li>
+    </ul>`
+  });
+  add('zh', 'e06', {
+    body: `<p><b>单元测试</b>是调用你的代码并检查结果的代码。测试一旦写好，随时可以运行：每次修改之后，你都能立刻知道有没有东西被改坏。</p>
+      <ul>
+        <li>测试类在 <tt>CLASS … DEFINITION</tt> 上用 <tt>FOR TESTING</tt> 标记。附加项 <tt>DURATION SHORT</tt> 和 <tt>RISK LEVEL HARMLESS</tt> 说明该测试很快，并且不修改数据。</li>
+        <li>每个 <tt>FOR TESTING</tt> 方法就是一个测试：没有参数，而且最好只检查一件事。</li>
+        <li>特殊方法 <tt>setup</tt> 在<b>每个</b>测试之前运行，因此每个测试都从一个新对象开始。与它对应的 <tt>teardown</tt> 在每个测试之后运行。</li>
+        <li><tt>cl_abap_unit_assert=>assert_equals( act = … exp = … msg = … )</tt> 比较实际结果与期望结果。此外还有 <tt>assert_true</tt>、<tt>assert_false</tt>、<tt>assert_initial</tt>、<tt>assert_not_initial</tt>、<tt>assert_bound</tt>、<tt>assert_subrc</tt> 和 <tt>fail</tt>。</li>
+        <li>要测试边界值：恰好在门槛上（5,000,000）、恰好在门槛之下（4,999,999），以及远高于门槛。</li>
+      </ul>
+      <p>用 Run 运行程序时，测试类不会执行。在 SAP 中用 <tt>Ctrl+Shift+F10</tt> 启动测试；在模拟器中通过 ⋯ 菜单 → <b>运行单元测试</b>，快捷键相同。</p>`,
+    task: `<ul>
+      <li>运行单元测试：四个测试必须全部通过。</li>
+      <li>在方法 <tt>persen</tt> 中把 <tt>&gt;= 5000000</tt> 改成 <tt>&gt; 5000000</tt>，再次运行测试，并阅读失败报告。</li>
+      <li>为 5000 万及以上的总额增加 15% 的折扣规则——先写测试，再写代码。</li>
+    </ul>`
+  });
+
+  // ---- e07: Design patterns: singleton and factory ----
+  add('en', 'e07', {
+    body: `<p>A <b>design pattern</b> is a proven answer to a problem that keeps coming back. The two patterns seen most often in SAP code both govern the same thing: who may create an object, and how.</p>
+      <ul>
+        <li><b>Singleton</b>: a class with <tt>CREATE PRIVATE</tt> cannot be created with <tt>NEW</tt> from outside. The only way in is a static method (<tt>ambil</tt>), which keeps the object in <tt>CLASS-DATA</tt> and always returns the same one. Suitable for settings, logs or buffers that must exist only once.</li>
+        <li><b>Factory</b>: a method receives a "kind" and returns the matching object, typed with an interface. The caller only knows the interface.</li>
+        <li>As a result, adding a new kind — sea freight, for example — touches only the factory and one new class. The main program does not change.</li>
+        <li>You have used a factory many times already: <tt>cl_salv_table=>factory( )</tt>.</li>
+      </ul>
+      <p>Do not overdo it: a singleton is global data in disguise and makes unit testing harder. Use it only when there really must be one object.</p>`,
+    task: `<ul>
+      <li>Add <tt>lcl_laut</tt> (cost = weight × 1,200 + 50,000) and register it in the factory with the kind <tt>LAUT</tt>.</li>
+      <li>Write <tt>DATA(go_x) = NEW lcl_pengaturan( ).</tt> in the main program and read the error message.</li>
+      <li>Add a method <tt>hari</tt> to the interface that returns the delivery time of each kind.</li>
+    </ul>`
+  });
+  add('de', 'e07', {
+    body: `<p>Ein <b>Entwurfsmuster</b> ist eine bewährte Antwort auf ein Problem, das immer wiederkehrt. Die beiden Muster, die in SAP-Code am häufigsten vorkommen, regeln dasselbe: wer ein Objekt erzeugen darf, und wie.</p>
+      <ul>
+        <li><b>Singleton</b>: Eine Klasse mit <tt>CREATE PRIVATE</tt> lässt sich von außen nicht mit <tt>NEW</tt> erzeugen. Der einzige Weg ist eine statische Methode (<tt>ambil</tt>), die das Objekt in <tt>CLASS-DATA</tt> hält und immer dasselbe zurückgibt. Geeignet für Einstellungen, Protokolle oder Puffer, die es nur einmal geben darf.</li>
+        <li><b>Factory</b>: Eine Methode erhält eine „Art“ und gibt das passende Objekt zurück, typisiert mit einem Interface. Der Aufrufer kennt nur das Interface.</li>
+        <li>Dadurch berührt eine neue Art — zum Beispiel Seefracht — nur die Factory und eine neue Klasse. Das Hauptprogramm ändert sich nicht.</li>
+        <li>Sie haben schon oft eine Factory benutzt: <tt>cl_salv_table=>factory( )</tt>.</li>
+      </ul>
+      <p>Übertreiben Sie es nicht: Ein Singleton ist versteckte globale Daten und erschwert Unit-Tests. Verwenden Sie es nur, wenn es wirklich genau ein Objekt geben muss.</p>`,
+    task: `<ul>
+      <li>Fügen Sie <tt>lcl_laut</tt> hinzu (Kosten = Gewicht × 1.200 + 50.000) und registrieren Sie die Klasse in der Factory mit der Art <tt>LAUT</tt>.</li>
+      <li>Schreiben Sie <tt>DATA(go_x) = NEW lcl_pengaturan( ).</tt> ins Hauptprogramm und lesen Sie die Fehlermeldung.</li>
+      <li>Ergänzen Sie das Interface um eine Methode <tt>hari</tt>, die die Lieferdauer jeder Art zurückgibt.</li>
+    </ul>`
+  });
+  add('zh', 'e07', {
+    body: `<p><b>设计模式</b>是针对反复出现的问题、经过检验的解决办法。SAP 代码中最常见的两个模式管的是同一件事：谁可以创建对象，以及怎样创建。</p>
+      <ul>
+        <li><b>单例</b>：带有 <tt>CREATE PRIVATE</tt> 的类不能在外部用 <tt>NEW</tt> 创建。唯一的途径是静态方法（<tt>ambil</tt>），它把对象保存在 <tt>CLASS-DATA</tt> 中，并且总是返回同一个对象。适用于只能有一份的设置、日志或缓冲。</li>
+        <li><b>工厂</b>：一个方法接收“种类”，并返回相应的对象，其类型为接口。调用方只认识接口。</li>
+        <li>因此，增加新的种类——例如海运——只涉及工厂和一个新类。主程序不需要改动。</li>
+        <li>你已经多次使用过工厂：<tt>cl_salv_table=>factory( )</tt>。</li>
+      </ul>
+      <p>不要滥用：单例是伪装起来的全局数据，会让单元测试更困难。只有在对象确实只能有一个时才使用。</p>`,
+    task: `<ul>
+      <li>增加 <tt>lcl_laut</tt>（运费 = 重量 × 1,200 + 50,000），并在工厂中以种类 <tt>LAUT</tt> 注册。</li>
+      <li>在主程序中写 <tt>DATA(go_x) = NEW lcl_pengaturan( ).</tt>，并阅读错误消息。</li>
+      <li>在接口中增加方法 <tt>hari</tt>，返回每个种类的运送天数。</li>
+    </ul>`
+  });
+
+  // ---- e08: Generic programming: RTTS and dynamic SQL ----
+  add('en', 'e08', {
+    body: `<p>At the Advanced level you met data references and <tt>ASSIGN COMPONENT</tt>. This lesson combines them with <b>RTTS</b> (Run Time Type Services) — a set of classes that describe data types at runtime — to build an all-purpose table viewer, similar to transaction SE16.</p>
+      <ul>
+        <li><tt>cl_abap_typedescr=>describe_by_name( name )</tt> returns a type description object. For structures and database tables the result is <tt>CAST</tt> to <tt>cl_abap_structdescr</tt>.</li>
+        <li>The attribute <tt>components</tt> holds the column list: <tt>name</tt>, <tt>type_kind</tt> (C text, N numeric text, D date, P packed, I integer), <tt>length</tt> and <tt>decimals</tt>.</li>
+        <li><tt>CREATE DATA ref TYPE STANDARD TABLE OF (name)</tt> creates an internal table whose shape is only decided at runtime; <tt>ASSIGN ref-&gt;* TO &lt;fs&gt;</tt> makes it usable.</li>
+        <li>A name in parentheses also works in Open SQL: <tt>FROM (p_tabel)</tt>, and even <tt>WHERE (gv_kondisi)</tt> with the condition given as text.</li>
+        <li><tt>describe_by_data( variable )</tt> does the same for a variable that already exists.</li>
+      </ul>
+      <p>Generic code is not checked by the compiler: a wrong table name only shows up at runtime. And never build a dynamic <tt>WHERE</tt> straight from user input without checking it — that is where SQL injection gets in.</p>`,
+    task: `<ul>
+      <li>Run it through <b>Parameters (F8)</b> with the table <tt>SFLIGHT</tt>, then <tt>KNA1</tt>, then a name that does not exist.</li>
+      <li>Add a parameter <tt>p_where TYPE string</tt> and use it as <tt>WHERE (p_where)</tt>; try it with <tt>CARRID = 'GA'</tt>.</li>
+      <li>Also print the <tt>length</tt> of each column next to <tt>type_kind</tt>.</li>
+    </ul>`
+  });
+  add('de', 'e08', {
+    body: `<p>In der Stufe Profi haben Sie Datenreferenzen und <tt>ASSIGN COMPONENT</tt> kennengelernt. Diese Lektion verbindet sie mit <b>RTTS</b> (Run Time Type Services) — einer Gruppe von Klassen, die Datentypen zur Laufzeit beschreiben — zu einem universellen Tabellenanzeiger, ähnlich der Transaktion SE16.</p>
+      <ul>
+        <li><tt>cl_abap_typedescr=>describe_by_name( name )</tt> gibt ein Typbeschreibungsobjekt zurück. Für Strukturen und Datenbanktabellen wird das Ergebnis per <tt>CAST</tt> in <tt>cl_abap_structdescr</tt> umgewandelt.</li>
+        <li>Das Attribut <tt>components</tt> enthält die Spaltenliste: <tt>name</tt>, <tt>type_kind</tt> (C Text, N numerischer Text, D Datum, P gepackt, I Integer), <tt>length</tt> und <tt>decimals</tt>.</li>
+        <li><tt>CREATE DATA ref TYPE STANDARD TABLE OF (name)</tt> erzeugt eine interne Tabelle, deren Aufbau erst zur Laufzeit feststeht; <tt>ASSIGN ref-&gt;* TO &lt;fs&gt;</tt> macht sie verwendbar.</li>
+        <li>Ein Name in Klammern funktioniert auch in Open SQL: <tt>FROM (p_tabel)</tt>, und sogar <tt>WHERE (gv_kondisi)</tt> mit der Bedingung als Text.</li>
+        <li><tt>describe_by_data( variable )</tt> leistet dasselbe für eine bereits vorhandene Variable.</li>
+      </ul>
+      <p>Generischen Code prüft der Compiler nicht: Ein falscher Tabellenname fällt erst zur Laufzeit auf. Und bauen Sie ein dynamisches <tt>WHERE</tt> niemals ungeprüft direkt aus Benutzereingaben zusammen — genau dort entsteht SQL-Injection.</p>`,
+    task: `<ul>
+      <li>Führen Sie über <b>Parameter (F8)</b> mit der Tabelle <tt>SFLIGHT</tt> aus, dann mit <tt>KNA1</tt>, dann mit einem Namen, den es nicht gibt.</li>
+      <li>Fügen Sie einen Parameter <tt>p_where TYPE string</tt> hinzu und verwenden Sie ihn als <tt>WHERE (p_where)</tt>; probieren Sie es mit <tt>CARRID = 'GA'</tt>.</li>
+      <li>Geben Sie neben <tt>type_kind</tt> auch die <tt>length</tt> jeder Spalte aus.</li>
+    </ul>`
+  });
+  add('zh', 'e08', {
+    body: `<p>在“高级”级别你学过数据引用和 <tt>ASSIGN COMPONENT</tt>。本课把它们与 <b>RTTS</b>（Run Time Type Services，一组在运行时描述数据类型的类）结合起来，做一个通用的表查看器，类似事务 SE16。</p>
+      <ul>
+        <li><tt>cl_abap_typedescr=>describe_by_name( 名称 )</tt> 返回类型描述对象。对于结构和数据库表，要把结果 <tt>CAST</tt> 为 <tt>cl_abap_structdescr</tt>。</li>
+        <li>属性 <tt>components</tt> 保存列清单：<tt>name</tt>、<tt>type_kind</tt>（C 文本，N 数字文本，D 日期，P 压缩数，I 整数）、<tt>length</tt> 和 <tt>decimals</tt>。</li>
+        <li><tt>CREATE DATA ref TYPE STANDARD TABLE OF (名称)</tt> 创建一个结构在运行时才确定的内表；<tt>ASSIGN ref-&gt;* TO &lt;fs&gt;</tt> 使它可以使用。</li>
+        <li>括号中的名称在 Open SQL 中同样有效：<tt>FROM (p_tabel)</tt>，甚至可以写 <tt>WHERE (gv_kondisi)</tt>，条件以文本形式给出。</li>
+        <li><tt>describe_by_data( 变量 )</tt> 对已有的变量做同样的事。</li>
+      </ul>
+      <p>通用代码不受编译器检查：表名写错要到运行时才会发现。另外，绝不要不加检查就直接用用户输入拼出动态 <tt>WHERE</tt>——SQL 注入正是从这里进来的。</p>`,
+    task: `<ul>
+      <li>通过<b>参数 (F8)</b> 用表 <tt>SFLIGHT</tt> 运行，再用 <tt>KNA1</tt>，然后用一个不存在的名称。</li>
+      <li>增加参数 <tt>p_where TYPE string</tt>，并把它用作 <tt>WHERE (p_where)</tt>；用 <tt>CARRID = 'GA'</tt> 试一试。</li>
+      <li>在 <tt>type_kind</tt> 旁边同时输出每一列的 <tt>length</tt>。</li>
+    </ul>`
+  });
+
+  // ---- e09: Safe transactions: authorization, locks and COMMIT ----
+  add('en', 'e09', {
+    body: `<p>Reading data is safe; changing it is not. A program that changes data in a productive system has to answer four questions: is this user allowed to? Is someone else changing the same document? What happens if it fails halfway? Where does the new document number come from?</p>
+      <ul>
+        <li><tt>AUTHORITY-CHECK OBJECT … ID … FIELD …</tt> checks the user's authorization; <tt>sy-subrc = 0</tt> means allowed. The check is not automatic — a program that forgets to call it lets everyone in.</li>
+        <li>A lock object (created in SE11) generates two function modules: <tt>ENQUEUE_…</tt> to lock and <tt>DEQUEUE_…</tt> to release. The exception <tt>FOREIGN_LOCK</tt> means the document is locked by someone else; that user's name is in <tt>sy-msgv1</tt>.</li>
+        <li>SAP locks are <b>logical</b>: they only apply to programs that also call <tt>ENQUEUE</tt>. The database itself blocks nothing.</li>
+        <li>All changes since the last <tt>COMMIT WORK</tt> form one unit of work (LUW). <tt>COMMIT WORK</tt> saves them permanently, <tt>ROLLBACK WORK</tt> undoes all of them.</li>
+        <li><tt>NUMBER_GET_NEXT</tt> takes the next number from a number range (transaction SNRO) — do not calculate it yourself with <tt>MAX( ) + 1</tt>.</li>
+        <li>BAPIs do not raise exceptions. The outcome is reported through the <tt>RETURN</tt> parameter: check the field <tt>type</tt> (<tt>E</tt> or <tt>A</tt> means failure). A BAPI never commits by itself either — call <tt>BAPI_TRANSACTION_COMMIT</tt> afterwards.</li>
+      </ul>
+      <p>In the simulator, order <tt>0000000012</tt> is locked by the user BUDI, and the delete authorization (<tt>ACTVT</tt> 06) is refused — use both to try the failure paths.</p>`,
+    task: `<ul>
+      <li>Run it through <b>Parameters (F8)</b> with order <tt>0000000012</tt> and read the lock message.</li>
+      <li>Change <tt>ACTVT</tt> to <tt>06</tt> and run it again.</li>
+      <li>Replace <tt>COMMIT WORK</tt> with <tt>ROLLBACK WORK</tt>, then add a <tt>SELECT SINGLE</tt> at the end of the program to prove that the value is back to the original.</li>
+    </ul>`
+  });
+  add('de', 'e09', {
+    body: `<p>Daten zu lesen ist ungefährlich; sie zu ändern nicht. Ein Programm, das Daten in einem Produktivsystem ändert, muss vier Fragen beantworten: Darf dieser Benutzer das? Ändert gerade jemand anderes denselben Beleg? Was geschieht, wenn es mittendrin scheitert? Woher kommt die neue Belegnummer?</p>
+      <ul>
+        <li><tt>AUTHORITY-CHECK OBJECT … ID … FIELD …</tt> prüft die Berechtigung des Benutzers; <tt>sy-subrc = 0</tt> bedeutet erlaubt. Die Prüfung geschieht nicht automatisch — ein Programm, das sie vergisst, lässt jeden hinein.</li>
+        <li>Ein Sperrobjekt (angelegt in SE11) erzeugt zwei Funktionsbausteine: <tt>ENQUEUE_…</tt> zum Sperren und <tt>DEQUEUE_…</tt> zum Freigeben. Die Ausnahme <tt>FOREIGN_LOCK</tt> bedeutet, dass der Beleg von jemand anderem gesperrt ist; dessen Name steht in <tt>sy-msgv1</tt>.</li>
+        <li>SAP-Sperren sind <b>logisch</b>: Sie gelten nur für Programme, die ebenfalls <tt>ENQUEUE</tt> aufrufen. Die Datenbank selbst verhindert nichts.</li>
+        <li>Alle Änderungen seit dem letzten <tt>COMMIT WORK</tt> bilden eine Arbeitseinheit (LUW). <tt>COMMIT WORK</tt> speichert sie dauerhaft, <tt>ROLLBACK WORK</tt> macht sie alle rückgängig.</li>
+        <li><tt>NUMBER_GET_NEXT</tt> holt die nächste Nummer aus einem Nummernkreis (Transaktion SNRO) — berechnen Sie sie nicht selbst mit <tt>MAX( ) + 1</tt>.</li>
+        <li>BAPIs lösen keine Ausnahmen aus. Das Ergebnis wird über den Parameter <tt>RETURN</tt> gemeldet: Prüfen Sie das Feld <tt>type</tt> (<tt>E</tt> oder <tt>A</tt> bedeutet Fehler). Ein BAPI führt auch nie selbst ein Commit aus — rufen Sie danach <tt>BAPI_TRANSACTION_COMMIT</tt> auf.</li>
+      </ul>
+      <p>Im Simulator ist der Auftrag <tt>0000000012</tt> vom Benutzer BUDI gesperrt, und die Berechtigung zum Löschen (<tt>ACTVT</tt> 06) wird verweigert — nutzen Sie beides, um die Fehlerpfade auszuprobieren.</p>`,
+    task: `<ul>
+      <li>Führen Sie über <b>Parameter (F8)</b> mit dem Auftrag <tt>0000000012</tt> aus und lesen Sie die Sperrmeldung.</li>
+      <li>Ändern Sie <tt>ACTVT</tt> in <tt>06</tt> und führen Sie erneut aus.</li>
+      <li>Ersetzen Sie <tt>COMMIT WORK</tt> durch <tt>ROLLBACK WORK</tt> und fügen Sie am Programmende ein <tt>SELECT SINGLE</tt> hinzu, um zu beweisen, dass der Wert wieder der ursprüngliche ist.</li>
+    </ul>`
+  });
+  add('zh', 'e09', {
+    body: `<p>读取数据是安全的，修改数据则不然。在生产系统中修改数据的程序必须回答四个问题：这个用户有权限吗？是否有别人正在修改同一张凭证？中途失败了怎么办？新的凭证号从哪里来？</p>
+      <ul>
+        <li><tt>AUTHORITY-CHECK OBJECT … ID … FIELD …</tt> 检查用户的权限；<tt>sy-subrc = 0</tt> 表示允许。这项检查不是自动的——忘记调用它的程序会让所有人通过。</li>
+        <li>锁对象（在 SE11 中创建）会生成两个函数模块：<tt>ENQUEUE_…</tt> 用于加锁，<tt>DEQUEUE_…</tt> 用于解锁。异常 <tt>FOREIGN_LOCK</tt> 表示凭证正被别人锁定；对方的用户名在 <tt>sy-msgv1</tt> 中。</li>
+        <li>SAP 的锁是<b>逻辑</b>锁：它只对同样调用 <tt>ENQUEUE</tt> 的程序有效。数据库本身不会阻止任何操作。</li>
+        <li>自上一次 <tt>COMMIT WORK</tt> 以来的所有修改构成一个工作单元（LUW）。<tt>COMMIT WORK</tt> 把它们永久保存，<tt>ROLLBACK WORK</tt> 把它们全部撤销。</li>
+        <li><tt>NUMBER_GET_NEXT</tt> 从号码范围（事务 SNRO）中取出下一个号码——不要自己用 <tt>MAX( ) + 1</tt> 去计算。</li>
+        <li>BAPI 不抛出异常。结果通过参数 <tt>RETURN</tt> 报告：检查字段 <tt>type</tt>（<tt>E</tt> 或 <tt>A</tt> 表示失败）。BAPI 也从不自行提交——之后要调用 <tt>BAPI_TRANSACTION_COMMIT</tt>。</li>
+      </ul>
+      <p>在模拟器中，订单 <tt>0000000012</tt> 正被用户 BUDI 锁定，删除权限（<tt>ACTVT</tt> 06）会被拒绝——可以用这两点来试验失败的路径。</p>`,
+    task: `<ul>
+      <li>通过<b>参数 (F8)</b> 用订单 <tt>0000000012</tt> 运行，并阅读锁定消息。</li>
+      <li>把 <tt>ACTVT</tt> 改成 <tt>06</tt>，再次运行。</li>
+      <li>把 <tt>COMMIT WORK</tt> 换成 <tt>ROLLBACK WORK</tt>，然后在程序末尾加一个 <tt>SELECT SINGLE</tt>，证明金额恢复为原值。</li>
+    </ul>`
+  });
+
+  // ---- e10: Case study: order-to-cash report ----
+  add('en', 'e10', {
+    body: `<p><b>Order-to-cash</b> is the sales flow in SAP: sales order (VBAK/VBAP) → delivery (LIKP/LIPS) → billing (VBRK/VBRP). The documents refer to each other: <tt>LIPS-VGBEL</tt> and <tt>VBRP-AUBEL</tt> hold the number of the originating order. This report answers an everyday question of the sales department: which orders have been delivered, and which have been billed?</p>
+      <ul>
+        <li><b>Three SELECTs, none of them inside a loop</b>: orders with the customer name through a <tt>JOIN</tt>; the billed value and the number of delivered items are calculated by the database with <tt>SUM</tt> / <tt>COUNT</tt> and <tt>GROUP BY</tt>.</li>
+        <li><b>Lookups in memory</b>: <tt>VALUE #( table[ … ]-column OPTIONAL )</tt> reads one value and returns the initial value if the row does not exist — without an exception.</li>
+        <li><b>Status with COND</b>: the order of the <tt>WHEN</tt> branches matters, because the first condition that is true wins.</li>
+        <li><b>Summary with GROUP BY</b>: number and value of orders per status.</li>
+        <li><b>A class with separated responsibilities</b>: <tt>ambil_data</tt>, <tt>ringkas</tt>, <tt>tampilkan</tt>.</li>
+      </ul>
+      <p>Open the <b>Tables</b> menu to see the content of LIKP, LIPS, VBRK and VBRP, then match one order with its row in the report.</p>`,
+    task: `<ul>
+      <li>Add a column <tt>sisa</tt>: the order value minus the value already billed.</li>
+      <li>Add a parameter that filters the report by status.</li>
+      <li>Move the status rule into a method of its own that receives <tt>netwr</tt>, <tt>ditagih</tt>, <tt>dikirim</tt>, then write a test class for it.</li>
+      <li>Replace the lookup <tt>lt_tagih[ … ]</tt> with a <tt>HASHED</tt> table with the key <tt>aubel</tt>.</li>
+    </ul>`
+  });
+  add('de', 'e10', {
+    body: `<p><b>Order-to-Cash</b> ist der Verkaufsablauf in SAP: Kundenauftrag (VBAK/VBAP) → Lieferung (LIKP/LIPS) → Faktura (VBRK/VBRP). Die Belege verweisen aufeinander: <tt>LIPS-VGBEL</tt> und <tt>VBRP-AUBEL</tt> enthalten die Nummer des Ursprungsauftrags. Dieser Bericht beantwortet eine Alltagsfrage des Vertriebs: Welche Aufträge sind geliefert, und welche sind fakturiert?</p>
+      <ul>
+        <li><b>Drei SELECTs, keines davon in einer Schleife</b>: Aufträge samt Kundenname über einen <tt>JOIN</tt>; den fakturierten Wert und die Anzahl gelieferter Positionen berechnet die Datenbank mit <tt>SUM</tt> / <tt>COUNT</tt> und <tt>GROUP BY</tt>.</li>
+        <li><b>Suche im Speicher</b>: <tt>VALUE #( tabelle[ … ]-spalte OPTIONAL )</tt> liest einen Wert und liefert den Initialwert, wenn die Zeile fehlt — ohne Ausnahme.</li>
+        <li><b>Status mit COND</b>: Die Reihenfolge der <tt>WHEN</tt>-Zweige ist entscheidend, denn die erste wahre Bedingung gewinnt.</li>
+        <li><b>Zusammenfassung mit GROUP BY</b>: Anzahl und Wert der Aufträge je Status.</li>
+        <li><b>Eine Klasse mit getrennten Verantwortlichkeiten</b>: <tt>ambil_data</tt>, <tt>ringkas</tt>, <tt>tampilkan</tt>.</li>
+      </ul>
+      <p>Öffnen Sie das Menü <b>Tabellen</b>, um den Inhalt von LIKP, LIPS, VBRK und VBRP zu sehen, und gleichen Sie dann einen Auftrag mit seiner Zeile im Bericht ab.</p>`,
+    task: `<ul>
+      <li>Fügen Sie eine Spalte <tt>sisa</tt> hinzu: Auftragswert minus bereits fakturierter Wert.</li>
+      <li>Fügen Sie einen Parameter hinzu, der den Bericht nach Status filtert.</li>
+      <li>Verlagern Sie die Statusregel in eine eigene Methode, die <tt>netwr</tt>, <tt>ditagih</tt>, <tt>dikirim</tt> erhält, und schreiben Sie dann eine Testklasse dafür.</li>
+      <li>Ersetzen Sie die Suche <tt>lt_tagih[ … ]</tt> durch eine <tt>HASHED</tt>-Tabelle mit dem Schlüssel <tt>aubel</tt>.</li>
+    </ul>`
+  });
+  add('zh', 'e10', {
+    body: `<p><b>Order-to-cash</b>（订单到收款）是 SAP 中的销售流程：销售订单（VBAK/VBAP）→ 交货（LIKP/LIPS）→ 开票（VBRK/VBRP）。这些凭证互相引用：<tt>LIPS-VGBEL</tt> 和 <tt>VBRP-AUBEL</tt> 保存来源订单的号码。本报表回答销售部门的日常问题：哪些订单已经交货，哪些已经开票？</p>
+      <ul>
+        <li><b>三个 SELECT，没有一个在循环中</b>：通过 <tt>JOIN</tt> 读取订单及客户名称；开票金额和已交货行项目的数量由数据库用 <tt>SUM</tt> / <tt>COUNT</tt> 和 <tt>GROUP BY</tt> 计算。</li>
+        <li><b>在内存中查找</b>：<tt>VALUE #( 表[ … ]-列 OPTIONAL )</tt> 读取一个值，行不存在时返回初始值——不会产生异常。</li>
+        <li><b>用 COND 确定状态</b>：<tt>WHEN</tt> 的顺序很关键，因为第一个为真的条件会被采用。</li>
+        <li><b>用 GROUP BY 汇总</b>：每种状态的订单数量和金额。</li>
+        <li><b>职责分离的类</b>：<tt>ambil_data</tt>、<tt>ringkas</tt>、<tt>tampilkan</tt>。</li>
+      </ul>
+      <p>打开<b>数据表</b>菜单查看 LIKP、LIPS、VBRK 和 VBRP 的内容，然后把一张订单与它在报表中的那一行对照。</p>`,
+    task: `<ul>
+      <li>增加列 <tt>sisa</tt>：订单金额减去已开票金额。</li>
+      <li>增加一个按状态筛选报表的参数。</li>
+      <li>把状态规则移到一个单独的方法中，该方法接收 <tt>netwr</tt>、<tt>ditagih</tt>、<tt>dikirim</tt>，然后为它编写测试类。</li>
+      <li>把查找 <tt>lt_tagih[ … ]</tt> 换成以 <tt>aubel</tt> 为键的 <tt>HASHED</tt> 表。</li>
+    </ul>`
+  });
+
 })();

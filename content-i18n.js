@@ -50,7 +50,17 @@ window.ABAP_CONTENT_I18N = {
       a09: { title: 'Class events: EVENTS, RAISE EVENT, SET HANDLER', goal: 'Let objects notify each other without knowing one another.' },
       a10: { title: 'Data references and dynamic programming', goal: 'Access data through references and through names known only at runtime.' },
       a11: { title: 'Advanced SALV: columns, hotspots, and events', goal: 'Configure SALV columns and respond to user clicks with event handlers.' },
-      a07: { title: 'Case study: an object-oriented report', goal: 'Build a complete report as a class: fetch data, process it, display it with SALV.' }
+      a07: { title: 'Case study: an object-oriented report', goal: 'Build a complete report as a class: fetch data, process it, display it with SALV.' },
+      e01: { title: 'Regular expressions: FIND, REPLACE, matches', goal: 'Search, check and change text with patterns instead of fixed text.' },
+      e02: { title: 'LOOP AT … GROUP BY', goal: 'Group the rows of an internal table and process each group, without SORT and AT NEW.' },
+      e03: { title: 'FILTER, LET, FOR GROUPS and CORRESPONDING', goal: 'Process internal tables with expressions, without loops and helper variables.' },
+      e04: { title: 'Advanced SQL: subqueries, CASE, UNION', goal: 'Move the work to the database: filter with subqueries, calculate in the column list, and combine results.' },
+      e05: { title: 'Performance: reading the database economically', goal: 'Recognise slow data access patterns and replace them with fast ones.' },
+      e06: { title: 'ABAP Unit: testing code automatically', goal: 'Write a test class that proves a method works correctly — and still does after it is changed.' },
+      e07: { title: 'Design patterns: singleton and factory', goal: 'Control how objects are created so that the program stays easy to change.' },
+      e08: { title: 'Generic programming: RTTS and dynamic SQL', goal: 'Write one program that works for any table whose name is only known at runtime.' },
+      e09: { title: 'Safe transactions: authorization, locks and COMMIT', goal: 'Change data correctly: check the permission, lock the document, then save everything or nothing.' },
+      e10: { title: 'Case study: order-to-cash report', goal: 'Combine the Expert-level techniques in one report across several documents.' }
     },
     de: {
       p01: { title: 'Erstes Programm: WRITE', goal: 'Den Aufbau eines ABAP-Programms kennenlernen und Text auf dem Bildschirm ausgeben.' },
@@ -90,7 +100,17 @@ window.ABAP_CONTENT_I18N = {
       a09: { title: 'Ereignisse in Klassen: EVENTS, RAISE EVENT, SET HANDLER', goal: 'Objekte einander benachrichtigen lassen, ohne dass sie sich kennen.' },
       a10: { title: 'Datenreferenzen und dynamische Programmierung', goal: 'Auf Daten über Referenzen und über erst zur Laufzeit bekannte Namen zugreifen.' },
       a11: { title: 'SALV fortgeschritten: Spalten, Hotspots und Ereignisse', goal: 'SALV-Spalten konfigurieren und auf Benutzerklicks mit Ereignis-Handlern reagieren.' },
-      a07: { title: 'Fallstudie: ein objektorientierter Bericht', goal: 'Einen vollständigen Bericht als Klasse aufbauen: Daten holen, verarbeiten, mit SALV anzeigen.' }
+      a07: { title: 'Fallstudie: ein objektorientierter Bericht', goal: 'Einen vollständigen Bericht als Klasse aufbauen: Daten holen, verarbeiten, mit SALV anzeigen.' },
+      e01: { title: 'Reguläre Ausdrücke: FIND, REPLACE, matches', goal: 'Text mit Mustern statt mit festem Text suchen, prüfen und ändern.' },
+      e02: { title: 'LOOP AT … GROUP BY', goal: 'Zeilen einer internen Tabelle gruppieren und jede Gruppe verarbeiten, ohne SORT und AT NEW.' },
+      e03: { title: 'FILTER, LET, FOR GROUPS und CORRESPONDING', goal: 'Interne Tabellen mit Ausdrücken verarbeiten, ohne Schleifen und Hilfsvariablen.' },
+      e04: { title: 'SQL für Fortgeschrittene: Subquery, CASE, UNION', goal: 'Arbeit in die Datenbank verlagern: mit Subqueries filtern, in der Spaltenliste rechnen und Ergebnisse vereinigen.' },
+      e05: { title: 'Performance: sparsam auf die Datenbank zugreifen', goal: 'Langsame Datenzugriffsmuster erkennen und durch schnelle ersetzen.' },
+      e06: { title: 'ABAP Unit: Code automatisch testen', goal: 'Eine Testklasse schreiben, die beweist, dass eine Methode richtig arbeitet — auch nach einer Änderung.' },
+      e07: { title: 'Entwurfsmuster: Singleton und Factory', goal: 'Steuern, wie Objekte erzeugt werden, damit das Programm leicht änderbar bleibt.' },
+      e08: { title: 'Generische Programmierung: RTTS und dynamisches SQL', goal: 'Ein Programm schreiben, das für jede Tabelle funktioniert, deren Name erst zur Laufzeit bekannt ist.' },
+      e09: { title: 'Sichere Transaktionen: Berechtigung, Sperren und COMMIT', goal: 'Daten richtig ändern: Berechtigung prüfen, Beleg sperren, dann alles oder nichts speichern.' },
+      e10: { title: 'Fallstudie: Order-to-Cash-Bericht', goal: 'Die Techniken der Stufe Experte in einem belegübergreifenden Bericht verbinden.' }
     },
     zh: {
       p01: { title: '第一个程序：WRITE', goal: '认识 ABAP 程序的基本结构，并在屏幕上输出文本。' },
@@ -130,7 +150,17 @@ window.ABAP_CONTENT_I18N = {
       a09: { title: '类中的事件：EVENTS、RAISE EVENT、SET HANDLER', goal: '让对象在互不相识的情况下彼此通知。' },
       a10: { title: '数据引用与动态编程', goal: '通过引用，以及通过运行时才确定的名称来访问数据。' },
       a11: { title: '进阶 SALV：列、热点与事件', goal: '配置 SALV 列，并用事件处理程序响应用户点击。' },
-      a07: { title: '案例研究：面向对象的报表', goal: '把完整报表构建成一个类：取数据、处理、用 SALV 显示。' }
+      a07: { title: '案例研究：面向对象的报表', goal: '把完整报表构建成一个类：取数据、处理、用 SALV 显示。' },
+      e01: { title: '正则表达式：FIND、REPLACE、matches', goal: '用模式而不是固定文本来查找、检查和修改文本。' },
+      e02: { title: 'LOOP AT … GROUP BY', goal: '对内表的行进行分组并处理每个组，无需 SORT 和 AT NEW。' },
+      e03: { title: 'FILTER、LET、FOR GROUPS 和 CORRESPONDING', goal: '用表达式处理内表，不用循环和辅助变量。' },
+      e04: { title: '进阶 SQL：子查询、CASE、UNION', goal: '把工作交给数据库：用子查询筛选，在列清单中计算，并合并结果。' },
+      e05: { title: '性能：节省地读取数据库', goal: '识别缓慢的数据访问方式，并换成快速的方式。' },
+      e06: { title: 'ABAP Unit：自动测试代码', goal: '编写测试类，证明一个方法工作正确——并且在修改之后依然正确。' },
+      e07: { title: '设计模式：单例与工厂', goal: '控制对象的创建方式，使程序易于修改。' },
+      e08: { title: '通用编程：RTTS 与动态 SQL', goal: '编写一个程序，适用于名称在运行时才知道的任意数据表。' },
+      e09: { title: '安全的事务：权限、锁与 COMMIT', goal: '正确地修改数据：检查权限，锁定凭证，然后要么全部保存，要么全不保存。' },
+      e10: { title: '案例研究：订单到收款报表', goal: '把“专家”级别的技术结合到一个跨凭证的报表中。' }
     }
   },
 

@@ -49,6 +49,7 @@
     'bar.running':     ['Berjalan…', 'Running…', 'Läuft…', '运行中…'],
     'bar.more':        ['Lainnya', 'More', 'Mehr', '更多'],
     'menu.pretty':     ['Pretty Printer', 'Pretty Printer', 'Pretty Printer', 'Pretty Printer（代码格式化）'],
+    'menu.unit':       ['Jalankan Unit Test', 'Run unit tests', 'Unit-Tests ausführen', '运行单元测试'],
     'menu.save':       ['Simpan', 'Save', 'Speichern', '保存'],
     'menu.new':        ['Program baru', 'New program', 'Neues Programm', '新建程序'],
     'menu.export':     ['Export ke file .abap', 'Export to .abap file', 'Als .abap-Datei exportieren', '导出为 .abap 文件'],
@@ -56,7 +57,7 @@
     'menu.sap':        ['Layar hasil gaya SAP', 'SAP-style result screen', 'Ergebnisbild im SAP-Stil', 'SAP 风格结果屏幕'],
     'menu.sap.sub':    ['Jendela lebar setelah Run', 'Wide window after Run', 'Breites Fenster nach dem Ausführen', '运行后打开宽窗口'],
     'menu.sap.tip':    ['Setelah Run, hasil dibuka di jendela lebar bergaya SAP GUI (Esc / F3 untuk kembali)', 'After Run the result opens in a wide SAP GUI style window (Esc / F3 to go back)', 'Nach dem Ausführen öffnet sich das Ergebnis in einem breiten Fenster im SAP-GUI-Stil (Esc / F3 = zurück)', '运行后结果在 SAP GUI 风格的宽窗口中打开（Esc / F3 返回）'],
-    'menu.theme':      ['Tema editor', 'Editor theme', 'Editor-Design', '编辑器主题'],
+    'menu.theme':      ['Tema', 'Theme', 'Design', '主题'],
     'theme.dark':      ['Gelap', 'Dark', 'Dunkel', '深色'],
     'theme.light':     ['Terang', 'Light', 'Hell', '浅色'],
 
@@ -80,6 +81,20 @@
     'vars.type':       ['Tipe', 'Type', 'Typ', '类型'],
     'vars.value':      ['Nilai', 'Value', 'Wert', '值'],
     'vars.rows':       ['[{n} baris]', '[{n} rows]', '[{n} Zeilen]', '[{n} 行]'],
+
+    // ── unit tests and database statistics
+    'unit.none':        ['Program ini tidak punya test class. Tulis CLASS … DEFINITION FOR TESTING dengan METHODS … FOR TESTING.', 'This program has no test class. Write CLASS … DEFINITION FOR TESTING with METHODS … FOR TESTING.', 'Dieses Programm hat keine Testklasse. Schreiben Sie CLASS … DEFINITION FOR TESTING mit METHODS … FOR TESTING.', '此程序没有测试类。请编写 CLASS … DEFINITION FOR TESTING，并用 METHODS … FOR TESTING 声明测试方法。'],
+    'unit.summary.ok':  ['Unit test: semua {n} test lulus', 'Unit tests: all {n} tests passed', 'Unit-Tests: alle {n} Tests bestanden', '单元测试：{n} 个测试全部通过'],
+    'unit.summary.fail':['Unit test: {f} dari {n} test gagal', 'Unit tests: {f} of {n} tests failed', 'Unit-Tests: {f} von {n} Tests fehlgeschlagen', '单元测试：{n} 个测试中有 {f} 个失败'],
+    'unit.asserts':     ['{n} pemeriksaan', '{n} checks', '{n} Prüfungen', '{n} 项检查'],
+    'unit.expected':    ['diharapkan {exp}, hasilnya {act}', 'expected {exp}, got {act}', 'erwartet {exp}, erhalten {act}', '期望 {exp}，实际 {act}'],
+    'unit.exception':   ['exception {cls} tidak ditangkap', 'exception {cls} was not caught', 'Ausnahme {cls} wurde nicht abgefangen', '异常 {cls} 未被捕获'],
+    'unit.stopped':     ['test dihentikan oleh MESSAGE / STOP', 'the test was stopped by MESSAGE / STOP', 'Test durch MESSAGE / STOP gestoppt', '测试被 MESSAGE / STOP 中止'],
+    'unit.noimpl':      ['method test belum punya implementasi', 'the test method has no implementation', 'die Testmethode hat keine Implementierung', '测试方法没有实现'],
+    'perf.title':       ['Database', 'Database', 'Datenbank', '数据库'],
+    'perf.reads':       ['{n} akses baca, {rows} baris', '{n} read accesses, {rows} rows', '{n} Lesezugriffe, {rows} Zeilen', '{n} 次读取，{rows} 行'],
+    'perf.writes':      ['{n} perubahan', '{n} changes', '{n} Änderungen', '{n} 次修改'],
+    'perf.repeated':    ['SELECT ini dijalankan {n} kali di dalam loop — satu akses database per putaran. Ambil datanya sekali di luar loop (JOIN atau FOR ALL ENTRIES), lalu baca dari internal table.', 'this SELECT ran {n} times inside a loop — one database access per pass. Read the data once outside the loop (JOIN or FOR ALL ENTRIES), then look it up in the internal table.', 'dieses SELECT lief {n}-mal innerhalb einer Schleife — ein Datenbankzugriff pro Durchlauf. Lesen Sie die Daten einmal außerhalb der Schleife (JOIN oder FOR ALL ENTRIES) und schlagen Sie dann in der internen Tabelle nach.', '这条 SELECT 在循环内执行了 {n} 次——每次循环访问一次数据库。请在循环外一次性读取数据（JOIN 或 FOR ALL ENTRIES），然后在内表中查找。'],
 
     // ── SAP-style result screen
     'sap.aria':        ['Hasil program', 'Program result', 'Programmergebnis', '程序结果'],
@@ -126,6 +141,7 @@
     'level.2':         ['Dasar', 'Basics', 'Grundlagen', '基础'],
     'level.3':         ['Menengah', 'Intermediate', 'Fortgeschritten', '中级'],
     'level.4':         ['Mahir', 'Advanced', 'Profi', '高级'],
+    'level.5':         ['Pakar', 'Expert', 'Experte', '专家'],
     'learn.pos':       ['Pelajaran {i} dari {n}', 'Lesson {i} of {n}', 'Lektion {i} von {n}', '第 {i} 课，共 {n} 课'],
     'learn.goal':      ['Tujuan:', 'Goal:', 'Ziel:', '目标：'],
     'learn.example':   ['Contoh program', 'Example program', 'Beispielprogramm', '示例程序'],

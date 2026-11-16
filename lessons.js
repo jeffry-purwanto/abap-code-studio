@@ -7,7 +7,8 @@ window.ABAP_LEVELS = [
   { id: 1, name: 'Pemula',   desc: 'Dasar bahasa: output, variabel, percabangan, perulangan, string' },
   { id: 2, name: 'Dasar',    desc: 'Struktur, internal table, subroutine, selection screen, SELECT' },
   { id: 3, name: 'Menengah', desc: 'JOIN, function module, ALV, laporan lengkap' },
-  { id: 4, name: 'Mahir',    desc: 'OO ABAP, exception, sintaks modern, studi kasus' }
+  { id: 4, name: 'Mahir',    desc: 'OO ABAP, exception, sintaks modern, studi kasus' },
+  { id: 5, name: 'Pakar',    desc: 'Regex, GROUP BY, SQL lanjutan, kinerja, unit test, pola desain, transaksi' }
 ];
 
 window.ABAP_LESSONS = [
@@ -2905,6 +2906,777 @@ START-OF-SELECTION.
       <li>Jalankan lewat <b>Parameters (F8)</b> dengan maskapai <tt>SQ</tt>, lalu dengan kode yang tidak ada (<tt>XX</tt>).</li>
       <li>Tambahkan method <tt>rata_rata_okupansi</tt> yang mengembalikan rata-rata kolom <tt>persen</tt>.</li>
       <li>Pisahkan tampilan ke class sendiri <tt>lcl_tampilan</tt> yang menerima tabel data — sehingga <tt>lcl_laporan</tt> tidak tahu apa-apa soal ALV.</li>
+    </ul>`
+  },
+
+  // ============================================================
+  // LEVEL 5 — PAKAR
+  // ============================================================
+  {
+    id: 'e01', level: 5,
+    title: 'Regular expression: FIND, REPLACE, matches',
+    goal: 'Mencari, memeriksa, dan mengubah teks dengan pola, bukan dengan teks tetap.',
+    body: `
+      <p><b>Regular expression</b> (regex) adalah pola yang menggambarkan bentuk teks: "sepuluh digit berturut-turut", "dua huruf besar lalu tanda hubung". Dengan satu pola Anda bisa memeriksa format input, mengambil bagian teks, atau menyamarkan data.</p>
+      <ul>
+        <li>Unsur pola: <tt>\\d</tt> satu digit, <tt>\\w</tt> huruf, digit, atau garis bawah, <tt>.</tt> karakter apa pun, <tt>[A-Z]</tt> satu karakter dari daftar. Pengulangan: <tt>+</tt> satu atau lebih, <tt>*</tt> nol atau lebih, <tt>{10}</tt> tepat sepuluh kali.</li>
+        <li><tt>FIND REGEX pola IN teks</tt> mengisi <tt>sy-subrc</tt> (0 = ketemu). <tt>MATCH OFFSET</tt> dan <tt>MATCH LENGTH</tt> memberi posisi dan panjangnya; <tt>FIND ALL OCCURRENCES … MATCH COUNT</tt> menghitung semua kecocokan.</li>
+        <li>Kurung <tt>( )</tt> membuat kelompok. <tt>SUBMATCHES</tt> mengisi satu variabel untuk tiap kelompok; di <tt>REPLACE … WITH</tt> isi kelompok dipanggil lagi dengan <tt>$1</tt>, <tt>$2</tt>.</li>
+        <li>Fungsi <tt>matches( )</tt> bernilai benar hanya bila <b>seluruh</b> teks cocok dengan pola — pas untuk validasi input. <tt>match( )</tt> mengembalikan bagian yang cocok, <tt>replace( … regex = … occ = 0 )</tt> mengganti semua kecocokan, dan <tt>count( )</tt> menghitungnya.</li>
+      </ul>
+      <p>Di sistem baru (mulai ABAP 7.55) kata <tt>REGEX</tt> digantikan <tt>PCRE</tt>, dengan cara tulis yang sama: <tt>FIND PCRE …</tt>, <tt>matches( val = … pcre = … )</tt>. Simulator menerima keduanya.</p>`,
+    code: `REPORT z_belajar_regex.
+
+DATA gv_teks TYPE string VALUE 'Order 4500000012 dan 4500000099 dikirim ke budi@contoh.co.id'.
+
+* 1) FIND REGEX: posisi, panjang, dan jumlah kecocokan
+FIND REGEX '\\d{10}' IN gv_teks MATCH OFFSET DATA(gv_posisi) MATCH LENGTH DATA(gv_panjang).
+IF sy-subrc = 0.
+  DATA(gv_nomor) = substring( val = gv_teks off = gv_posisi len = gv_panjang ).
+  WRITE: / 'Nomor pertama :', gv_nomor, '(posisi', gv_posisi, ')'.
+ENDIF.
+FIND ALL OCCURRENCES OF REGEX '\\d{10}' IN gv_teks MATCH COUNT DATA(gv_jumlah).
+WRITE: / 'Jumlah nomor  :', gv_jumlah.
+
+* 2) SUBMATCHES: isi tiap pasang kurung ( )
+FIND REGEX '(\\w+)@([\\w.]+)' IN gv_teks SUBMATCHES DATA(gv_user) DATA(gv_domain).
+WRITE: / 'Pengguna      :', gv_user.
+WRITE: / 'Domain        :', gv_domain.
+
+* 3) REPLACE ... REGEX: $1 adalah isi kurung pertama
+DATA(gv_samar) = gv_teks.
+REPLACE ALL OCCURRENCES OF REGEX '\\d{6}(\\d{4})' IN gv_samar WITH '******$1'.
+WRITE: / gv_samar.
+
+* 4) Fungsi: matches( ) menguji SELURUH teks, match( ) mengambil bagian yang cocok
+DATA gt_kode TYPE STANDARD TABLE OF string WITH EMPTY KEY.
+gt_kode = VALUE #( ( 'AB-123' ) ( 'ab-12' ) ( 'XYZ-999' ) ( 'QQ-007' ) ).
+SKIP.
+LOOP AT gt_kode INTO DATA(gv_kode).
+  IF matches( val = gv_kode regex = '[A-Z]{2}-\\d{3}' ).
+    WRITE: / gv_kode, 12 'valid'.
+  ELSE.
+    WRITE: / gv_kode, 12 'tidak valid'.
+  ENDIF.
+ENDLOOP.
+
+DATA(gv_angka)  = match( val = gv_teks regex = '\\d+' ).
+DATA(gv_bersih) = replace( val = 'A1B22C333' regex = '\\d+' with = '' occ = 0 ).
+DATA(gv_kata)   = count( val = gv_teks regex = '[a-z]+' ).
+SKIP.
+WRITE: / 'Angka pertama :', gv_angka.
+WRITE: / 'Tanpa angka   :', gv_bersih.
+WRITE: / 'Kata huruf kecil:', gv_kata.`,
+    task: `<ul>
+      <li>Ubah pola nomor order agar hanya cocok dengan nomor yang diawali <tt>45</tt>.</li>
+      <li>Tambahkan kode <tt>ZZ-12A</tt> ke <tt>gt_kode</tt>. Perkirakan hasilnya dulu, baru jalankan.</li>
+      <li>Tulis validasi kode pos (tepat lima digit) dengan <tt>matches( )</tt>.</li>
+    </ul>`
+  },
+  {
+    id: 'e02', level: 5,
+    title: 'LOOP AT … GROUP BY',
+    goal: 'Mengelompokkan baris internal table dan mengolah tiap kelompok, tanpa SORT dan AT NEW.',
+    body: `
+      <p>Di level Dasar subtotal dibuat dengan <tt>SORT</tt> ditambah <tt>AT NEW</tt> / <tt>AT END OF</tt>. Cara itu mengharuskan tabel diurutkan dan kolom kuncinya berada paling kiri. <tt>LOOP AT … GROUP BY</tt> tidak punya dua syarat itu: sistem sendiri yang mengumpulkan baris berkunci sama.</p>
+      <ul>
+        <li>Loop luar berjalan sekali untuk tiap <b>kelompok</b>, bukan untuk tiap baris. <tt>LOOP AT GROUP</tt> di dalamnya membaca anggota kelompok itu.</li>
+        <li><tt>GROUP BY gs_order-ernam … INTO DATA(gv_sales)</tt>: variabel di belakang <tt>INTO</tt> (group binding) berisi nilai kuncinya.</li>
+        <li>Kunci boleh berupa struktur: <tt>GROUP BY ( kunnr = … jumlah = GROUP SIZE )</tt>. <tt>GROUP SIZE</tt> berisi jumlah anggota, <tt>GROUP INDEX</tt> nomor urut kelompoknya.</li>
+        <li><tt>ASCENDING</tt> / <tt>DESCENDING</tt> mengurutkan kelompok menurut kuncinya. Tanpa itu kelompok muncul menurut kemunculan pertamanya di tabel.</li>
+        <li>Tanpa <tt>INTO</tt> di belakang (representative binding), work area berisi baris pertama kelompok dan dipakai sebagai nama kelompoknya: <tt>LOOP AT GROUP gs_order</tt>.</li>
+      </ul>
+      <p>Tabel aslinya tidak berubah dan tidak perlu diurutkan lebih dulu.</p>`,
+    code: `REPORT z_belajar_group_by.
+
+TYPES: BEGIN OF ty_order,
+         vbeln TYPE vbak-vbeln,
+         kunnr TYPE vbak-kunnr,
+         ernam TYPE vbak-ernam,
+         netwr TYPE vbak-netwr,
+       END OF ty_order.
+DATA: gt_order   TYPE STANDARD TABLE OF ty_order WITH EMPTY KEY,
+      gs_anggota TYPE ty_order,
+      gv_total   TYPE vbak-netwr.
+
+SELECT vbeln kunnr ernam netwr FROM vbak INTO TABLE gt_order.
+
+* 1) Satu kunci, dengan group binding: gv_sales berisi nilai kuncinya
+WRITE: / 'Penjualan per sales'.
+LOOP AT gt_order INTO DATA(gs_order) GROUP BY gs_order-ernam ASCENDING INTO DATA(gv_sales).
+  CLEAR gv_total.
+  LOOP AT GROUP gv_sales INTO gs_anggota.
+    gv_total = gv_total + gs_anggota-netwr.
+  ENDLOOP.
+  WRITE: /3 gv_sales, 16 gv_total.
+ENDLOOP.
+
+* 2) Kunci berbentuk struktur, plus GROUP SIZE
+SKIP.
+WRITE: / 'Jumlah order per pelanggan'.
+LOOP AT gt_order INTO gs_order
+     GROUP BY ( kunnr = gs_order-kunnr jumlah = GROUP SIZE )
+     DESCENDING INTO DATA(gs_grup).
+  WRITE: /3 gs_grup-kunnr, 16 gs_grup-jumlah.
+ENDLOOP.
+
+* 3) Tanpa INTO di belakang: gs_order (baris pertama) mewakili kelompoknya
+SKIP.
+WRITE: / 'Order terbesar tiap pelanggan'.
+LOOP AT gt_order INTO gs_order GROUP BY gs_order-kunnr.
+  DATA(gs_maks) = gs_order.
+  LOOP AT GROUP gs_order INTO gs_anggota WHERE netwr > gs_maks-netwr.
+    gs_maks = gs_anggota.
+  ENDLOOP.
+  WRITE: /3 gs_maks-kunnr, 16 gs_maks-vbeln, 30 gs_maks-netwr.
+ENDLOOP.`,
+    task: `<ul>
+      <li>Tambahkan field <tt>vkorg</tt> ke <tt>ty_order</tt>, lalu cetak jumlah order dan total nilainya per sales organization.</li>
+      <li>Di bagian 2, tambahkan <tt>urut = GROUP INDEX</tt> ke kunci dan cetak nomornya.</li>
+      <li>Ubah bagian 3 agar menampilkan order <b>terkecil</b> tiap pelanggan.</li>
+    </ul>`
+  },
+  {
+    id: 'e03', level: 5,
+    title: 'FILTER, LET, FOR GROUPS, dan CORRESPONDING',
+    goal: 'Mengolah internal table dengan ekspresi, tanpa loop dan variabel bantu.',
+    body: `
+      <p>Level Mahir mengenalkan <tt>VALUE</tt>, <tt>FOR</tt>, dan <tt>REDUCE</tt>. Empat alat berikut melengkapinya, sehingga pengolahan tabel bisa ditulis sebagai satu ekspresi.</p>
+      <ul>
+        <li><tt>FILTER #( tabel WHERE … )</tt> mengambil baris yang cocok. Syaratnya: tabel sumber berjenis <tt>SORTED</tt> atau <tt>HASHED</tt>, dan kondisi <tt>WHERE</tt> memakai kolom key-nya. Tambahan <tt>EXCEPT</tt> membalik hasilnya.</li>
+        <li><tt>LET nama = … IN</tt> membuat variabel bantu yang hanya hidup di dalam ekspresi itu — nilai yang dipakai berulang cukup dihitung sekali.</li>
+        <li><tt>FOR GROUPS grp OF e IN tabel GROUP BY …</tt> adalah bentuk ekspresi dari <tt>LOOP AT … GROUP BY</tt>; <tt>FOR m IN GROUP grp</tt> membaca anggota kelompoknya.</li>
+        <li><tt>CORRESPONDING tipe( sumber MAPPING baru = lama EXCEPT kolom )</tt> menyalin field bernama sama, memetakan nama yang berbeda, dan melewati kolom yang disebut.</li>
+      </ul>
+      <p>Ekspresi yang terlalu panjang sulit dibaca dan sulit di-debug. Bila satu ekspresi sudah melebihi beberapa baris, pecah menjadi langkah-langkah yang diberi nama.</p>`,
+    code: `REPORT z_belajar_ekspresi_tabel.
+
+TYPES: BEGIN OF ty_emp,
+         pernr TYPE pa0001-pernr,
+         ename TYPE pa0001-ename,
+         orgeh TYPE pa0001-orgeh,
+         gaji  TYPE pa0008-bet01,
+       END OF ty_emp,
+       tt_emp TYPE SORTED TABLE OF ty_emp WITH NON-UNIQUE KEY orgeh.
+DATA gt_emp TYPE tt_emp.
+
+SELECT a~pernr, a~ename, a~orgeh, b~bet01 AS gaji
+  FROM pa0001 AS a INNER JOIN pa0008 AS b ON b~pernr = a~pernr
+  WHERE b~endda = '99991231'
+  ORDER BY a~orgeh, a~pernr
+  INTO TABLE @gt_emp.
+
+* 1) FILTER: baris yang cocok dengan key tabel, tanpa LOOP
+DATA(gt_sales) = FILTER #( gt_emp WHERE orgeh = '50000030' ).
+WRITE: / 'Karyawan Sales :', lines( gt_sales ).
+
+* 2) LET: variabel bantu yang hanya hidup di dalam satu ekspresi
+DATA(gv_ringkas) = CONV string(
+  LET jml = lines( gt_emp )
+      tot = REDUCE i( INIT s = 0 FOR e IN gt_emp NEXT s = s + e-gaji )
+  IN |{ jml } karyawan, rata-rata gaji { tot / jml }| ).
+WRITE: / gv_ringkas.
+
+* 3) FOR GROUPS: rekap per unit organisasi dalam satu ekspresi
+TYPES: BEGIN OF ty_rekap,
+         orgeh TYPE pa0001-orgeh,
+         orang TYPE i,
+         total TYPE pa0008-bet01,
+       END OF ty_rekap,
+       tt_rekap TYPE STANDARD TABLE OF ty_rekap WITH EMPTY KEY.
+DATA(gt_rekap) = VALUE tt_rekap(
+  FOR GROUPS grp OF e IN gt_emp GROUP BY e-orgeh ASCENDING
+  ( orgeh = grp
+    orang = REDUCE i( INIT c = 0 FOR m IN GROUP grp NEXT c = c + 1 )
+    total = REDUCE i( INIT s = 0 FOR m IN GROUP grp NEXT s = s + m-gaji ) ) ).
+SKIP.
+LOOP AT gt_rekap INTO DATA(gs_rekap).
+  WRITE: / gs_rekap-orgeh, 12 gs_rekap-orang, 18 gs_rekap-total.
+ENDLOOP.
+
+* 4) CORRESPONDING ... MAPPING ... EXCEPT: salin ke struktur dengan nama field lain
+TYPES: BEGIN OF ty_kartu,
+         nomor TYPE pa0001-pernr,
+         nama  TYPE pa0001-ename,
+         gaji  TYPE pa0008-bet01,
+       END OF ty_kartu.
+DATA(gs_kartu) = CORRESPONDING ty_kartu( gt_emp[ 1 ] MAPPING nomor = pernr nama = ename EXCEPT gaji ).
+SKIP.
+WRITE: / gs_kartu-nomor, gs_kartu-nama, gs_kartu-gaji.`,
+    task: `<ul>
+      <li>Buat <tt>gt_bukan_sales</tt> dengan <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> dan cetak jumlah barisnya.</li>
+      <li>Tambahkan kolom <tt>rata</tt> (rata-rata gaji) ke <tt>ty_rekap</tt> dan isi di dalam ekspresi yang sama.</li>
+      <li>Hapus <tt>EXCEPT gaji</tt> di bagian 4, jalankan, dan lihat perubahan outputnya.</li>
+    </ul>`
+  },
+  {
+    id: 'e04', level: 5,
+    title: 'SQL lanjutan: subquery, CASE, UNION',
+    goal: 'Memindahkan pekerjaan ke database: menyaring dengan subquery, menghitung di daftar kolom, dan menggabung hasil.',
+    body: `
+      <p>Prinsipnya disebut <b>code pushdown</b>: makin banyak pekerjaan yang diselesaikan database, makin sedikit data yang dikirim ke program, dan makin cepat laporannya. Open SQL modern (pemisah koma, variabel program diawali <tt>@</tt>) menyediakan alatnya.</p>
+      <ul>
+        <li><b>Subquery</b>: <tt>WHERE kolom [NOT] IN ( SELECT … )</tt> membandingkan dengan hasil SELECT lain. <tt>EXISTS ( SELECT … )</tt> benar bila subquery menghasilkan minimal satu baris.</li>
+        <li>Subquery <b>berkorelasi</b> merujuk baris query luar, misalnya <tt>WHERE kunrg = kna1~kunnr</tt> — subquery dinilai untuk tiap baris luar.</li>
+        <li><tt>CASE WHEN … THEN … ELSE … END AS nama</tt> membuat kolom hasil berdasarkan kondisi.</li>
+        <li>Perhitungan dan fungsi boleh ditulis langsung di daftar kolom: <tt>seatsmax - seatsocc AS sisa</tt>, <tt>concat( carrid, connid )</tt>. Nama alias-nya dapat dipakai di <tt>ORDER BY</tt>.</li>
+        <li><tt>UNION</tt> menggabung hasil dua SELECT yang susunan kolomnya sama dan membuang baris kembar; <tt>UNION ALL</tt> mempertahankan semuanya.</li>
+      </ul>
+      <p>Lihat baris <b>Database</b> di bawah output: lima SELECT, lima akses — dan tidak ada satu pun SELECT di dalam loop.</p>`,
+    code: `REPORT z_belajar_sql_lanjutan.
+
+* 1) Subquery: order yang BELUM punya delivery
+SELECT vbeln, kunnr, netwr FROM vbak
+  WHERE vbeln NOT IN ( SELECT vgbel FROM lips )
+  ORDER BY vbeln
+  INTO TABLE @DATA(gt_buka).
+WRITE: / 'Order tanpa delivery:', lines( gt_buka ).
+LOOP AT gt_buka INTO DATA(gs_buka).
+  WRITE: /3 gs_buka-vbeln, 16 gs_buka-netwr.
+ENDLOOP.
+
+* 2) EXISTS dengan subquery berkorelasi: pelanggan yang sudah pernah ditagih
+SELECT kunnr, name1 FROM kna1
+  WHERE EXISTS ( SELECT vbeln FROM vbrk WHERE kunrg = kna1~kunnr )
+  ORDER BY kunnr
+  INTO TABLE @DATA(gt_ditagih).
+SKIP.
+WRITE: / 'Pelanggan yang sudah ditagih:', lines( gt_ditagih ).
+
+* 3) CASE dan perhitungan di daftar kolom
+SELECT vbeln, netwr,
+       CASE WHEN netwr >= 20000000 THEN 'BESAR'
+            WHEN netwr >= 10000000 THEN 'SEDANG'
+            ELSE 'KECIL' END AS kelas
+  FROM vbak
+  ORDER BY netwr DESCENDING
+  INTO TABLE @DATA(gt_kelas)
+  UP TO 5 ROWS.
+SKIP.
+LOOP AT gt_kelas INTO DATA(gs_kelas).
+  WRITE: /3 gs_kelas-vbeln, 16 gs_kelas-netwr, 30 gs_kelas-kelas.
+ENDLOOP.
+
+SELECT carrid, connid, seatsmax - seatsocc AS sisa,
+       concat( carrid, connid ) AS kode
+  FROM sflight
+  ORDER BY sisa DESCENDING
+  INTO TABLE @DATA(gt_kursi)
+  UP TO 3 ROWS.
+SKIP.
+LOOP AT gt_kursi INTO DATA(gs_kursi).
+  WRITE: /3 gs_kursi-kode, 12 gs_kursi-sisa, 'kursi kosong'.
+ENDLOOP.
+
+* 4) UNION: pelanggan dan vendor dalam satu daftar mitra
+SELECT kunnr AS nomor, name1, 'Pelanggan' AS peran FROM kna1
+UNION
+SELECT lifnr AS nomor, name1, 'Vendor' AS peran FROM lfa1
+INTO TABLE @DATA(gt_mitra).
+SKIP.
+WRITE: / 'Jumlah mitra:', lines( gt_mitra ).`,
+    task: `<ul>
+      <li>Balik pertanyaan 1: tampilkan order yang <b>sudah</b> punya delivery.</li>
+      <li>Tambahkan kelas <tt>MIKRO</tt> untuk order di bawah 5 juta.</li>
+      <li>Ganti <tt>UNION</tt> dengan <tt>UNION ALL</tt>. Apakah jumlah mitranya berubah? Mengapa?</li>
+    </ul>`
+  },
+  {
+    id: 'e05', level: 5,
+    title: 'Kinerja: membaca database dengan hemat',
+    goal: 'Mengenali pola akses data yang lambat dan menggantinya dengan yang cepat.',
+    body: `
+      <p>Program ABAP yang lambat hampir selalu lambat karena cara membaca datanya, bukan karena perhitungannya. Setiap <tt>SELECT</tt> adalah perjalanan pulang-pergi ke server database: 10.000 baris di dalam loop berarti 10.000 perjalanan.</p>
+      <ul>
+        <li>Jangan menulis <tt>SELECT</tt> di dalam <tt>LOOP</tt>. Baca data pendukung sekali di luar loop, lalu cari di memori.</li>
+        <li>Untuk pencarian berulang lewat key, simpan data di tabel <tt>HASHED</tt> (atau <tt>SORTED</tt>) dan baca dengan <tt>READ TABLE … WITH TABLE KEY</tt>. Pada tabel standard, <tt>WITH KEY</tt> memeriksa baris satu per satu.</li>
+        <li>Bila hanya perlu menggabung dua tabel, <tt>JOIN</tt> menyelesaikannya dalam satu akses.</li>
+        <li><tt>FOR ALL ENTRIES IN</tt> adalah jalan tengah bila JOIN tidak mungkin — pastikan dulu tabel pengendalinya tidak kosong.</li>
+        <li>Ambil hanya yang dipakai: sebut nama kolomnya, beri <tt>WHERE</tt>, dan hindari <tt>SELECT *</tt> pada tabel yang lebar.</li>
+        <li><tt>GET RUN TIME FIELD</tt> mengukur waktu dalam mikrodetik (di simulator angkanya tidak mewakili sistem nyata). Di SAP, transaksi <tt>SAT</tt> dan <tt>ST05</tt> menunjukkan di mana waktu terbuang.</li>
+      </ul>
+      <p>Simulator menghitung akses database tiap kali program dijalankan. Baris <b>Database</b> di bawah output menampilkan jumlahnya dan menandai <tt>SELECT</tt> yang dijalankan berulang di dalam loop.</p>`,
+    code: `REPORT z_belajar_kinerja.
+
+TYPES: BEGIN OF ty_teks,
+         matnr TYPE makt-matnr,
+         maktx TYPE makt-maktx,
+       END OF ty_teks.
+DATA: gt_item TYPE STANDARD TABLE OF vbap,
+      gs_makt TYPE makt,
+      gt_teks TYPE HASHED TABLE OF ty_teks WITH UNIQUE KEY matnr,
+      gv_t0   TYPE i,
+      gv_t1   TYPE i,
+      gv_lama TYPE i.
+
+SELECT * FROM vbap INTO TABLE gt_item.
+
+* CARA LAMBAT: satu akses database untuk setiap baris
+GET RUN TIME FIELD gv_t0.
+LOOP AT gt_item INTO DATA(gs_item).
+  SELECT SINGLE * FROM makt INTO gs_makt
+    WHERE matnr = gs_item-matnr AND spras = 'EN'.
+ENDLOOP.
+GET RUN TIME FIELD gv_t1.
+gv_lama = gv_t1 - gv_t0.
+WRITE: / 'Cara 1 - SELECT di dalam LOOP :', lines( gt_item ), 'akses database'.
+
+* CARA CEPAT: baca sekali, simpan di tabel HASHED, cari lewat key
+GET RUN TIME FIELD gv_t0.
+SELECT matnr maktx FROM makt INTO TABLE gt_teks WHERE spras = 'EN'.
+LOOP AT gt_item INTO gs_item.
+  READ TABLE gt_teks INTO DATA(gs_teks) WITH TABLE KEY matnr = gs_item-matnr.
+ENDLOOP.
+GET RUN TIME FIELD gv_t1.
+gv_lama = gv_t1 - gv_t0.
+WRITE: / 'Cara 2 - sekali baca + HASHED  : 1 akses database'.
+
+* CARA TERBAIK bila hanya perlu gabungan: biarkan database yang menggabung
+SELECT p~vbeln, p~posnr, t~maktx
+  FROM vbap AS p INNER JOIN makt AS t ON t~matnr = p~matnr
+  WHERE t~spras = 'EN'
+  INTO TABLE @DATA(gt_gabung).
+WRITE: / 'Cara 3 - JOIN                  : 1 akses database,', lines( gt_gabung ), 'baris'.
+
+SKIP.
+WRITE: / 'Lihat baris "Database" di bawah output: akses dihitung, dan'.
+WRITE: / 'SELECT yang berulang di dalam loop ditandai.'.`,
+    task: `<ul>
+      <li>Jalankan dan baca baris <b>Database</b>: baris kode mana yang ditandai, dan berapa kali ia dijalankan?</li>
+      <li>Hapus Cara 1, jalankan lagi, dan bandingkan jumlah akses databasenya.</li>
+      <li>Tulis Cara 4 dengan <tt>FOR ALL ENTRIES IN gt_item</tt>.</li>
+    </ul>`
+  },
+  {
+    id: 'e06', level: 5,
+    title: 'ABAP Unit: menguji kode secara otomatis',
+    goal: 'Menulis test class yang membuktikan sebuah method bekerja benar — dan tetap benar setelah diubah.',
+    body: `
+      <p><b>Unit test</b> adalah kode yang memanggil kode Anda dan memeriksa hasilnya. Sekali ditulis, test bisa dijalankan kapan saja: setelah tiap perubahan Anda langsung tahu apakah ada yang rusak.</p>
+      <ul>
+        <li>Test class ditandai <tt>FOR TESTING</tt> pada <tt>CLASS … DEFINITION</tt>. Tambahan <tt>DURATION SHORT</tt> dan <tt>RISK LEVEL HARMLESS</tt> menyatakan test itu cepat dan tidak mengubah data.</li>
+        <li>Tiap method <tt>FOR TESTING</tt> adalah satu test: tanpa parameter, dan sebaiknya menguji satu hal saja.</li>
+        <li>Method khusus <tt>setup</tt> dijalankan sebelum <b>tiap</b> test, sehingga setiap test mulai dari objek yang baru. Pasangannya, <tt>teardown</tt>, berjalan sesudah tiap test.</li>
+        <li><tt>cl_abap_unit_assert=>assert_equals( act = … exp = … msg = … )</tt> membandingkan hasil nyata dengan yang diharapkan. Ada juga <tt>assert_true</tt>, <tt>assert_false</tt>, <tt>assert_initial</tt>, <tt>assert_not_initial</tt>, <tt>assert_bound</tt>, <tt>assert_subrc</tt>, dan <tt>fail</tt>.</li>
+        <li>Uji nilai batasnya: tepat di ambang (5.000.000), tepat di bawahnya (4.999.999), dan jauh di atasnya.</li>
+      </ul>
+      <p>Test class tidak ikut berjalan saat program di-Run. Di SAP test dijalankan dengan <tt>Ctrl+Shift+F10</tt>; di simulator lewat menu ⋯ → <b>Jalankan Unit Test</b>, dengan tombol yang sama.</p>`,
+    code: `REPORT z_belajar_unit_test.
+
+* --- kode yang diuji ----------------------------------------------------
+CLASS lcl_diskon DEFINITION.
+  PUBLIC SECTION.
+    METHODS persen IMPORTING iv_total TYPE i RETURNING VALUE(rv_persen) TYPE i.
+    METHODS bayar  IMPORTING iv_total TYPE i RETURNING VALUE(rv_bayar) TYPE i.
+ENDCLASS.
+
+CLASS lcl_diskon IMPLEMENTATION.
+  METHOD persen.
+    rv_persen = COND #( WHEN iv_total >= 10000000 THEN 10
+                        WHEN iv_total >= 5000000  THEN 5
+                        ELSE 0 ).
+  ENDMETHOD.
+  METHOD bayar.
+    rv_bayar = iv_total - iv_total * persen( iv_total ) / 100.
+  ENDMETHOD.
+ENDCLASS.
+
+* --- test class: tidak ikut berjalan saat program di-Run ------------------
+CLASS ltc_diskon DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
+  PRIVATE SECTION.
+    DATA mo_cut TYPE REF TO lcl_diskon.          " cut = class under test
+    METHODS setup.
+    METHODS tanpa_diskon   FOR TESTING.
+    METHODS batas_5_persen FOR TESTING.
+    METHODS diskon_besar   FOR TESTING.
+    METHODS jumlah_bayar   FOR TESTING.
+ENDCLASS.
+
+CLASS ltc_diskon IMPLEMENTATION.
+  METHOD setup.
+    mo_cut = NEW #( ).
+  ENDMETHOD.
+  METHOD tanpa_diskon.
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->persen( 4999999 ) exp = 0 ).
+  ENDMETHOD.
+  METHOD batas_5_persen.
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->persen( 5000000 ) exp = 5
+                                        msg = 'Tepat 5 juta sudah dapat 5 persen' ).
+  ENDMETHOD.
+  METHOD diskon_besar.
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->persen( 25000000 ) exp = 10 ).
+  ENDMETHOD.
+  METHOD jumlah_bayar.
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->bayar( 10000000 ) exp = 9000000 ).
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->bayar( 1000 ) exp = 1000 ).
+  ENDMETHOD.
+ENDCLASS.
+
+START-OF-SELECTION.
+  DATA(go_diskon) = NEW lcl_diskon( ).
+  DATA(gv_bayar) = go_diskon->bayar( 12000000 ).
+  WRITE: / 'Bayar untuk 12.000.000 :', gv_bayar.
+  WRITE: / 'Test tidak berjalan lewat Run. Buka menu titik tiga, pilih Jalankan Unit Test.'.`,
+    task: `<ul>
+      <li>Jalankan unit test-nya: keempat test harus lulus.</li>
+      <li>Ubah <tt>&gt;= 5000000</tt> menjadi <tt>&gt; 5000000</tt> di method <tt>persen</tt>, jalankan test lagi, dan baca laporan kegagalannya.</li>
+      <li>Tambahkan aturan diskon 15 persen untuk total mulai 50 juta — tulis test-nya dulu, baru kodenya.</li>
+    </ul>`
+  },
+  {
+    id: 'e07', level: 5,
+    title: 'Pola desain: singleton dan factory',
+    goal: 'Mengendalikan cara objek dibuat agar program mudah diubah.',
+    body: `
+      <p><b>Pola desain</b> adalah jawaban yang sudah teruji untuk masalah yang terus berulang. Dua pola yang paling sering muncul di kode SAP sama-sama mengatur satu hal: siapa yang boleh membuat objek, dan bagaimana caranya.</p>
+      <ul>
+        <li><b>Singleton</b>: class dengan <tt>CREATE PRIVATE</tt> tidak bisa dibuat dengan <tt>NEW</tt> dari luar. Satu-satunya jalan adalah method static (<tt>ambil</tt>), yang menyimpan objeknya di <tt>CLASS-DATA</tt> dan selalu mengembalikan objek yang sama. Cocok untuk pengaturan, log, atau buffer yang harus tunggal.</li>
+        <li><b>Factory</b>: sebuah method menerima "jenis" dan mengembalikan objek yang sesuai, bertipe interface. Pemanggil hanya mengenal interface-nya.</li>
+        <li>Karena itu, menambah jenis baru — misalnya pengiriman laut — hanya menyentuh factory dan satu class baru. Program utama tidak berubah.</li>
+        <li>Anda sudah memakai factory berkali-kali: <tt>cl_salv_table=>factory( )</tt>.</li>
+      </ul>
+      <p>Jangan berlebihan: singleton adalah data global yang tersamar dan menyulitkan unit test. Pakai hanya bila objeknya memang harus satu.</p>`,
+    code: `REPORT z_belajar_pola_desain.
+
+* --- Singleton: hanya boleh ada SATU objek pengaturan -----------------------
+CLASS lcl_pengaturan DEFINITION CREATE PRIVATE.
+  PUBLIC SECTION.
+    CLASS-METHODS ambil RETURNING VALUE(ro_objek) TYPE REF TO lcl_pengaturan.
+    DATA mv_mata_uang TYPE string VALUE 'IDR'.
+  PRIVATE SECTION.
+    CLASS-DATA go_satu TYPE REF TO lcl_pengaturan.
+ENDCLASS.
+
+CLASS lcl_pengaturan IMPLEMENTATION.
+  METHOD ambil.
+    IF go_satu IS NOT BOUND.
+      go_satu = NEW #( ).
+    ENDIF.
+    ro_objek = go_satu.
+  ENDMETHOD.
+ENDCLASS.
+
+* --- Factory: pemanggil meminta "sebuah pengirim", bukan class tertentu -------
+INTERFACE lif_pengirim.
+  METHODS nama   RETURNING VALUE(rv_nama) TYPE string.
+  METHODS ongkos IMPORTING iv_berat TYPE i RETURNING VALUE(rv_ongkos) TYPE i.
+ENDINTERFACE.
+
+CLASS lcl_darat DEFINITION.
+  PUBLIC SECTION.
+    INTERFACES lif_pengirim.
+ENDCLASS.
+CLASS lcl_darat IMPLEMENTATION.
+  METHOD lif_pengirim~nama.
+    rv_nama = 'Darat'.
+  ENDMETHOD.
+  METHOD lif_pengirim~ongkos.
+    rv_ongkos = iv_berat * 2000.
+  ENDMETHOD.
+ENDCLASS.
+
+CLASS lcl_udara DEFINITION.
+  PUBLIC SECTION.
+    INTERFACES lif_pengirim.
+ENDCLASS.
+CLASS lcl_udara IMPLEMENTATION.
+  METHOD lif_pengirim~nama.
+    rv_nama = 'Udara'.
+  ENDMETHOD.
+  METHOD lif_pengirim~ongkos.
+    rv_ongkos = iv_berat * 9000 + 25000.
+  ENDMETHOD.
+ENDCLASS.
+
+CLASS lcl_pabrik DEFINITION.
+  PUBLIC SECTION.
+    CLASS-METHODS buat IMPORTING iv_jenis TYPE string
+                       RETURNING VALUE(ro_pengirim) TYPE REF TO lif_pengirim.
+ENDCLASS.
+CLASS lcl_pabrik IMPLEMENTATION.
+  METHOD buat.
+    CASE iv_jenis.
+      WHEN 'UDARA'.
+        ro_pengirim = NEW lcl_udara( ).
+      WHEN OTHERS.
+        ro_pengirim = NEW lcl_darat( ).
+    ENDCASE.
+  ENDMETHOD.
+ENDCLASS.
+
+START-OF-SELECTION.
+* dua kali "ambil", tetapi objeknya satu: perubahan lewat go_a terlihat lewat go_b
+  DATA(go_a) = lcl_pengaturan=>ambil( ).
+  DATA(go_b) = lcl_pengaturan=>ambil( ).
+  go_a->mv_mata_uang = 'USD'.
+  WRITE: / 'Mata uang lewat go_b:', go_b->mv_mata_uang.
+
+* program utama tidak menyebut lcl_darat / lcl_udara sama sekali
+  DATA gt_jenis TYPE STANDARD TABLE OF string WITH EMPTY KEY.
+  gt_jenis = VALUE #( ( 'DARAT' ) ( 'UDARA' ) ).
+  SKIP.
+  LOOP AT gt_jenis INTO DATA(gv_jenis).
+    DATA(go_kirim)  = lcl_pabrik=>buat( gv_jenis ).
+    DATA(gv_nama)   = go_kirim->nama( ).
+    DATA(gv_ongkos) = go_kirim->ongkos( 10 ).
+    WRITE: / gv_nama, 10 gv_ongkos, 'untuk 10 kg'.
+  ENDLOOP.`,
+    task: `<ul>
+      <li>Tambahkan <tt>lcl_laut</tt> (ongkos = berat × 1.200 + 50.000) dan daftarkan di factory dengan jenis <tt>LAUT</tt>.</li>
+      <li>Tulis <tt>DATA(go_x) = NEW lcl_pengaturan( ).</tt> di program utama dan baca pesan error-nya.</li>
+      <li>Tambahkan method <tt>hari</tt> ke interface, yang mengembalikan lama pengiriman tiap jenis.</li>
+    </ul>`
+  },
+  {
+    id: 'e08', level: 5,
+    title: 'Pemrograman generik: RTTS dan SQL dinamis',
+    goal: 'Menulis satu program yang bekerja untuk tabel apa pun yang namanya baru diketahui saat program berjalan.',
+    body: `
+      <p>Di level Mahir Anda mengenal data reference dan <tt>ASSIGN COMPONENT</tt>. Pelajaran ini menggabungkannya dengan <b>RTTS</b> (Run Time Type Services) — kumpulan class yang menjelaskan tipe data saat program berjalan — untuk membuat penampil tabel serba guna, mirip transaksi SE16.</p>
+      <ul>
+        <li><tt>cl_abap_typedescr=>describe_by_name( nama )</tt> mengembalikan objek deskripsi tipe. Untuk struktur dan tabel database hasilnya di-<tt>CAST</tt> ke <tt>cl_abap_structdescr</tt>.</li>
+        <li>Atribut <tt>components</tt> berisi daftar kolom: <tt>name</tt>, <tt>type_kind</tt> (C teks, N teks numerik, D tanggal, P packed, I integer), <tt>length</tt>, dan <tt>decimals</tt>.</li>
+        <li><tt>CREATE DATA ref TYPE STANDARD TABLE OF (nama)</tt> membuat internal table yang bentuknya baru ditentukan saat program berjalan; <tt>ASSIGN ref-&gt;* TO &lt;fs&gt;</tt> membuatnya bisa dipakai.</li>
+        <li>Nama dalam kurung juga berlaku di Open SQL: <tt>FROM (p_tabel)</tt>, bahkan <tt>WHERE (gv_kondisi)</tt> dengan kondisi berupa teks.</li>
+        <li><tt>describe_by_data( variabel )</tt> melakukan hal yang sama untuk variabel yang sudah ada.</li>
+      </ul>
+      <p>Kode generik tidak diperiksa compiler: nama tabel yang salah baru ketahuan saat program berjalan. Dan jangan pernah menyusun <tt>WHERE</tt> dinamis langsung dari input pengguna tanpa memeriksanya — di situlah celah SQL injection.</p>`,
+    code: `REPORT z_belajar_generik.
+
+PARAMETERS: p_tabel TYPE string DEFAULT 'SCARR',
+            p_baris TYPE i DEFAULT 2.
+
+DATA: gr_data  TYPE REF TO data,
+      gv_kolom TYPE i.
+FIELD-SYMBOLS: <gt_data>  TYPE STANDARD TABLE,
+               <gs_baris> TYPE any,
+               <gv_nilai> TYPE any.
+
+START-OF-SELECTION.
+* 1) RTTS: bentuk tabel dikenali saat program berjalan
+  DATA(go_struk) = CAST cl_abap_structdescr( cl_abap_typedescr=>describe_by_name( p_tabel ) ).
+  gv_kolom = lines( go_struk->components ).
+  WRITE: / 'Tabel', p_tabel, 'punya', gv_kolom, 'kolom'.
+
+* 2) Internal table dibuat sesuai nama itu, lalu diisi dengan SELECT dinamis
+  CREATE DATA gr_data TYPE STANDARD TABLE OF (p_tabel).
+  ASSIGN gr_data->* TO <gt_data>.
+  SELECT * FROM (p_tabel) INTO TABLE <gt_data> UP TO p_baris ROWS.
+
+* 3) Semua kolom dicetak tanpa tahu satu pun namanya
+  LOOP AT <gt_data> ASSIGNING <gs_baris>.
+    SKIP.
+    LOOP AT go_struk->components INTO DATA(gs_kolom).
+      ASSIGN COMPONENT gs_kolom-name OF STRUCTURE <gs_baris> TO <gv_nilai>.
+      IF sy-subrc = 0.
+        WRITE: / gs_kolom-name, 14 gs_kolom-type_kind, 18 <gv_nilai>.
+      ENDIF.
+    ENDLOOP.
+  ENDLOOP.`,
+    task: `<ul>
+      <li>Jalankan lewat <b>Parameter (F8)</b> dengan tabel <tt>SFLIGHT</tt>, lalu <tt>KNA1</tt>, lalu nama yang tidak ada.</li>
+      <li>Tambahkan parameter <tt>p_where TYPE string</tt> dan pakai sebagai <tt>WHERE (p_where)</tt>; coba dengan <tt>CARRID = 'GA'</tt>.</li>
+      <li>Cetak juga <tt>length</tt> tiap kolom di samping <tt>type_kind</tt>.</li>
+    </ul>`
+  },
+  {
+    id: 'e09', level: 5,
+    title: 'Transaksi yang aman: otorisasi, lock, dan COMMIT',
+    goal: 'Mengubah data dengan benar: periksa hak, kunci dokumen, lalu simpan semuanya atau tidak sama sekali.',
+    body: `
+      <p>Membaca data itu aman; mengubahnya tidak. Program yang mengubah data di sistem produktif harus menjawab empat pertanyaan: bolehkah pengguna ini? Apakah orang lain sedang mengubah dokumen yang sama? Bagaimana bila gagal di tengah jalan? Dari mana nomor dokumen barunya?</p>
+      <ul>
+        <li><tt>AUTHORITY-CHECK OBJECT … ID … FIELD …</tt> memeriksa otorisasi pengguna; <tt>sy-subrc = 0</tt> berarti boleh. Pemeriksaan ini tidak otomatis — program yang lupa memanggilnya membiarkan semua orang masuk.</li>
+        <li>Lock object (dibuat di SE11) menghasilkan dua function module: <tt>ENQUEUE_…</tt> untuk mengunci dan <tt>DEQUEUE_…</tt> untuk melepas. Exception <tt>FOREIGN_LOCK</tt> berarti dokumen sedang dikunci orang lain; namanya ada di <tt>sy-msgv1</tt>.</li>
+        <li>Kunci SAP bersifat <b>logis</b>: ia hanya berlaku bagi program yang ikut memanggil <tt>ENQUEUE</tt>. Database sendiri tidak menghalangi apa pun.</li>
+        <li>Semua perubahan sejak <tt>COMMIT WORK</tt> terakhir membentuk satu unit kerja (LUW). <tt>COMMIT WORK</tt> menyimpannya permanen, <tt>ROLLBACK WORK</tt> membatalkan semuanya.</li>
+        <li><tt>NUMBER_GET_NEXT</tt> mengambil nomor berikutnya dari number range (transaksi SNRO) — jangan menghitung sendiri dengan <tt>MAX( ) + 1</tt>.</li>
+        <li>BAPI tidak melempar exception. Hasilnya dilaporkan lewat parameter <tt>RETURN</tt>: periksa field <tt>type</tt> (<tt>E</tt> atau <tt>A</tt> berarti gagal). BAPI juga tidak pernah commit sendiri — panggil <tt>BAPI_TRANSACTION_COMMIT</tt> sesudahnya.</li>
+      </ul>
+      <p>Di simulator, order <tt>0000000012</tt> sedang dikunci pengguna BUDI, dan otorisasi menghapus (<tt>ACTVT</tt> 06) ditolak — pakai keduanya untuk mencoba jalur gagal.</p>`,
+    code: `REPORT z_belajar_transaksi.
+
+PARAMETERS: p_vbeln TYPE vbak-vbeln DEFAULT '0000000010',
+            p_naik  TYPE i DEFAULT 10.              " kenaikan nilai dalam persen
+
+DATA: gv_lama  TYPE vbak-netwr,
+      gv_baru  TYPE vbak-netwr,
+      gv_nomor TYPE n LENGTH 10,
+      gs_mat   TYPE bapimatdoa,
+      gs_ret   TYPE bapireturn.
+
+START-OF-SELECTION.
+* 1) Otorisasi: bolehkah pengguna ini mengubah (ACTVT 02) order?
+  AUTHORITY-CHECK OBJECT 'V_VBAK_AAT' ID 'AUART' FIELD 'TA' ID 'ACTVT' FIELD '02'.
+  IF sy-subrc <> 0.
+    MESSAGE 'Tidak punya otorisasi untuk mengubah order' TYPE 'E'.
+  ENDIF.
+
+* 2) Kunci dokumennya, supaya tidak diubah dua orang pada saat yang sama
+  CALL FUNCTION 'ENQUEUE_EVVBAKE'
+    EXPORTING
+      vbeln          = p_vbeln
+    EXCEPTIONS
+      foreign_lock   = 1
+      system_failure = 2
+      OTHERS         = 3.
+  IF sy-subrc <> 0.
+    WRITE: / 'Order', p_vbeln, 'sedang dibuka oleh', sy-msgv1, '- coba lagi nanti.'.
+    RETURN.
+  ENDIF.
+
+* 3) Ubah datanya. Semua perubahan baru permanen setelah COMMIT WORK.
+  SELECT SINGLE netwr FROM vbak INTO gv_lama WHERE vbeln = p_vbeln.
+  IF sy-subrc = 0.
+    gv_baru = gv_lama * ( 100 + p_naik ) / 100.
+    UPDATE vbak SET netwr = gv_baru WHERE vbeln = p_vbeln.
+    CALL FUNCTION 'NUMBER_GET_NEXT'
+      EXPORTING
+        nr_range_nr = '01'
+        object      = 'ZUBAH'
+      IMPORTING
+        number      = gv_nomor.
+    COMMIT WORK.
+    WRITE: / 'Nilai lama :', gv_lama.
+    WRITE: / 'Nilai baru :', gv_baru.
+    WRITE: / 'Nomor perubahan:', gv_nomor.
+  ELSE.
+    ROLLBACK WORK.
+    WRITE: / 'Order', p_vbeln, 'tidak ada - tidak ada yang diubah.'.
+  ENDIF.
+
+* 4) Lepaskan kunci - selalu, apa pun hasilnya
+  CALL FUNCTION 'DEQUEUE_EVVBAKE'
+    EXPORTING
+      vbeln = p_vbeln.
+
+* 5) BAPI melaporkan masalah lewat parameter RETURN, bukan lewat exception
+  CALL FUNCTION 'BAPI_MATERIAL_GET_DETAIL'
+    EXPORTING
+      material              = '9999-999'
+    IMPORTING
+      material_general_data = gs_mat
+      return                = gs_ret.
+  SKIP.
+  IF gs_ret-type = 'E'.
+    WRITE: / 'BAPI mengembalikan error:', gs_ret-message.
+  ENDIF.`,
+    task: `<ul>
+      <li>Jalankan lewat <b>Parameter (F8)</b> dengan order <tt>0000000012</tt> dan baca pesan kuncinya.</li>
+      <li>Ganti <tt>ACTVT</tt> menjadi <tt>06</tt> dan jalankan lagi.</li>
+      <li>Ganti <tt>COMMIT WORK</tt> dengan <tt>ROLLBACK WORK</tt>, lalu tambahkan <tt>SELECT SINGLE</tt> di akhir program untuk membuktikan nilainya kembali ke semula.</li>
+    </ul>`
+  },
+  {
+    id: 'e10', level: 5,
+    title: 'Studi kasus: laporan order-to-cash',
+    goal: 'Menggabungkan teknik level Pakar dalam satu laporan lintas dokumen.',
+    body: `
+      <p><b>Order-to-cash</b> adalah alur penjualan di SAP: sales order (VBAK/VBAP) → delivery (LIKP/LIPS) → billing (VBRK/VBRP). Dokumen-dokumen itu saling merujuk: <tt>LIPS-VGBEL</tt> dan <tt>VBRP-AUBEL</tt> berisi nomor order asalnya. Laporan ini menjawab pertanyaan sehari-hari bagian penjualan: order mana yang sudah dikirim, dan mana yang sudah ditagih?</p>
+      <ul>
+        <li><b>Tiga SELECT, tidak satu pun di dalam loop</b>: order beserta nama pelanggan lewat <tt>JOIN</tt>; nilai tagihan dan jumlah item terkirim dihitung database dengan <tt>SUM</tt> / <tt>COUNT</tt> dan <tt>GROUP BY</tt>.</li>
+        <li><b>Pencarian di memori</b>: <tt>VALUE #( tabel[ … ]-kolom OPTIONAL )</tt> membaca satu nilai dan mengembalikan nilai awal bila barisnya tidak ada — tanpa exception.</li>
+        <li><b>Status dengan COND</b>: urutan <tt>WHEN</tt> menentukan, karena kondisi pertama yang benar itulah yang dipakai.</li>
+        <li><b>Ringkasan dengan GROUP BY</b>: jumlah dan nilai order per status.</li>
+        <li><b>Class dengan tanggung jawab terpisah</b>: <tt>ambil_data</tt>, <tt>ringkas</tt>, <tt>tampilkan</tt>.</li>
+      </ul>
+      <p>Buka menu <b>Tabel</b> untuk melihat isi LIKP, LIPS, VBRK, dan VBRP, lalu cocokkan satu order dengan barisnya di laporan.</p>`,
+    code: `REPORT z_studi_order_to_cash.
+
+PARAMETERS p_vkorg TYPE vbak-vkorg DEFAULT '1000'.
+
+CLASS lcl_o2c DEFINITION.
+  PUBLIC SECTION.
+    TYPES: BEGIN OF ty_baris,
+             vbeln   TYPE vbak-vbeln,
+             name1   TYPE kna1-name1,
+             netwr   TYPE vbak-netwr,
+             dikirim TYPE i,
+             ditagih TYPE vbak-netwr,
+             status  TYPE string,
+           END OF ty_baris,
+           tt_baris TYPE STANDARD TABLE OF ty_baris WITH EMPTY KEY.
+    METHODS constructor IMPORTING iv_vkorg TYPE vbak-vkorg.
+    METHODS ambil_data.
+    METHODS ringkas.
+    METHODS tampilkan.
+  PRIVATE SECTION.
+    DATA: mv_vkorg TYPE vbak-vkorg,
+          mt_data  TYPE tt_baris.
+ENDCLASS.
+
+CLASS lcl_o2c IMPLEMENTATION.
+  METHOD constructor.
+    mv_vkorg = iv_vkorg.
+  ENDMETHOD.
+
+  METHOD ambil_data.
+*   order + nama pelanggan: satu SELECT dengan JOIN
+    SELECT a~vbeln, k~name1, a~netwr
+      FROM vbak AS a INNER JOIN kna1 AS k ON k~kunnr = a~kunnr
+      WHERE a~vkorg = @mv_vkorg
+      ORDER BY a~vbeln
+      INTO CORRESPONDING FIELDS OF TABLE @mt_data.
+    IF mt_data IS INITIAL.
+      RETURN.
+    ENDIF.
+
+*   nilai tagihan dan jumlah item terkirim: dihitung database, dibaca SEKALI
+    SELECT aubel, SUM( netwr ) AS nilai FROM vbrp
+      GROUP BY aubel
+      INTO TABLE @DATA(lt_tagih).
+    SELECT vgbel, COUNT( * ) AS jumlah FROM lips
+      GROUP BY vgbel
+      INTO TABLE @DATA(lt_kirim).
+
+    LOOP AT mt_data ASSIGNING FIELD-SYMBOL(<ls_baris>).
+      <ls_baris>-ditagih = VALUE #( lt_tagih[ aubel = <ls_baris>-vbeln ]-nilai OPTIONAL ).
+      <ls_baris>-dikirim = VALUE #( lt_kirim[ vgbel = <ls_baris>-vbeln ]-jumlah OPTIONAL ).
+      <ls_baris>-status = COND #(
+        WHEN <ls_baris>-ditagih >= <ls_baris>-netwr THEN 'DITAGIH PENUH'
+        WHEN <ls_baris>-ditagih > 0                 THEN 'DITAGIH SEBAGIAN'
+        WHEN <ls_baris>-dikirim > 0                 THEN 'DIKIRIM'
+        ELSE 'BUKA' ).
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD ringkas.
+    DATA lv_nilai TYPE vbak-netwr.
+    LOOP AT mt_data INTO DATA(ls_baris)
+         GROUP BY ( status = ls_baris-status jumlah = GROUP SIZE )
+         ASCENDING INTO DATA(ls_grup).
+      CLEAR lv_nilai.
+      LOOP AT GROUP ls_grup INTO DATA(ls_anggota).
+        lv_nilai = lv_nilai + ls_anggota-netwr.
+      ENDLOOP.
+      WRITE: / ls_grup-status, 20 ls_grup-jumlah, 'order', 34 lv_nilai.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD tampilkan.
+    DATA lo_alv TYPE REF TO cl_salv_table.
+    TRY.
+        cl_salv_table=>factory( IMPORTING r_salv_table = lo_alv
+                                CHANGING  t_table      = mt_data ).
+        lo_alv->get_columns( )->set_optimize( ).
+        lo_alv->get_display_settings( )->set_list_header( 'Order to cash' ).
+        lo_alv->display( ).
+      CATCH cx_salv_msg INTO DATA(lx_salv).
+        MESSAGE lx_salv->get_text( ) TYPE 'I'.
+    ENDTRY.
+  ENDMETHOD.
+ENDCLASS.
+
+START-OF-SELECTION.
+  DATA(go_laporan) = NEW lcl_o2c( p_vkorg ).
+  go_laporan->ambil_data( ).
+  go_laporan->ringkas( ).
+  go_laporan->tampilkan( ).`,
+    task: `<ul>
+      <li>Tambahkan kolom <tt>sisa</tt>: nilai order dikurangi nilai yang sudah ditagih.</li>
+      <li>Tambahkan parameter yang menyaring laporan menurut status.</li>
+      <li>Pindahkan aturan status ke method tersendiri yang menerima <tt>netwr</tt>, <tt>ditagih</tt>, <tt>dikirim</tt>, lalu tulis test class untuknya.</li>
+      <li>Ganti pencarian <tt>lt_tagih[ … ]</tt> dengan tabel <tt>HASHED</tt> ber-key <tt>aubel</tt>.</li>
     </ul>`
   }
 ];
