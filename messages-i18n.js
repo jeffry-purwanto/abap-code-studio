@@ -1,0 +1,488 @@
+// messages-i18n.js — translations of the simulator's messages (errors, warnings, notes)
+// ABAP Code Studio — Created by jeffrypurwanto
+//
+// abap-interpreter.js keeps producing its messages in Indonesian (the source language);
+// nothing in the interpreter depends on this file. When a message is DISPLAYED, the UI
+// asks MSG_I18N.message(text) / MSG_I18N.output(text), which match the text against the
+// patterns below and rebuild it in the current language. {1}..{9} stand for the variable
+// parts (names, values). A message without a matching pattern is shown unchanged, so a
+// new or changed interpreter message can never break anything — it just stays Indonesian
+// until a pattern is added here.
+//
+// Entry: [ indonesian, english, german, chinese, flags ]
+//   flags 'x' = text of a system exception (may also appear inside program output,
+//               e.g. WRITE lx->get_text( ), so it is also matched at the end of a line)
+(function () {
+  'use strict';
+
+  const M = [
+    // ── selection screen / program flow ─────────────────────────────────────────────
+    [`{1} bertanda OBLIGATORY tetapi kosong — di SAP selection screen menolak dijalankan sampai field ini diisi (isi lewat tombol Parameters / F8). Simulator tetap melanjutkan.`,
+     `{1} is marked OBLIGATORY but is empty — in SAP the selection screen refuses to run until this field is filled (fill it via the Parameter button / F8). The simulator continues anyway.`,
+     `{1} ist als OBLIGATORY markiert, aber leer — in SAP verweigert das Selektionsbild die Ausführung, bis dieses Feld gefüllt ist (über die Schaltfläche Parameter / F8 füllen). Der Simulator läuft trotzdem weiter.`,
+     `{1} 标记为 OBLIGATORY 但为空——在 SAP 中，选择屏幕会拒绝执行，直到填写该字段（通过“参数”按钮 / F8 填写）。模拟器仍继续运行。`],
+    [`Maximum execution steps exceeded (infinite loop?)`,
+     `Maximum execution steps exceeded (infinite loop?)`,
+     `Maximale Anzahl an Ausführungsschritten überschritten (Endlosschleife?)`,
+     `超过最大执行步数（死循环？）`],
+    [`ASSERT gagal: kondisi "{1}" tidak terpenuhi (di SAP: short dump ASSERTION_FAILED)`,
+     `ASSERT failed: the condition "{1}" is not met (in SAP: short dump ASSERTION_FAILED)`,
+     `ASSERT fehlgeschlagen: Die Bedingung "{1}" ist nicht erfüllt (in SAP: Short Dump ASSERTION_FAILED)`,
+     `ASSERT 失败：条件“{1}”不成立（在 SAP 中：short dump ASSERTION_FAILED）`],
+    [`CALL {1}: Dynpro / screen tidak disimulasikan (screen dibuat di Screen Painter, bukan di kode program) — dilewati`,
+     `CALL {1}: Dynpro / screens are not simulated (screens are built in the Screen Painter, not in program code) — skipped`,
+     `CALL {1}: Dynpro / Bilder werden nicht simuliert (Bilder entstehen im Screen Painter, nicht im Programmcode) — übersprungen`,
+     `CALL {1}：不模拟 Dynpro / 屏幕（屏幕在 Screen Painter 中创建，而不是在程序代码中）——已跳过`],
+    [`[CALL TRANSACTION] {1} — di SAP transaksi ini akan terbuka; simulator tidak menjalankannya`,
+     `[CALL TRANSACTION] {1} — in SAP this transaction would open; the simulator does not run it`,
+     `[CALL TRANSACTION] {1} — in SAP würde diese Transaktion geöffnet; der Simulator führt sie nicht aus`,
+     `[CALL TRANSACTION] {1} ——在 SAP 中会打开此事务；模拟器不会执行它`],
+    [`[SUBMIT] program {1} tidak dijalankan di simulator`,
+     `[SUBMIT] program {1} is not executed in the simulator`,
+     `[SUBMIT] Programm {1} wird im Simulator nicht ausgeführt`,
+     `[SUBMIT] 模拟器不执行程序 {1}`],
+    [`Text symbol {1} tidak bisa diisi lewat kode — di SAP teksnya diisi di menu Goto → Text Elements (assignment ini syntax error). Simulator tetap menyimpan nilainya.`,
+     `Text symbol {1} cannot be filled from code — in SAP its text is maintained under Goto → Text Elements (this assignment is a syntax error). The simulator stores the value anyway.`,
+     `Textsymbol {1} kann nicht im Code gefüllt werden — in SAP wird der Text unter Springen → Textelemente gepflegt (diese Zuweisung ist ein Syntaxfehler). Der Simulator speichert den Wert trotzdem.`,
+     `文本符号 {1} 不能通过代码赋值——在 SAP 中其文本在菜单 Goto → Text Elements 中维护（此赋值是语法错误）。模拟器仍会保存该值。`],
+    [`Statement "{1} ..." belum didukung simulator — dilewati`,
+     `Statement "{1} ..." is not supported by the simulator yet — skipped`,
+     `Anweisung "{1} ..." wird vom Simulator noch nicht unterstützt — übersprungen`,
+     `模拟器尚不支持语句“{1} ...”——已跳过`],
+    [`Statement "{1}" tidak dikenali simulator — dilewati`,
+     `Statement "{1}" is not recognised by the simulator — skipped`,
+     `Anweisung "{1}" wird vom Simulator nicht erkannt — übersprungen`,
+     `模拟器无法识别语句“{1}”——已跳过`],
+    [`⛔ Pesan error di AT SELECTION-SCREEN: pengguna dikembalikan ke selection screen, program tidak dijalankan.`,
+     `⛔ Error message in AT SELECTION-SCREEN: the user is returned to the selection screen; the program is not executed.`,
+     `⛔ Fehlermeldung in AT SELECTION-SCREEN: Der Benutzer kehrt zum Selektionsbild zurück, das Programm wird nicht ausgeführt.`,
+     `⛔ AT SELECTION-SCREEN 中出现错误消息：用户被带回选择屏幕，程序未执行。`],
+    [`⛔ Program dihentikan oleh MESSAGE tipe {1}.`,
+     `⛔ Program stopped by a MESSAGE of type {1}.`,
+     `⛔ Programm durch eine MESSAGE vom Typ {1} gestoppt.`,
+     `⛔ 程序被类型为 {1} 的 MESSAGE 中止。`],
+    [`── Secondary list (baris dipilih: {1}) ──`,
+     `── Secondary list (selected line: {1}) ──`,
+     `── Verzweigungsliste (gewählte Zeile: {1}) ──`,
+     `── 二级列表（所选行：{1}）──`],
+
+    // ── variables, assignments, structures ──────────────────────────────────────────
+    [`Target assignment "{1}" tidak bisa diisi`,
+     `The assignment target "{1}" cannot be filled`,
+     `Das Zuweisungsziel "{1}" kann nicht gefüllt werden`,
+     `赋值目标“{1}”无法赋值`],
+    [`"{1}" bersifat READ-ONLY / CONSTANTS dan tidak boleh diubah`,
+     `"{1}" is READ-ONLY / CONSTANTS and must not be changed`,
+     `"{1}" ist READ-ONLY / CONSTANTS und darf nicht geändert werden`,
+     `“{1}”是 READ-ONLY / CONSTANTS，不允许修改`],
+    [`"{1}" adalah CONSTANTS dan tidak boleh diubah`,
+     `"{1}" is a CONSTANTS value and must not be changed`,
+     `"{1}" ist eine Konstante (CONSTANTS) und darf nicht geändert werden`,
+     `“{1}”是 CONSTANTS，不允许修改`],
+    [`Nilai "{1}" tidak bisa dikonversi menjadi angka{2}`,
+     `The value "{1}" cannot be converted to a number{2}`,
+     `Der Wert "{1}" kann nicht in eine Zahl konvertiert werden{2}`,
+     `值“{1}”无法转换为数字{2}`, 'x'],
+    [` untuk {1}`, ` for {1}`, ` für {1}`, `（用于 {1}）`],
+    [`Nilai "{1}" terpotong menjadi "{2}"{3} bertipe C dengan panjang {4}`,
+     `The value "{1}" was truncated to "{2}"{3} — type C with length {4}`,
+     `Der Wert "{1}" wurde auf "{2}" gekürzt{3} — Typ C mit Länge {4}`,
+     `值“{1}”被截断为“{2}”{3}——类型 C，长度 {4}`],
+    [` karena {1}`, ` because of {1}`, ` wegen {1}`, `（因为 {1}）`],
+    [`"{1}" dipakai tanpa dideklarasikan (DATA {2} TYPE ...). Di SAP ini syntax error; simulator membuatnya otomatis.`,
+     `"{1}" is used without being declared (DATA {2} TYPE ...). In SAP this is a syntax error; the simulator creates it automatically.`,
+     `"{1}" wird ohne Deklaration verwendet (DATA {2} TYPE ...). In SAP ist das ein Syntaxfehler; der Simulator legt die Variable automatisch an.`,
+     `“{1}”未声明就被使用（DATA {2} TYPE ...）。在 SAP 中这是语法错误；模拟器会自动创建它。`],
+    [`"{1}" belum dideklarasikan (atau hanya dikenal di dalam FORM / METHOD lain). Di SAP ini syntax error.`,
+     `"{1}" is not declared (or is only known inside another FORM / METHOD). In SAP this is a syntax error.`,
+     `"{1}" ist nicht deklariert (oder nur innerhalb einer anderen FORM / METHOD bekannt). In SAP ist das ein Syntaxfehler.`,
+     `“{1}”尚未声明（或只在另一个 FORM / METHOD 内可见）。在 SAP 中这是语法错误。`],
+    [`REF: "{1}" belum dideklarasikan`, `REF: "{1}" is not declared`, `REF: "{1}" ist nicht deklariert`, `REF：“{1}”尚未声明`],
+    [`"{1}" belum dideklarasikan`, `"{1}" is not declared`, `"{1}" ist nicht deklariert`, `“{1}”尚未声明`],
+    [`"{1}" adalah internal table tanpa header line — komponen "{2}" tidak bisa diakses langsung (gunakan work area)`,
+     `"{1}" is an internal table without a header line — the component "{2}" cannot be accessed directly (use a work area)`,
+     `"{1}" ist eine interne Tabelle ohne Kopfzeile — auf die Komponente "{2}" kann nicht direkt zugegriffen werden (Work Area verwenden)`,
+     `“{1}”是没有表头行的内表——不能直接访问组件“{2}”（请使用工作区）`],
+    [`"{1}" bukan struktur, tidak punya komponen "{2}"`,
+     `"{1}" is not a structure and has no component "{2}"`,
+     `"{1}" ist keine Struktur und hat keine Komponente "{2}"`,
+     `“{1}”不是结构体，没有组件“{2}”`],
+    [`Struktur "{1}" tidak punya komponen "{2}"`,
+     `The structure "{1}" has no component "{2}"`,
+     `Die Struktur "{1}" hat keine Komponente "{2}"`,
+     `结构体“{1}”没有组件“{2}”`],
+    [`INCLUDE {1} {2}: struktur tidak dikenal`, `INCLUDE {1} {2}: unknown structure`, `INCLUDE {1} {2}: unbekannte Struktur`, `INCLUDE {1} {2}：未知的结构`],
+    [`MOVE-CORRESPONDING: {1} bukan struktur`, `MOVE-CORRESPONDING: {1} is not a structure`, `MOVE-CORRESPONDING: {1} ist keine Struktur`, `MOVE-CORRESPONDING：{1} 不是结构体`],
+    [`"{1}" dipakai dalam perhitungan tetapi bukan angka`,
+     `"{1}" is used in a calculation but is not a number`,
+     `"{1}" wird in einer Berechnung verwendet, ist aber keine Zahl`,
+     `“{1}”被用于计算，但它不是数字`, 'x'],
+    [`Division by zero (pembagian dengan nol)`, `Division by zero`, `Division durch null`, `除以零`, 'x'],
+
+    // ── internal tables ─────────────────────────────────────────────────────────────
+    [`{1}: target "{2}" bukan internal table, melainkan {3}.{4} (Di SAP ini syntax error; simulator melewati baris ini.)`,
+     `{1}: the target "{2}" is not an internal table but {3}.{4} (In SAP this is a syntax error; the simulator skips this line.)`,
+     `{1}: Das Ziel "{2}" ist keine interne Tabelle, sondern {3}.{4} (In SAP ist das ein Syntaxfehler; der Simulator überspringt diese Zeile.)`,
+     `{1}：目标“{2}”不是内表，而是{3}。{4}（在 SAP 中这是语法错误；模拟器跳过此行。）`],
+    [`komponen struktur bertipe elementer`, `a structure component of an elementary type`, `eine Strukturkomponente elementaren Typs`, `基本类型的结构体组件`],
+    [`komponen struktur bertipe {1}`, `a structure component of type {1}`, `eine Strukturkomponente vom Typ {1}`, `类型为 {1} 的结构体组件`],
+    [`struktur / work area`, `a structure / work area`, `eine Struktur / Work Area`, `结构体 / 工作区`],
+    [`variabel bertipe {1}`, `a variable of type {1}`, `eine Variable vom Typ {1}`, `类型为 {1} 的变量`],
+    [` Mungkin maksud Anda: {1}. — kalau baris itu sudah ada, hapus saja baris ini.`,
+     ` Did you mean: {1}. — if that line already exists, simply delete this one.`,
+     ` Meinten Sie: {1}. — falls diese Zeile schon existiert, löschen Sie einfach diese hier.`,
+     ` 您是否想写：{1}. ——如果那一行已经存在，直接删除本行即可。`],
+    [`{1}: "{2}" bukan internal table.{3}`,
+     `{1}: "{2}" is not an internal table.{3}`,
+     `{1}: "{2}" ist keine interne Tabelle.{3}`,
+     `{1}：“{2}”不是内表。{3}`],
+    [`cl_salv_table=>factory: t_table = {1} bukan internal table`,
+     `cl_salv_table=>factory: t_table = {1} is not an internal table`,
+     `cl_salv_table=>factory: t_table = {1} ist keine interne Tabelle`,
+     `cl_salv_table=>factory：t_table = {1} 不是内表`, 'x'],
+    [`{1}: "{2}" bukan internal table`,
+     `{1}: "{2}" is not an internal table`,
+     `{1}: "{2}" ist keine interne Tabelle`,
+     `{1}：“{2}”不是内表`],
+    [`APPEND tanpa "TO itab" hanya berlaku untuk internal table yang punya header line (OCCURS / WITH HEADER LINE)`,
+     `APPEND without "TO itab" is only valid for an internal table with a header line (OCCURS / WITH HEADER LINE)`,
+     `APPEND ohne "TO itab" gilt nur für interne Tabellen mit Kopfzeile (OCCURS / WITH HEADER LINE)`,
+     `不带“TO itab”的 APPEND 只适用于带表头行的内表（OCCURS / WITH HEADER LINE）`],
+    [`APPEND tidak boleh dipakai untuk HASHED TABLE "{1}" — gunakan INSERT ... INTO TABLE`,
+     `APPEND must not be used for the HASHED TABLE "{1}" — use INSERT ... INTO TABLE`,
+     `APPEND darf für die HASHED TABLE "{1}" nicht verwendet werden — verwenden Sie INSERT ... INTO TABLE`,
+     `APPEND 不能用于 HASHED TABLE“{1}”——请使用 INSERT ... INTO TABLE`],
+    [`APPEND merusak urutan SORTED TABLE "{1}" (di SAP: short dump ITAB_ILLEGAL_SORT_ORDER). Gunakan INSERT ... INTO TABLE.`,
+     `APPEND breaks the sort order of the SORTED TABLE "{1}" (in SAP: short dump ITAB_ILLEGAL_SORT_ORDER). Use INSERT ... INTO TABLE.`,
+     `APPEND verletzt die Sortierreihenfolge der SORTED TABLE "{1}" (in SAP: Short Dump ITAB_ILLEGAL_SORT_ORDER). Verwenden Sie INSERT ... INTO TABLE.`,
+     `APPEND 破坏了 SORTED TABLE“{1}”的排序顺序（在 SAP 中：short dump ITAB_ILLEGAL_SORT_ORDER）。请使用 INSERT ... INTO TABLE。`],
+    [`MODIFY tanpa INDEX / WHERE hanya bisa dipakai di dalam LOOP AT tabel yang sama`,
+     `MODIFY without INDEX / WHERE can only be used inside a LOOP AT over the same table`,
+     `MODIFY ohne INDEX / WHERE kann nur innerhalb einer LOOP AT über dieselbe Tabelle verwendet werden`,
+     `不带 INDEX / WHERE 的 MODIFY 只能在对同一张表的 LOOP AT 内使用`],
+    [`LOOP AT {1}: bukan internal table{2}`, `LOOP AT {1}: not an internal table{2}`, `LOOP AT {1}: keine interne Tabelle{2}`, `LOOP AT {1}：不是内表{2}`],
+    [` (belum dideklarasikan)`, ` (not declared)`, ` (nicht deklariert)`, `（未声明）`],
+    [`LOOP AT ... GROUP BY belum didukung simulator — loop dijalankan tanpa pengelompokan`,
+     `LOOP AT ... GROUP BY is not supported by the simulator yet — the loop runs without grouping`,
+     `LOOP AT ... GROUP BY wird vom Simulator noch nicht unterstützt — die Schleife läuft ohne Gruppierung`,
+     `模拟器尚不支持 LOOP AT ... GROUP BY——循环在不分组的情况下执行`],
+    [`LOOP AT {1} tanpa INTO / ASSIGNING hanya berlaku untuk tabel dengan header line`,
+     `LOOP AT {1} without INTO / ASSIGNING is only valid for tables with a header line`,
+     `LOOP AT {1} ohne INTO / ASSIGNING gilt nur für Tabellen mit Kopfzeile`,
+     `不带 INTO / ASSIGNING 的 LOOP AT {1} 只适用于带表头行的表`],
+    [`AT {1} hanya boleh dipakai di dalam LOOP AT internal table`,
+     `AT {1} may only be used inside a LOOP AT over an internal table`,
+     `AT {1} darf nur innerhalb einer LOOP AT über eine interne Tabelle verwendet werden`,
+     `AT {1} 只能在对内表的 LOOP AT 内使用`],
+    [`SUM hanya boleh dipakai di dalam AT ... ENDAT`, `SUM may only be used inside AT ... ENDAT`, `SUM darf nur innerhalb von AT ... ENDAT verwendet werden`, `SUM 只能在 AT ... ENDAT 内使用`],
+    [`Baris {1} tidak ada`, `The row {1} does not exist`, `Die Zeile {1} existiert nicht`, `行 {1} 不存在`, 'x'],
+    [`(tabel kosong)`, `(empty table)`, `(leere Tabelle)`, `（空表）`],
+
+    // ── Open SQL ────────────────────────────────────────────────────────────────────
+    [`{1}: tabel database "{2}" tidak ada di dummy database. Tersedia: {3}`,
+     `{1}: the database table "{2}" does not exist in the sample database. Available: {3}`,
+     `{1}: Die Datenbanktabelle "{2}" gibt es in der Beispieldatenbank nicht. Verfügbar: {3}`,
+     `{1}：示例数据库中没有数据库表“{2}”。可用的表：{3}`],
+    [`Tabel database "{1}" tidak ada di dummy database. Tersedia: {2}`,
+     `The database table "{1}" does not exist in the sample database. Available: {2}`,
+     `Die Datenbanktabelle "{1}" gibt es in der Beispieldatenbank nicht. Verfügbar: {2}`,
+     `示例数据库中没有数据库表“{1}”。可用的表：{2}`],
+    [`SELECT: kolom "{1}" tidak ada di tabel {2}`,
+     `SELECT: the column "{1}" does not exist in table {2}`,
+     `SELECT: Die Spalte "{1}" gibt es in der Tabelle {2} nicht`,
+     `SELECT：表 {2} 中没有列“{1}”`],
+    [`SELECT: kolom "{1}" dipakai bersama fungsi agregat, jadi harus disebut di GROUP BY`,
+     `SELECT: the column "{1}" is used together with an aggregate function, so it must be listed in GROUP BY`,
+     `SELECT: Die Spalte "{1}" wird zusammen mit einer Aggregatfunktion verwendet und muss daher im GROUP BY stehen`,
+     `SELECT：列“{1}”与聚合函数一起使用，因此必须出现在 GROUP BY 中`],
+    [`FOR ALL ENTRIES IN {1}: bukan internal table`, `FOR ALL ENTRIES IN {1}: not an internal table`, `FOR ALL ENTRIES IN {1}: keine interne Tabelle`, `FOR ALL ENTRIES IN {1}：不是内表`],
+    [`FOR ALL ENTRIES: tabel driver {1} kosong → WHERE diabaikan dan SEMUA baris terambil (perilaku asli SAP). Selalu cek "IF {2} IS NOT INITIAL" sebelum SELECT.`,
+     `FOR ALL ENTRIES: the driver table {1} is empty → the WHERE is ignored and ALL rows are read (real SAP behaviour). Always check "IF {2} IS NOT INITIAL" before the SELECT.`,
+     `FOR ALL ENTRIES: Die Treibertabelle {1} ist leer → das WHERE wird ignoriert und ALLE Zeilen werden gelesen (echtes SAP-Verhalten). Prüfen Sie vor dem SELECT immer "IF {2} IS NOT INITIAL".`,
+     `FOR ALL ENTRIES：驱动表 {1} 为空 → WHERE 被忽略，读取了所有行（SAP 的真实行为）。SELECT 之前务必检查“IF {2} IS NOT INITIAL”。`],
+
+    // ── FORM / PERFORM / function modules ───────────────────────────────────────────
+    [`PERFORM "{1}": FORM tidak ditemukan di program ini`,
+     `PERFORM "{1}": the FORM was not found in this program`,
+     `PERFORM "{1}": Die FORM wurde in diesem Programm nicht gefunden`,
+     `PERFORM“{1}”：在本程序中找不到该 FORM`],
+    [`{1}: FORM "{2}" tidak ditemukan di program ini`,
+     `{1}: FORM "{2}" was not found in this program`,
+     `{1}: FORM "{2}" wurde in diesem Programm nicht gefunden`,
+     `{1}：在本程序中找不到 FORM“{2}”`],
+    [`{1}: pemanggilan terlalu dalam (rekursi tanpa akhir?)`,
+     `{1}: the call nesting is too deep (endless recursion?)`,
+     `{1}: Aufrufe zu tief verschachtelt (Endlosrekursion?)`,
+     `{1}：调用层次过深（无限递归？）`],
+    [`PERFORM {1}: jumlah parameter aktual ({2}) berbeda dengan definisi FORM ({3})`,
+     `PERFORM {1}: the number of actual parameters ({2}) differs from the FORM definition ({3})`,
+     `PERFORM {1}: Die Anzahl der Aktualparameter ({2}) weicht von der FORM-Definition ({3}) ab`,
+     `PERFORM {1}：实际参数个数（{2}）与 FORM 定义（{3}）不一致`],
+    [`Function module "{1}" belum disimulasikan — pemanggilan dilewati (sy-subrc = 0). Daftar function module yang tersedia ada di menu Docs → Function Module.`,
+     `The function module "{1}" is not simulated — the call is skipped (sy-subrc = 0). The list of available function modules is under Docs → Function Module.`,
+     `Der Funktionsbaustein "{1}" wird nicht simuliert — der Aufruf wird übersprungen (sy-subrc = 0). Die Liste der verfügbaren Funktionsbausteine steht unter Doku → Funktionsbaustein.`,
+     `函数模块“{1}”尚未模拟——调用被跳过（sy-subrc = 0）。可用函数模块的列表见 文档 → 函数模块。`],
+    [`Function module "{1}" belum disimulasikan di studio ini (akan dilewati saat Run)`,
+     `The function module "{1}" is not simulated in this studio (it will be skipped at Run)`,
+     `Der Funktionsbaustein "{1}" wird in diesem Studio nicht simuliert (wird beim Ausführen übersprungen)`,
+     `函数模块“{1}”在本工作室中尚未模拟（运行时将被跳过）`],
+    [`[FM] {1} — belum disimulasikan, dilewati`, `[FM] {1} — not simulated, skipped`, `[FM] {1} — nicht simuliert, übersprungen`, `[FM] {1} ——尚未模拟，已跳过`],
+    [`Function module {1} menaikkan exception {2} yang tidak ditangani di EXCEPTIONS (di SAP: short dump RAISE_EXCEPTION)`,
+     `The function module {1} raised the exception {2}, which is not handled under EXCEPTIONS (in SAP: short dump RAISE_EXCEPTION)`,
+     `Der Funktionsbaustein {1} hat die Ausnahme {2} ausgelöst, die unter EXCEPTIONS nicht behandelt wird (in SAP: Short Dump RAISE_EXCEPTION)`,
+     `函数模块 {1} 引发了异常 {2}，而它未在 EXCEPTIONS 中处理（在 SAP 中：short dump RAISE_EXCEPTION）`],
+    [`CALL FUNCTION '{1}': parameter wajib "{2}" tidak diisi (di SAP: short dump CALL_FUNCTION_PARM_MISSING)`,
+     `CALL FUNCTION '{1}': the mandatory parameter "{2}" is not supplied (in SAP: short dump CALL_FUNCTION_PARM_MISSING)`,
+     `CALL FUNCTION '{1}': Der Pflichtparameter "{2}" wurde nicht übergeben (in SAP: Short Dump CALL_FUNCTION_PARM_MISSING)`,
+     `CALL FUNCTION '{1}'：未提供必需参数“{2}”（在 SAP 中：short dump CALL_FUNCTION_PARM_MISSING）`],
+    [`CALL FUNCTION '{1}': function module tidak punya parameter {2} "{3}" (di SAP: short dump CALL_FUNCTION_PARM_UNKNOWN)`,
+     `CALL FUNCTION '{1}': the function module has no {2} parameter "{3}" (in SAP: short dump CALL_FUNCTION_PARM_UNKNOWN)`,
+     `CALL FUNCTION '{1}': Der Funktionsbaustein hat keinen {2}-Parameter "{3}" (in SAP: Short Dump CALL_FUNCTION_PARM_UNKNOWN)`,
+     `CALL FUNCTION '{1}'：该函数模块没有 {2} 参数“{3}”（在 SAP 中：short dump CALL_FUNCTION_PARM_UNKNOWN）`],
+    [`[POPUP] {1} → jawaban '{2}' ({3})`, `[POPUP] {1} → answer '{2}' ({3})`, `[POPUP] {1} → Antwort '{2}' ({3})`, `[POPUP] {1} → 回答 '{2}'（{3}）`],
+    [`Ya`, `Yes`, `Ja`, `是`],
+    [`Tidak`, `No`, `Nein`, `否`],
+    [`Batal`, `Cancel`, `Abbrechen`, `取消`],
+    [`[GUI_DOWNLOAD] {1} baris dari {2} → {3} (simulasi: file tidak benar-benar ditulis)`,
+     `[GUI_DOWNLOAD] {1} rows from {2} → {3} (simulation: no file is actually written)`,
+     `[GUI_DOWNLOAD] {1} Zeilen aus {2} → {3} (Simulation: es wird keine Datei geschrieben)`,
+     `[GUI_DOWNLOAD] {2} 的 {1} 行 → {3}（模拟：并未真正写入文件）`],
+    [`[DB] Table "{1}" not found in database.`, `[DB] Table "{1}" not found in database.`, `[DB] Tabelle "{1}" in der Datenbank nicht gefunden.`, `[DB] 数据库中找不到表“{1}”。`],
+    [`[BAPI] COMMIT WORK dijalankan (simulasi)`, `[BAPI] COMMIT WORK executed (simulation)`, `[BAPI] COMMIT WORK ausgeführt (Simulation)`, `[BAPI] 已执行 COMMIT WORK（模拟）`],
+    [`[BAPI] ROLLBACK WORK dijalankan (simulasi)`, `[BAPI] ROLLBACK WORK executed (simulation)`, `[BAPI] ROLLBACK WORK ausgeführt (Simulation)`, `[BAPI] 已执行 ROLLBACK WORK（模拟）`],
+    [`[ALV] {1} on table {2} ({3} records, {4} columns)`, `[ALV] {1} on table {2} ({3} records, {4} columns)`, `[ALV] {1} für Tabelle {2} ({3} Sätze, {4} Spalten)`, `[ALV] {1}，表 {2}（{3} 条记录，{4} 列）`],
+    [`[GUI_UPLOAD] {1} — simulator tidak punya akses file`, `[GUI_UPLOAD] {1} — the simulator has no file access`, `[GUI_UPLOAD] {1} — der Simulator hat keinen Dateizugriff`, `[GUI_UPLOAD] {1} ——模拟器无法访问文件`],
+
+    // ── ALV ─────────────────────────────────────────────────────────────────────────
+    [`{1}: parameter "{2}" tidak dikenal (di SAP: short dump CALL_FUNCTION_PARM_UNKNOWN)`,
+     `{1}: unknown parameter "{2}" (in SAP: short dump CALL_FUNCTION_PARM_UNKNOWN)`,
+     `{1}: unbekannter Parameter "{2}" (in SAP: Short Dump CALL_FUNCTION_PARM_UNKNOWN)`,
+     `{1}：未知参数“{2}”（在 SAP 中：short dump CALL_FUNCTION_PARM_UNKNOWN）`],
+    [`{1}: parameter TABLES t_outtab wajib diisi dengan internal table yang akan ditampilkan`,
+     `{1}: the TABLES parameter t_outtab must be filled with the internal table to display`,
+     `{1}: Der TABLES-Parameter t_outtab muss mit der anzuzeigenden internen Tabelle gefüllt werden`,
+     `{1}：TABLES 参数 t_outtab 必须填入要显示的内表`],
+    [`{1}: {2} harus berupa internal table field catalog (TYPE {3})`,
+     `{1}: {2} must be a field catalog internal table (TYPE {3})`,
+     `{1}: {2} muss eine interne Feldkatalog-Tabelle sein (TYPE {3})`,
+     `{1}：{2} 必须是字段目录内表（TYPE {3}）`],
+    [`{1}: {2} = '{3}' tetapi FORM {4} tidak ada di program`,
+     `{1}: {2} = '{3}' but the FORM {4} does not exist in the program`,
+     `{1}: {2} = '{3}', aber die FORM {4} gibt es im Programm nicht`,
+     `{1}：{2} = '{3}'，但程序中没有 FORM {4}`],
+    [`{1}: hanya i_structure_name yang didukung simulator (isi dengan nama tabel/struktur DDIC, mis. 'MARA')`,
+     `{1}: the simulator only supports i_structure_name (fill it with the name of a DDIC table/structure, e.g. 'MARA')`,
+     `{1}: Der Simulator unterstützt nur i_structure_name (mit dem Namen einer DDIC-Tabelle/-Struktur füllen, z. B. 'MARA')`,
+     `{1}：模拟器只支持 i_structure_name（请填入 DDIC 表/结构的名称，例如 'MARA'）`],
+    [`{1}: struktur "{2}" tidak ada di kamus data simulator. Tersedia: {3}`,
+     `{1}: the structure "{2}" does not exist in the simulator's data dictionary. Available: {3}`,
+     `{1}: Die Struktur "{2}" gibt es im Data Dictionary des Simulators nicht. Verfügbar: {3}`,
+     `{1}：模拟器的数据字典中没有结构“{2}”。可用：{3}`],
+    [`set_table_for_first_display: CHANGING it_outtab wajib diisi`,
+     `set_table_for_first_display: CHANGING it_outtab must be supplied`,
+     `set_table_for_first_display: CHANGING it_outtab muss übergeben werden`,
+     `set_table_for_first_display：必须提供 CHANGING it_outtab`],
+    [`Field catalog baris {1}: FIELDNAME kosong — kolom dilewati`,
+     `Field catalog row {1}: FIELDNAME is empty — the column is skipped`,
+     `Feldkatalog Zeile {1}: FIELDNAME ist leer — die Spalte wird übersprungen`,
+     `字段目录第 {1} 行：FIELDNAME 为空——该列已跳过`],
+    [`Field catalog: kolom "{1}" tidak ada di internal table {2} — kolom tampil kosong (di SAP bisa short dump)`,
+     `Field catalog: the column "{1}" does not exist in the internal table {2} — the column is shown empty (in SAP this can cause a short dump)`,
+     `Feldkatalog: Die Spalte "{1}" gibt es in der internen Tabelle {2} nicht — die Spalte wird leer angezeigt (in SAP kann das zu einem Short Dump führen)`,
+     `字段目录：内表 {2} 中没有列“{1}”——该列显示为空（在 SAP 中可能导致 short dump）`],
+    [`Field catalog: kolom "{1}" terdaftar lebih dari sekali`,
+     `Field catalog: the column "{1}" is listed more than once`,
+     `Feldkatalog: Die Spalte "{1}" ist mehr als einmal eingetragen`,
+     `字段目录：列“{1}”被登记了不止一次`],
+    [`ALV: struktur "{1}" (i_structure_name) tidak ada di kamus data simulator`,
+     `ALV: the structure "{1}" (i_structure_name) does not exist in the simulator's data dictionary`,
+     `ALV: Die Struktur "{1}" (i_structure_name) gibt es im Data Dictionary des Simulators nicht`,
+     `ALV：模拟器的数据字典中没有结构“{1}”（i_structure_name）`],
+    [`{1}: field catalog kosong dan i_structure_name tidak diisi — di SAP ALV gagal tampil ("Field catalog not found"). Simulator menampilkan semua kolom.`,
+     `{1}: the field catalog is empty and i_structure_name is not set — in SAP the ALV fails to display ("Field catalog not found"). The simulator shows all columns.`,
+     `{1}: Der Feldkatalog ist leer und i_structure_name ist nicht gesetzt — in SAP wird das ALV nicht angezeigt ("Field catalog not found"). Der Simulator zeigt alle Spalten.`,
+     `{1}：字段目录为空且未设置 i_structure_name——在 SAP 中 ALV 无法显示（"Field catalog not found"）。模拟器会显示所有列。`],
+    [`cl_salv_table=>factory: butuh IMPORTING r_salv_table = ... dan CHANGING t_table = ...`,
+     `cl_salv_table=>factory: needs IMPORTING r_salv_table = ... and CHANGING t_table = ...`,
+     `cl_salv_table=>factory: benötigt IMPORTING r_salv_table = ... und CHANGING t_table = ...`,
+     `cl_salv_table=>factory：需要 IMPORTING r_salv_table = ... 和 CHANGING t_table = ...`],
+    [`Kolom "{1}" tidak ada di tabel {2}`, `The column "{1}" does not exist in table {2}`, `Die Spalte "{1}" gibt es in der Tabelle {2} nicht`, `表 {2} 中没有列“{1}”`, 'x'],
+    [`Callback: FORM "{1}" tidak ditemukan di program ini`,
+     `Callback: FORM "{1}" was not found in this program`,
+     `Callback: FORM "{1}" wurde in diesem Programm nicht gefunden`,
+     `回调：在本程序中找不到 FORM“{1}”`],
+
+    // ── classes and objects ─────────────────────────────────────────────────────────
+    [`Class standar "{1}" tidak disimulasikan — objeknya hanya placeholder`,
+     `The standard class "{1}" is not simulated — its object is only a placeholder`,
+     `Die Standardklasse "{1}" wird nicht simuliert — ihr Objekt ist nur ein Platzhalter`,
+     `标准类“{1}”未被模拟——其对象只是占位符`],
+    [`Class "{1}" tidak ditemukan (belum ada CLASS {2} DEFINITION)`,
+     `The class "{1}" was not found (there is no CLASS {2} DEFINITION yet)`,
+     `Die Klasse "{1}" wurde nicht gefunden (es gibt noch keine CLASS {2} DEFINITION)`,
+     `找不到类“{1}”（还没有 CLASS {2} DEFINITION）`],
+    [`Class "{1}" bersifat ABSTRACT dan tidak boleh dibuat objeknya langsung`,
+     `The class "{1}" is ABSTRACT and cannot be instantiated directly`,
+     `Die Klasse "{1}" ist ABSTRACT und kann nicht direkt instanziiert werden`,
+     `类“{1}”是 ABSTRACT，不能直接创建其对象`],
+    [`Class "{1}" tidak punya CONSTRUCTOR, tetapi parameter diberikan saat membuat objek`,
+     `The class "{1}" has no CONSTRUCTOR, but parameters were passed when creating the object`,
+     `Die Klasse "{1}" hat keinen CONSTRUCTOR, aber beim Erzeugen des Objekts wurden Parameter übergeben`,
+     `类“{1}”没有 CONSTRUCTOR，但创建对象时传入了参数`],
+    [`CREATE OBJECT {1}: tipe class tidak diketahui (deklarasikan dengan TYPE REF TO class)`,
+     `CREATE OBJECT {1}: the class type is unknown (declare it with TYPE REF TO class)`,
+     `CREATE OBJECT {1}: Der Klassentyp ist unbekannt (mit TYPE REF TO klasse deklarieren)`,
+     `CREATE OBJECT {1}：类的类型未知（请用 TYPE REF TO class 声明）`],
+    [`{1}( ): parameter wajib "{2}" tidak diisi`,
+     `{1}( ): the mandatory parameter "{2}" is not supplied`,
+     `{1}( ): Der Pflichtparameter "{2}" wurde nicht übergeben`,
+     `{1}( )：未提供必需参数“{2}”`],
+    [`{1}( ): method tidak punya parameter IMPORTING`,
+     `{1}( ): the method has no IMPORTING parameter`,
+     `{1}( ): Die Methode hat keinen IMPORTING-Parameter`,
+     `{1}( )：该方法没有 IMPORTING 参数`],
+    [`{1}( ): method tidak punya parameter {2} "{3}"`,
+     `{1}( ): the method has no {2} parameter "{3}"`,
+     `{1}( ): Die Methode hat keinen {2}-Parameter "{3}"`,
+     `{1}( )：该方法没有 {2} 参数“{3}”`],
+    [`Class "{1}" tidak punya atribut "{2}"`, `The class "{1}" has no attribute "{2}"`, `Die Klasse "{1}" hat kein Attribut "{2}"`, `类“{1}”没有属性“{2}”`],
+    [`Atribut "{1}" bersifat {2} di class {3} — tidak bisa diakses dari luar class`,
+     `The attribute "{1}" is {2} in class {3} — it cannot be accessed from outside the class`,
+     `Das Attribut "{1}" ist {2} in der Klasse {3} — von außerhalb der Klasse nicht zugreifbar`,
+     `属性“{1}”在类 {3} 中是 {2} 的——不能从类外部访问`],
+    [`{1}=>{2}( ): class tidak dikenal / tidak disimulasikan — pemanggilan dilewati`,
+     `{1}=>{2}( ): unknown / not simulated class — the call is skipped`,
+     `{1}=>{2}( ): Klasse unbekannt / nicht simuliert — der Aufruf wird übersprungen`,
+     `{1}=>{2}( )：类未知 / 未被模拟——调用已跳过`],
+    [`{1}=>{2}( ): "{3}" adalah instance method — panggil lewat objek dengan "->"`,
+     `{1}=>{2}( ): "{3}" is an instance method — call it through an object with "->"`,
+     `{1}=>{2}( ): "{3}" ist eine Instanzmethode — über ein Objekt mit "->" aufrufen`,
+     `{1}=>{2}( )：“{3}”是实例方法——请通过对象用“->”调用`],
+    [`{1}=>{2}: class / interface standar ini tidak disimulasikan — nilainya dianggap kosong`,
+     `{1}=>{2}: this standard class / interface is not simulated — its value is treated as empty`,
+     `{1}=>{2}: Diese Standardklasse / -schnittstelle wird nicht simuliert — der Wert gilt als leer`,
+     `{1}=>{2}：此标准类 / 接口未被模拟——其值视为空`],
+    [`Class "{1}" tidak punya method "{2}" (atau belum ada IMPLEMENTATION-nya)`,
+     `The class "{1}" has no method "{2}" (or it has no IMPLEMENTATION yet)`,
+     `Die Klasse "{1}" hat keine Methode "{2}" (oder noch keine IMPLEMENTATION dafür)`,
+     `类“{1}”没有方法“{2}”（或尚未有其 IMPLEMENTATION）`],
+    [`Class "{1}" tidak punya method "{2}"`, `The class "{1}" has no method "{2}"`, `Die Klasse "{1}" hat keine Methode "{2}"`, `类“{1}”没有方法“{2}”`],
+    [`Method "{1}" dideklarasikan di class {2} tetapi belum ada implementasinya (METHOD {3}. ... ENDMETHOD.)`,
+     `The method "{1}" is declared in class {2} but has no implementation yet (METHOD {3}. ... ENDMETHOD.)`,
+     `Die Methode "{1}" ist in der Klasse {2} deklariert, hat aber noch keine Implementierung (METHOD {3}. ... ENDMETHOD.)`,
+     `方法“{1}”已在类 {2} 中声明，但还没有实现（METHOD {3}. ... ENDMETHOD.）`],
+    [`Method "{1}" bersifat {2} di class {3} — tidak bisa dipanggil dari luar class`,
+     `The method "{1}" is {2} in class {3} — it cannot be called from outside the class`,
+     `Die Methode "{1}" ist {2} in der Klasse {3} — von außerhalb der Klasse nicht aufrufbar`,
+     `方法“{1}”在类 {3} 中是 {2} 的——不能从类外部调用`],
+    [`Method "{1}" bersifat {2} di class {3}`, `The method "{1}" is {2} in class {3}`, `Die Methode "{1}" ist {2} in der Klasse {3}`, `方法“{1}”在类 {3} 中是 {2} 的`],
+    [`Method "{1}" dipanggil lewat reference yang masih kosong (objek belum dibuat dengan NEW / CREATE OBJECT)`,
+     `The method "{1}" was called through a reference that is still empty (the object has not been created with NEW / CREATE OBJECT)`,
+     `Die Methode "{1}" wurde über eine noch leere Referenz aufgerufen (das Objekt wurde nicht mit NEW / CREATE OBJECT erzeugt)`,
+     `通过仍为空的引用调用了方法“{1}”（尚未用 NEW / CREATE OBJECT 创建对象）`, 'x'],
+    [`Atribut "{1}" diakses lewat reference yang masih kosong (objek belum dibuat)`,
+     `The attribute "{1}" was accessed through a reference that is still empty (the object has not been created)`,
+     `Auf das Attribut "{1}" wurde über eine noch leere Referenz zugegriffen (das Objekt wurde nicht erzeugt)`,
+     `通过仍为空的引用访问了属性“{1}”（对象尚未创建）`, 'x'],
+    [`Dereferensi ->* pada data reference yang masih kosong`,
+     `Dereferencing ->* on a data reference that is still empty`,
+     `Dereferenzierung ->* auf einer noch leeren Datenreferenz`,
+     `对仍为空的数据引用进行 ->* 解引用`, 'x'],
+    [`Objek {1} tidak bisa di-cast ke {2}`, `The object {1} cannot be cast to {2}`, `Das Objekt {1} kann nicht nach {2} gecastet werden`, `对象 {1} 无法转换（cast）为 {2}`, 'x'],
+    [`RAISE EXCEPTION: "{1}" bukan objek exception`, `RAISE EXCEPTION: "{1}" is not an exception object`, `RAISE EXCEPTION: "{1}" ist kein Ausnahmeobjekt`, `RAISE EXCEPTION：“{1}”不是异常对象`],
+    [`SET HANDLER: method "{1}" bukan event handler (deklarasinya harus METHODS {2} FOR EVENT ... OF ...)`,
+     `SET HANDLER: the method "{1}" is not an event handler (its declaration must be METHODS {2} FOR EVENT ... OF ...)`,
+     `SET HANDLER: Die Methode "{1}" ist kein Ereignis-Handler (die Deklaration muss METHODS {2} FOR EVENT ... OF ... lauten)`,
+     `SET HANDLER：方法“{1}”不是事件处理方法（其声明必须是 METHODS {2} FOR EVENT ... OF ...）`],
+    [`SET HANDLER: method "{1}" tidak ditemukan{2}`,
+     `SET HANDLER: the method "{1}" was not found{2}`,
+     `SET HANDLER: Die Methode "{1}" wurde nicht gefunden{2}`,
+     `SET HANDLER：找不到方法“{1}”{2}`],
+    [` di class {1}`, ` in class {1}`, ` in der Klasse {1}`, `（在类 {1} 中）`],
+    [` (objek handler belum dibuat?)`, ` (has the handler object been created?)`, ` (wurde das Handler-Objekt erzeugt?)`, `（处理对象尚未创建？）`],
+
+    // ── uncaught exceptions ─────────────────────────────────────────────────────────
+    [`Exception {1} tidak ditangkap dengan TRY ... CATCH (di SAP: short dump). {2}`,
+     `The exception {1} was not caught with TRY ... CATCH (in SAP: short dump). {2}`,
+     `Die Ausnahme {1} wurde nicht mit TRY ... CATCH abgefangen (in SAP: Short Dump). {2}`,
+     `异常 {1} 未被 TRY ... CATCH 捕获（在 SAP 中：short dump）。{2}`],
+    [`Exception {1} dinaikkan dengan RAISE tetapi tidak ada pemanggil yang menanganinya`,
+     `The exception {1} was raised with RAISE but no caller handles it`,
+     `Die Ausnahme {1} wurde mit RAISE ausgelöst, aber kein Aufrufer behandelt sie`,
+     `异常 {1} 由 RAISE 引发，但没有调用者处理它`],
+
+    // ── syntax check ────────────────────────────────────────────────────────────────
+    [`Komentar "*" harus dimulai di kolom 1. Di SAP baris ini syntax error — untuk komentar menjorok pakai tanda kutip ganda (").`,
+     `A "*" comment must start in column 1. In SAP this line is a syntax error — for an indented comment use a double quote (").`,
+     `Ein "*"-Kommentar muss in Spalte 1 beginnen. In SAP ist diese Zeile ein Syntaxfehler — für eingerückte Kommentare das doppelte Anführungszeichen (") verwenden.`,
+     `“*”注释必须从第 1 列开始。在 SAP 中此行是语法错误——缩进的注释请使用双引号 (")。`],
+    [`Statement di baris {1} tidak diakhiri titik (.) — baris berikutnya ikut terbaca sebagai lanjutannya`,
+     `The statement on line {1} does not end with a period (.) — the following line is read as its continuation`,
+     `Die Anweisung in Zeile {1} endet nicht mit einem Punkt (.) — die folgende Zeile wird als Fortsetzung gelesen`,
+     `第 {1} 行的语句没有以句点 (.) 结尾——下一行会被当作它的延续`],
+    [`Unexpected "{1}" without matching opener`, `Unexpected "{1}" without matching opener`, `Unerwartetes "{1}" ohne passende Eröffnung`, `意外的“{1}”，没有对应的起始语句`],
+    [`Expected "{1}" but found "{2}"`, `Expected "{1}" but found "{2}"`, `"{1}" erwartet, aber "{2}" gefunden`, `应为“{1}”，却发现“{2}”`],
+    [`Possible typo: "{1}" → did you mean "{2}"?`, `Possible typo: "{1}" → did you mean "{2}"?`, `Möglicher Tippfehler: "{1}" → meinten Sie "{2}"?`, `可能的拼写错误：“{1}”→ 您是否想写“{2}”？`],
+    [`Unclosed "{1}" (missing "{2}")`, `Unclosed "{1}" (missing "{2}")`, `"{1}" nicht geschlossen ("{2}" fehlt)`, `“{1}”未闭合（缺少“{2}”）`],
+    [`No syntax issues found ✓`, `No syntax issues found ✓`, `Keine Syntaxprobleme gefunden ✓`, `未发现语法问题 ✓`]
+  ];
+
+  const LANG_COL = { en: 1, de: 2, zh: 3 };
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // "{1} … {2}" → regular expression with one capture group per placeholder
+  function compile(pattern, anywhere) {
+    const order = [];
+    const body = pattern.split(/(\{\d\})/).map(part => {
+      const m = /^\{(\d)\}$/.exec(part);
+      if (!m) return esc(part);
+      order.push(Number(m[1]));
+      return '([\\s\\S]*?)';
+    }).join('');
+    return { re: new RegExp((anywhere ? '^([\\s\\S]*?)' : '^') + body + '$'), order };
+  }
+  const RULES = M.map(e => ({ e, full: compile(e[0], false), tail: e[4] === 'x' ? compile(e[0], true) : null }));
+
+  function fill(template, order, groups, col, depth) {
+    const val = {};
+    order.forEach((n, i) => { val[n] = translate(groups[i], col, depth + 1); });
+    return template.replace(/\{(\d)\}/g, (m, n) => (val[n] != null ? val[n] : ''));
+  }
+
+  // whole text against the anchored patterns; unknown text comes back unchanged
+  function translate(text, col, depth) {
+    text = String(text == null ? '' : text);
+    if (!text || depth > 3) return text;
+    for (const r of RULES) {
+      const m = r.full.re.exec(text);
+      if (m) return fill(r.e[col], r.full.order, m.slice(1), col, depth);
+    }
+    return text;
+  }
+
+  const currentCol = () => LANG_COL[(window.I18N && window.I18N.lang) || 'id'] || 0;
+
+  // a message of the simulator (errors / warnings / syntax check / status bar)
+  function message(text) {
+    const col = currentCol();
+    return col ? translate(text, col, 0) : String(text == null ? '' : text);
+  }
+
+  // a line of program output: simulator notes ("[FM] …", "⛔ …") and exception texts
+  // that a program printed itself (WRITE lx->get_text( )) — everything else is untouched
+  const HINT = /^\[|^⛔|^──|tabel kosong|tidak |bukan |nol\)|kosong/;
+  function output(text) {
+    const col = currentCol();
+    text = String(text == null ? '' : text);
+    if (!col || !HINT.test(text)) return text;
+    const whole = translate(text, col, 0);
+    if (whole !== text) return whole;
+    for (const r of RULES) {
+      if (!r.tail) continue;
+      const m = r.tail.re.exec(text);
+      if (m) return m[1] + fill(r.e[col], r.tail.order, m.slice(2), col, 0);
+    }
+    return text;
+  }
+
+  window.MSG_I18N = { message, output, count: M.length, _rules: M };
+})();

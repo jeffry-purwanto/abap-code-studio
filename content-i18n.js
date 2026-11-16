@@ -1,0 +1,251 @@
+// content-i18n.js — translations of the learning content (lessons, snippets, docs)
+// ABAP Code Studio — Created by jeffrypurwanto
+//
+// Indonesian stays the source in lessons.js / snippets.js / docs.js.
+// Here each item id may carry translated fields per language; app.js merges them
+// over the Indonesian object (field by field), so a missing field falls back to ID.
+//   lessons : { title, goal, body, task }   (body/task added in later stages)
+//   snippets: { title, desc }
+//   docs    : { title, content }             (content added in a later stage)
+// Stage 1 (now): lesson title+goal, snippet desc (+title where it held Indonesian),
+//                and docs titles. The rest fills in over the next stages.
+
+window.ABAP_CONTENT_I18N = {
+  lessons: {
+    en: {
+      p01: { title: 'First program: WRITE', goal: 'Get to know the shape of an ABAP program and print text to the screen.' },
+      p02: { title: 'Variables and data types', goal: 'Declare variables with DATA, give them initial values, and learn the basic types.' },
+      p03: { title: 'Operators and calculations', goal: 'Perform arithmetic operations and understand rounding with type i.' },
+      p04: { title: 'Branching: IF and CASE', goal: 'Make decisions with IF / ELSEIF / ELSE and CASE.' },
+      p05: { title: 'Loops: DO and WHILE', goal: 'Repeat a block of code and control it with EXIT, CONTINUE, CHECK.' },
+      p06: { title: 'Working with strings', goal: 'Concatenate, cut, search and change text.' },
+      d01: { title: 'Structures (work area)', goal: 'Group several fields into one structure with TYPES … BEGIN OF.' },
+      d02: { title: 'Internal table: APPEND and LOOP', goal: 'Store many rows of data in memory and read them one by one.' },
+      d03: { title: 'Internal table: READ, MODIFY, DELETE, SORT', goal: 'Find a single row, change it, delete rows, and sort the table.' },
+      d04: { title: 'Field symbols', goal: 'Change internal table rows in place, without copying.' },
+      d05: { title: 'Subroutines: FORM and PERFORM', goal: 'Split a program into small, reusable parts.' },
+      d06: { title: 'Selection screen', goal: 'Ask the user for input with PARAMETERS and SELECT-OPTIONS.' },
+      d07: { title: 'SELECT: reading the database', goal: 'Read data from a database table into an internal table with Open SQL.' },
+      d08: { title: 'Report events and list layout', goal: 'Understand the execution order of a report and arrange output with column positions.' },
+      d09: { title: 'Control level: AT NEW, SUM, COLLECT', goal: 'Create subtotals and totals inside a LOOP without counting manually.' },
+      d10: { title: 'Table kinds: STANDARD, SORTED, HASHED', goal: 'Choose the right kind of internal table and understand how they behave differently.' },
+      m01: { title: 'Advanced SELECT: JOIN and FOR ALL ENTRIES', goal: 'Combine data from two tables without a SELECT inside a LOOP.' },
+      m08: { title: 'SQL: aggregates, GROUP BY, and changing data', goal: 'Calculate directly in the database and use INSERT, UPDATE, MODIFY, DELETE.' },
+      m02: { title: 'Messages and classic error handling', goal: 'Use sy-subrc, MESSAGE, and RETURN to handle failures cleanly.' },
+      m03: { title: 'Function module: CALL FUNCTION', goal: 'Call a function module and understand EXPORTING, IMPORTING, TABLES, EXCEPTIONS.' },
+      m09: { title: 'Writing your own function module', goal: 'Write a FUNCTION with parameters and exceptions, then call it.' },
+      m04: { title: 'Classic ALV: field catalog', goal: 'Display an internal table as an ALV Grid with REUSE_ALV_GRID_DISPLAY.' },
+      m05: { title: 'ALV: automatic catalog, layout, sort, totals', goal: 'Build the field catalog from a DDIC structure and configure the grid display.' },
+      m06: { title: 'Modern ALV: CL_SALV_TABLE', goal: 'Display an ALV with the class CL_SALV_TABLE — without a field catalog.' },
+      m10: { title: 'Interactive ALV: hotspot, double-click, header', goal: 'Respond to user clicks in an ALV and add a header above the grid.' },
+      m11: { title: 'Reading legacy code: header line, OCCURS, macros', goal: 'Recognise the old ABAP style that still fills production systems.' },
+      m07: { title: 'Project: a complete sales report', goal: 'Combine a selection screen, JOIN, data processing and ALV into one report.' },
+      a01: { title: 'OO ABAP: classes and objects', goal: 'Define a class, create objects, and call their methods.' },
+      a02: { title: 'Constructor, static, and visibility', goal: 'Initialise objects through the constructor and use class-level attributes/methods.' },
+      a03: { title: 'Inheritance and redefinition', goal: 'Create a subclass that inherits and changes the behaviour of its superclass.' },
+      a04: { title: 'Interfaces and polymorphism', goal: 'Treat objects of different classes uniformly through an interface.' },
+      a05: { title: 'Exceptions: TRY, CATCH, RAISE', goal: 'Handle errors with exception classes, including creating your own exception.' },
+      a06: { title: 'Modern ABAP syntax (7.40+)', goal: 'Write more concise code with inline declarations, VALUE, and string templates.' },
+      a08: { title: 'Modern expressions: COND, SWITCH, table expressions, REDUCE, FOR', goal: 'Replace simple IF / LOOP blocks with expressions that produce a value.' },
+      a09: { title: 'Class events: EVENTS, RAISE EVENT, SET HANDLER', goal: 'Let objects notify each other without knowing one another.' },
+      a10: { title: 'Data references and dynamic programming', goal: 'Access data through references and through names known only at runtime.' },
+      a11: { title: 'Advanced SALV: columns, hotspots, and events', goal: 'Configure SALV columns and respond to user clicks with event handlers.' },
+      a07: { title: 'Case study: an object-oriented report', goal: 'Build a complete report as a class: fetch data, process it, display it with SALV.' }
+    },
+    de: {
+      p01: { title: 'Erstes Programm: WRITE', goal: 'Den Aufbau eines ABAP-Programms kennenlernen und Text auf dem Bildschirm ausgeben.' },
+      p02: { title: 'Variablen und Datentypen', goal: 'Variablen mit DATA deklarieren, Anfangswerte setzen und die Grundtypen kennenlernen.' },
+      p03: { title: 'Operatoren und Berechnungen', goal: 'Arithmetische Operationen durchführen und die Rundung beim Typ i verstehen.' },
+      p04: { title: 'Verzweigungen: IF und CASE', goal: 'Entscheidungen mit IF / ELSEIF / ELSE und CASE treffen.' },
+      p05: { title: 'Schleifen: DO und WHILE', goal: 'Einen Codeblock wiederholen und mit EXIT, CONTINUE, CHECK steuern.' },
+      p06: { title: 'Mit Zeichenketten arbeiten', goal: 'Text verketten, ausschneiden, suchen und verändern.' },
+      d01: { title: 'Strukturen (Work Area)', goal: 'Mehrere Felder mit TYPES … BEGIN OF zu einer Struktur zusammenfassen.' },
+      d02: { title: 'Interne Tabelle: APPEND und LOOP', goal: 'Viele Datenzeilen im Speicher ablegen und einzeln auslesen.' },
+      d03: { title: 'Interne Tabelle: READ, MODIFY, DELETE, SORT', goal: 'Eine Zeile suchen, ändern, Zeilen löschen und die Tabelle sortieren.' },
+      d04: { title: 'Feldsymbole', goal: 'Zeilen einer internen Tabelle direkt an Ort und Stelle ändern, ohne zu kopieren.' },
+      d05: { title: 'Unterprogramme: FORM und PERFORM', goal: 'Ein Programm in kleine, wiederverwendbare Teile zerlegen.' },
+      d06: { title: 'Selektionsbild', goal: 'Benutzereingaben mit PARAMETERS und SELECT-OPTIONS abfragen.' },
+      d07: { title: 'SELECT: Datenbank lesen', goal: 'Daten aus einer Datenbanktabelle mit Open SQL in eine interne Tabelle lesen.' },
+      d08: { title: 'Report-Ereignisse und Listenlayout', goal: 'Die Ausführungsreihenfolge eines Reports verstehen und die Ausgabe über Spaltenpositionen anordnen.' },
+      d09: { title: 'Kontrollstufen: AT NEW, SUM, COLLECT', goal: 'Zwischensummen und Summen innerhalb einer LOOP ohne manuelles Rechnen bilden.' },
+      d10: { title: 'Tabellenarten: STANDARD, SORTED, HASHED', goal: 'Die richtige Art der internen Tabelle wählen und ihre unterschiedlichen Verhaltensweisen verstehen.' },
+      m01: { title: 'SELECT fortgeschritten: JOIN und FOR ALL ENTRIES', goal: 'Daten aus zwei Tabellen verbinden – ohne SELECT innerhalb einer LOOP.' },
+      m08: { title: 'SQL: Aggregate, GROUP BY und Daten ändern', goal: 'Direkt in der Datenbank rechnen und INSERT, UPDATE, MODIFY, DELETE verwenden.' },
+      m02: { title: 'Meldungen und klassische Fehlerbehandlung', goal: 'Mit sy-subrc, MESSAGE und RETURN Fehler sauber behandeln.' },
+      m03: { title: 'Funktionsbaustein: CALL FUNCTION', goal: 'Einen Funktionsbaustein aufrufen und EXPORTING, IMPORTING, TABLES, EXCEPTIONS verstehen.' },
+      m09: { title: 'Eigenen Funktionsbaustein erstellen', goal: 'Eine FUNCTION mit Parametern und Ausnahmen schreiben und dann aufrufen.' },
+      m04: { title: 'Klassisches ALV: Feldkatalog', goal: 'Eine interne Tabelle mit REUSE_ALV_GRID_DISPLAY als ALV-Grid anzeigen.' },
+      m05: { title: 'ALV: automatischer Katalog, Layout, Sortierung, Summen', goal: 'Den Feldkatalog aus einer DDIC-Struktur aufbauen und die Grid-Anzeige einstellen.' },
+      m06: { title: 'Modernes ALV: CL_SALV_TABLE', goal: 'Ein ALV mit der Klasse CL_SALV_TABLE anzeigen – ohne Feldkatalog.' },
+      m10: { title: 'Interaktives ALV: Hotspot, Doppelklick, Kopf', goal: 'Auf Benutzerklicks im ALV reagieren und einen Kopfbereich über dem Grid hinzufügen.' },
+      m11: { title: 'Alten Code lesen: Kopfzeile, OCCURS, Makros', goal: 'Den alten ABAP-Stil erkennen, der noch viele Produktivsysteme füllt.' },
+      m07: { title: 'Projekt: vollständiger Verkaufsbericht', goal: 'Selektionsbild, JOIN, Datenverarbeitung und ALV zu einem Bericht zusammenfügen.' },
+      a01: { title: 'OO ABAP: Klassen und Objekte', goal: 'Eine Klasse definieren, Objekte erzeugen und ihre Methoden aufrufen.' },
+      a02: { title: 'Konstruktor, statisch und Sichtbarkeit', goal: 'Objekte über den Konstruktor initialisieren und klassenweite Attribute/Methoden nutzen.' },
+      a03: { title: 'Vererbung und Redefinition', goal: 'Eine Unterklasse erstellen, die das Verhalten der Oberklasse erbt und ändert.' },
+      a04: { title: 'Schnittstellen und Polymorphie', goal: 'Objekte verschiedener Klassen über eine Schnittstelle einheitlich behandeln.' },
+      a05: { title: 'Ausnahmen: TRY, CATCH, RAISE', goal: 'Fehler mit Ausnahmeklassen behandeln, einschließlich eigener Ausnahmen.' },
+      a06: { title: 'Moderne ABAP-Syntax (7.40+)', goal: 'Kompakteren Code mit Inline-Deklarationen, VALUE und String-Templates schreiben.' },
+      a08: { title: 'Moderne Ausdrücke: COND, SWITCH, Tabellenausdrücke, REDUCE, FOR', goal: 'Einfache IF-/LOOP-Blöcke durch wertliefernde Ausdrücke ersetzen.' },
+      a09: { title: 'Ereignisse in Klassen: EVENTS, RAISE EVENT, SET HANDLER', goal: 'Objekte einander benachrichtigen lassen, ohne dass sie sich kennen.' },
+      a10: { title: 'Datenreferenzen und dynamische Programmierung', goal: 'Auf Daten über Referenzen und über erst zur Laufzeit bekannte Namen zugreifen.' },
+      a11: { title: 'SALV fortgeschritten: Spalten, Hotspots und Ereignisse', goal: 'SALV-Spalten konfigurieren und auf Benutzerklicks mit Ereignis-Handlern reagieren.' },
+      a07: { title: 'Fallstudie: ein objektorientierter Bericht', goal: 'Einen vollständigen Bericht als Klasse aufbauen: Daten holen, verarbeiten, mit SALV anzeigen.' }
+    },
+    zh: {
+      p01: { title: '第一个程序：WRITE', goal: '认识 ABAP 程序的基本结构，并在屏幕上输出文本。' },
+      p02: { title: '变量与数据类型', goal: '用 DATA 声明变量、赋初值，并认识基本数据类型。' },
+      p03: { title: '运算符与计算', goal: '进行算术运算，并理解整型 i 的四舍五入。' },
+      p04: { title: '分支：IF 与 CASE', goal: '用 IF / ELSEIF / ELSE 和 CASE 进行判断。' },
+      p05: { title: '循环：DO 与 WHILE', goal: '重复执行代码块，并用 EXIT、CONTINUE、CHECK 控制循环。' },
+      p06: { title: '字符串处理', goal: '拼接、截取、查找和修改文本。' },
+      d01: { title: '结构体（工作区）', goal: '用 TYPES … BEGIN OF 把多个字段组合成一个结构体。' },
+      d02: { title: '内表：APPEND 与 LOOP', goal: '在内存中存储多行数据，并逐行读取。' },
+      d03: { title: '内表：READ、MODIFY、DELETE、SORT', goal: '查找某一行、修改、删除行，并对内表排序。' },
+      d04: { title: '字段符号（Field-Symbol）', goal: '直接就地修改内表的行，无需复制。' },
+      d05: { title: '子程序：FORM 与 PERFORM', goal: '把程序拆分成可重复调用的小模块。' },
+      d06: { title: '选择屏幕', goal: '用 PARAMETERS 和 SELECT-OPTIONS 获取用户输入。' },
+      d07: { title: 'SELECT：读取数据库', goal: '用 Open SQL 把数据库表的数据读入内表。' },
+      d08: { title: '报表事件与列表布局', goal: '理解报表的执行顺序，并通过列位置排布输出。' },
+      d09: { title: '控制级：AT NEW、SUM、COLLECT', goal: '在 LOOP 中生成小计和合计，无需手动计算。' },
+      d10: { title: '表类型：STANDARD、SORTED、HASHED', goal: '选择合适的内表类型，并理解它们行为上的差异。' },
+      m01: { title: '进阶 SELECT：JOIN 与 FOR ALL ENTRIES', goal: '连接两张表的数据，避免在 LOOP 内部使用 SELECT。' },
+      m08: { title: 'SQL：聚合、GROUP BY 与修改数据', goal: '直接在数据库中计算，并使用 INSERT、UPDATE、MODIFY、DELETE。' },
+      m02: { title: '消息与经典错误处理', goal: '用 sy-subrc、MESSAGE 和 RETURN 妥善处理失败情况。' },
+      m03: { title: '函数模块：CALL FUNCTION', goal: '调用函数模块，理解 EXPORTING、IMPORTING、TABLES、EXCEPTIONS。' },
+      m09: { title: '编写自己的函数模块', goal: '编写带参数和异常的 FUNCTION，然后调用它。' },
+      m04: { title: '经典 ALV：字段目录', goal: '用 REUSE_ALV_GRID_DISPLAY 把内表显示为 ALV 表格。' },
+      m05: { title: 'ALV：自动目录、布局、排序、合计', goal: '从 DDIC 结构构建字段目录，并配置表格显示。' },
+      m06: { title: '现代 ALV：CL_SALV_TABLE', goal: '用 CL_SALV_TABLE 类显示 ALV——无需字段目录。' },
+      m10: { title: '交互式 ALV：热点、双击、表头', goal: '响应用户在 ALV 中的点击，并在表格上方添加表头。' },
+      m11: { title: '阅读旧代码：表头行、OCCURS、宏', goal: '认识仍然充斥着生产系统的老式 ABAP 写法。' },
+      m07: { title: '项目：完整销售报表', goal: '把选择屏幕、JOIN、数据处理和 ALV 串联成一个完整报表。' },
+      a01: { title: '面向对象 ABAP：类与对象', goal: '定义类、创建对象并调用其方法。' },
+      a02: { title: '构造器、静态与可见性', goal: '通过构造器初始化对象，并使用类级别的属性/方法。' },
+      a03: { title: '继承与重定义', goal: '创建子类，继承并改变父类的行为。' },
+      a04: { title: '接口与多态', goal: '通过接口统一地处理不同类的对象。' },
+      a05: { title: '异常：TRY、CATCH、RAISE', goal: '用异常类处理错误，包括创建自定义异常。' },
+      a06: { title: '现代 ABAP 语法（7.40+）', goal: '用内联声明、VALUE 和字符串模板编写更简洁的代码。' },
+      a08: { title: '现代表达式：COND、SWITCH、表表达式、REDUCE、FOR', goal: '用能返回值的表达式替代简单的 IF / LOOP 块。' },
+      a09: { title: '类中的事件：EVENTS、RAISE EVENT、SET HANDLER', goal: '让对象在互不相识的情况下彼此通知。' },
+      a10: { title: '数据引用与动态编程', goal: '通过引用，以及通过运行时才确定的名称来访问数据。' },
+      a11: { title: '进阶 SALV：列、热点与事件', goal: '配置 SALV 列，并用事件处理程序响应用户点击。' },
+      a07: { title: '案例研究：面向对象的报表', goal: '把完整报表构建成一个类：取数据、处理、用 SALV 显示。' }
+    }
+  },
+
+  snippets: {
+    en: {
+      hello: { desc: 'The simplest possible ABAP program.' },
+      variables: { desc: 'Declaring various basic data types.' },
+      if_else: { desc: 'Conditional branching with IF-ELSEIF-ELSE.' },
+      case: { desc: 'Multi-way branching with CASE.' },
+      do_loop: { desc: 'Looping with DO n TIMES.' },
+      while: { desc: 'Looping with a WHILE condition.' },
+      concatenate: { desc: 'Joining strings with CONCATENATE.' },
+      translate: { desc: 'Changing upper/lower case.' },
+      split: { desc: 'Splitting a string by a delimiter.' },
+      internal_table: { desc: 'Creating and filling an internal table.' },
+      sort_read: { desc: 'Sorting and reading internal table rows.' },
+      perform: { desc: 'Creating and calling a subroutine.' },
+      select_scarr: { desc: 'Query airline data from the SCARR demo table using PARAMETERS.' },
+      select_all_scarr: { desc: 'SELECT all rows from the SCARR demo table.' },
+      select_sflight: { title: 'SELECT SFLIGHT (Flights)', desc: 'Filter flights by airline and price.' },
+      select_mara: { desc: 'Query the material master by product type (FERT/ROH).' },
+      alv_salv: { desc: 'Show flight data (SFLIGHT) in an interactive ALV Grid.' },
+      alv_reuse: { desc: 'A classic ALV Grid using the function module REUSE_ALV_GRID_DISPLAY.' },
+      alv_fieldcat: { desc: 'REUSE_ALV_GRID_DISPLAY with a manual field catalog, zebra layout, and a totals column.' },
+      fm_alpha: { desc: 'CALL FUNCTION with EXPORTING / IMPORTING: pad and strip the leading zeros of a number.' },
+      fm_exceptions: { desc: 'Handle function module exceptions via sy-subrc.' },
+      fm_download: { desc: 'Pass an internal table to a function module via TABLES (GUI_DOWNLOAD simulation).' },
+      class_oo: { desc: 'An example of an object-oriented ABAP class.' }
+    },
+    de: {
+      hello: { desc: 'Das einfachste ABAP-Programm überhaupt.' },
+      variables: { desc: 'Deklaration verschiedener Grunddatentypen.' },
+      if_else: { desc: 'Bedingte Verzweigung mit IF-ELSEIF-ELSE.' },
+      case: { desc: 'Mehrfachverzweigung mit CASE.' },
+      do_loop: { desc: 'Schleife mit DO n TIMES.' },
+      while: { desc: 'Schleife mit WHILE-Bedingung.' },
+      concatenate: { desc: 'Zeichenketten mit CONCATENATE verbinden.' },
+      translate: { desc: 'Groß-/Kleinschreibung ändern.' },
+      split: { desc: 'Eine Zeichenkette an einem Trennzeichen aufteilen.' },
+      internal_table: { desc: 'Eine interne Tabelle anlegen und füllen.' },
+      sort_read: { desc: 'Zeilen einer internen Tabelle sortieren und lesen.' },
+      perform: { desc: 'Ein Unterprogramm erstellen und aufrufen.' },
+      select_scarr: { desc: 'Fluggesellschaftsdaten aus der Demo-Tabelle SCARR mit PARAMETERS abfragen.' },
+      select_all_scarr: { desc: 'Alle Zeilen aus der Demo-Tabelle SCARR mit SELECT lesen.' },
+      select_sflight: { title: 'SELECT SFLIGHT (Flüge)', desc: 'Flüge nach Fluggesellschaft und Preis filtern.' },
+      select_mara: { desc: 'Materialstamm nach Materialart (FERT/ROH) abfragen.' },
+      alv_salv: { desc: 'Flugdaten (SFLIGHT) in einem interaktiven ALV-Grid anzeigen.' },
+      alv_reuse: { desc: 'Ein klassisches ALV-Grid mit dem Funktionsbaustein REUSE_ALV_GRID_DISPLAY.' },
+      alv_fieldcat: { desc: 'REUSE_ALV_GRID_DISPLAY mit manuellem Feldkatalog, Zebra-Layout und Summenspalte.' },
+      fm_alpha: { desc: 'CALL FUNCTION mit EXPORTING / IMPORTING: führende Nullen einer Nummer ergänzen und entfernen.' },
+      fm_exceptions: { desc: 'Ausnahmen eines Funktionsbausteins über sy-subrc behandeln.' },
+      fm_download: { desc: 'Eine interne Tabelle über TABLES an einen Funktionsbaustein übergeben (GUI_DOWNLOAD-Simulation).' },
+      class_oo: { desc: 'Ein Beispiel für eine objektorientierte ABAP-Klasse.' }
+    },
+    zh: {
+      hello: { desc: '最简单的 ABAP 程序。' },
+      variables: { desc: '声明各种基本数据类型。' },
+      if_else: { desc: '用 IF-ELSEIF-ELSE 进行条件分支。' },
+      case: { desc: '用 CASE 进行多路分支。' },
+      do_loop: { desc: '用 DO n TIMES 循环。' },
+      while: { desc: '用 WHILE 条件循环。' },
+      concatenate: { desc: '用 CONCATENATE 拼接字符串。' },
+      translate: { desc: '转换大小写。' },
+      split: { desc: '按分隔符拆分字符串。' },
+      internal_table: { desc: '创建并填充内表。' },
+      sort_read: { desc: '对内表行排序并读取。' },
+      perform: { desc: '创建并调用子程序。' },
+      select_scarr: { desc: '用 PARAMETERS 从示例表 SCARR 查询航空公司数据。' },
+      select_all_scarr: { desc: 'SELECT 示例表 SCARR 的所有行。' },
+      select_sflight: { title: 'SELECT SFLIGHT（航班）', desc: '按航空公司和价格筛选航班。' },
+      select_mara: { desc: '按物料类型（FERT/ROH）查询物料主数据。' },
+      alv_salv: { desc: '在交互式 ALV 表格中显示航班数据（SFLIGHT）。' },
+      alv_reuse: { desc: '使用函数模块 REUSE_ALV_GRID_DISPLAY 的经典 ALV 表格。' },
+      alv_fieldcat: { desc: '带手动字段目录、斑马布局和合计列的 REUSE_ALV_GRID_DISPLAY。' },
+      fm_alpha: { desc: '带 EXPORTING / IMPORTING 的 CALL FUNCTION：补齐并去除数字的前导零。' },
+      fm_exceptions: { desc: '通过 sy-subrc 处理函数模块异常。' },
+      fm_download: { desc: '通过 TABLES 把内表传给函数模块（模拟 GUI_DOWNLOAD）。' },
+      class_oo: { desc: '面向对象 ABAP 类的示例。' }
+    }
+  },
+
+  docs: {
+    en: {
+      intro: { title: 'Introduction to ABAP' }, data: { title: 'DATA & Types' },
+      operators: { title: 'Operators & Expressions' }, control: { title: 'Control Flow' },
+      string: { title: 'String Operations' }, itab: { title: 'Internal Tables' },
+      subroutines: { title: 'Subroutines & Methods' }, sysfields: { title: 'System Fields (SY-)' },
+      select: { title: 'SELECT Statement' }, alv: { title: 'ALV Grid Viewer' },
+      function: { title: 'Function Module' }, simulator: { title: 'Simulator Coverage' }
+    },
+    de: {
+      intro: { title: 'Einführung in ABAP' }, data: { title: 'DATA & Typen' },
+      operators: { title: 'Operatoren & Ausdrücke' }, control: { title: 'Kontrollfluss' },
+      string: { title: 'String-Operationen' }, itab: { title: 'Interne Tabellen' },
+      subroutines: { title: 'Unterprogramme & Methoden' }, sysfields: { title: 'Systemfelder (SY-)' },
+      select: { title: 'SELECT-Anweisung' }, alv: { title: 'ALV-Grid-Viewer' },
+      function: { title: 'Funktionsbaustein' }, simulator: { title: 'Simulator-Umfang' }
+    },
+    zh: {
+      intro: { title: 'ABAP 简介' }, data: { title: 'DATA 与数据类型' },
+      operators: { title: '运算符与表达式' }, control: { title: '控制流' },
+      string: { title: '字符串操作' }, itab: { title: '内表' },
+      subroutines: { title: '子程序与方法' }, sysfields: { title: '系统字段 (SY-)' },
+      select: { title: 'SELECT 语句' }, alv: { title: 'ALV 表格查看器' },
+      function: { title: '函数模块' }, simulator: { title: '模拟器支持范围' }
+    }
+  }
+};
+
+// Merge the translated fields for `id` of `type` over the Indonesian source object.
+// Returns the original object unchanged for Indonesian or when no translation exists.
+window.contentFor = function (type, obj) {
+  const lang = (window.I18N && window.I18N.lang) || 'id';
+  if (lang === 'id' || !obj) return obj;
+  const C = window.ABAP_CONTENT_I18N[type];
+  const t = C && C[lang] && C[lang][obj.id];
+  return t ? Object.assign({}, obj, t) : obj;
+};

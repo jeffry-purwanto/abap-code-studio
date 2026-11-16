@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<!-- ABAP Code Studio — Created by jeffrypurwanto -->
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="jeffrypurwanto" />
+  <title>ABAP Code Studio — by jeffrypurwanto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- CodeMirror for editor -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css" />
+</head>
+<body>
+  <!-- NAVIGATION RAIL -->
+  <nav class="rail" data-i18n-aria="nav.aria" aria-label="Navigasi utama">
+    <div class="rail-logo" title="ABAP Code Studio — by jeffrypurwanto">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="m9 15 3-6 3 6"/></svg>
+    </div>
+    <button class="nav-btn active" data-view="editor" onclick="switchView('editor')" data-i18n-title="nav.editor" title="Editor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <span data-i18n="nav.editor">Editor</span>
+    </button>
+    <button class="nav-btn" data-view="learn" onclick="switchView('learn')" data-i18n-title="nav.learn.tip" title="Jalur belajar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
+      <span data-i18n="nav.learn">Belajar</span>
+    </button>
+    <button class="nav-btn" data-view="files" onclick="switchView('files')" data-i18n-title="nav.files.tip" title="Semua program">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></svg>
+      <span data-i18n="nav.files">Program</span>
+    </button>
+    <button class="nav-btn" data-view="tables" onclick="switchView('tables')" data-i18n-title="nav.tables.tip" title="Tabel database contoh">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg>
+      <span data-i18n="nav.tables">Tabel</span>
+    </button>
+    <button class="nav-btn" data-view="snippets" onclick="switchView('snippets')" data-i18n-title="nav.snippets.tip" title="Contoh kode siap pakai">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span data-i18n="nav.snippets">Snippet</span>
+    </button>
+    <button class="nav-btn" data-view="docs" onclick="switchView('docs')" data-i18n-title="nav.docs.tip" title="Referensi cepat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span data-i18n="nav.docs">Docs</span>
+    </button>
+
+    <!-- language switcher + author credit pinned to the bottom -->
+    <div class="rail-foot">
+      <div class="lang-wrap">
+        <button class="nav-btn lang-btn" id="langBtn" onclick="I18N.toggleMenu(event)" data-i18n-title="lang.tip" title="Bahasa" aria-haspopup="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span id="langCurrent">ID</span>
+        </button>
+        <div class="lang-menu" id="langMenu" role="menu"></div>
+      </div>
+      <div class="rail-author" title="Created by jeffrypurwanto">by jeffrypurwanto</div>
+    </div>
+  </nav>
+
+  <!-- MAIN LAYOUT -->
+  <main class="app-layout">
+    <input type="file" id="fileImportInput" accept=".abap,.txt,.sap" style="display:none" onchange="handleFileImport(event)" />
+
+    <!-- ===== EDITOR VIEW ===== -->
+    <div id="view-editor" class="view active">
+      <div class="editor-layout">
+
+        <!-- SIDEBAR: programs -->
+        <aside class="sidebar">
+          <div class="sidebar-header">
+            <span data-i18n="side.programs">Program</span>
+            <button class="icon-btn" onclick="newFile()" data-i18n-title="side.new.tip" title="Program baru (Ctrl+N)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <ul class="file-list" id="fileList"></ul>
+        </aside>
+
+        <!-- CENTER: code editor — one bar: tabs on the left, actions on the right -->
+        <section class="editor-section">
+          <div class="editor-toolbar">
+            <div class="editor-tabs" id="editorTabs">
+              <!-- tabs injected here -->
+            </div>
+            <span id="tabInfo" hidden>untitled.abap</span>
+            <div class="toolbar-right">
+              <button class="tool-btn" onclick="openSelectionScreen()" data-i18n-title="bar.param.tip" title="Buka selection screen untuk mengisi PARAMETERS / SELECT-OPTIONS (F8)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2" fill="var(--bg)"/><circle cx="15" cy="12" r="2" fill="var(--bg)"/><circle cx="8" cy="18" r="2" fill="var(--bg)"/></svg>
+                <span class="tool-label" data-i18n="bar.param">Parameter</span>
+              </button>
+              <button class="run-btn" onclick="runCode()" data-i18n-title="bar.run.tip" title="Jalankan program (Ctrl+Enter)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                <span class="run-label" data-i18n="bar.run">Run</span>
+              </button>
+              <div class="menu-wrap">
+                <button class="tool-btn icon-only" id="moreMenuBtn" onclick="toggleMoreMenu(event)" data-i18n-title="bar.more" title="Lainnya" aria-haspopup="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+                </button>
+                <div class="menu" id="moreMenu" role="menu">
+                  <button class="menu-item" role="menuitem" onclick="closeMoreMenu(); prettyPrinter()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
+                    <span data-i18n="menu.pretty">Pretty Printer</span> <span class="menu-key">Shift+F1</span>
+                  </button>
+                  <button class="menu-item" role="menuitem" onclick="closeMoreMenu(); saveFile()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    <span data-i18n="menu.save">Simpan</span> <span class="menu-key">Ctrl+S</span>
+                  </button>
+                  <button class="menu-item" role="menuitem" onclick="closeMoreMenu(); newFile()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span data-i18n="menu.new">Program baru</span> <span class="menu-key">Ctrl+N</span>
+                  </button>
+                  <div class="menu-sep"></div>
+                  <button class="menu-item" role="menuitem" onclick="closeMoreMenu(); exportFile()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span data-i18n="menu.export">Export ke file .abap</span>
+                  </button>
+                  <button class="menu-item" role="menuitem" onclick="closeMoreMenu(); triggerImport()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span data-i18n="menu.import">Import file…</span>
+                  </button>
+                  <div class="menu-sep"></div>
+                  <label class="menu-row" data-i18n-title="menu.sap.tip" title="Setelah Run, hasil dibuka di jendela lebar bergaya SAP GUI (Esc / F3 untuk kembali)">
+                    <span><span data-i18n="menu.sap">Layar hasil gaya SAP</span><small data-i18n="menu.sap.sub">Jendela lebar setelah Run</small></span>
+                    <span class="switch"><input type="checkbox" id="sapScreenToggle" checked onchange="setSapScreenEnabled(this.checked)" /><span></span></span>
+                  </label>
+                  <div class="menu-row">
+                    <span data-i18n="menu.theme">Tema editor</span>
+                    <span class="segmented" id="themeSwitch">
+                      <button class="active" data-theme="dracula" onclick="changeTheme('dracula')" data-i18n="theme.dark">Gelap</button>
+                      <button data-theme="default" onclick="changeTheme('default')" data-i18n="theme.light">Terang</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="codeEditor"></div>
+        </section>
+
+        <!-- RIGHT PANEL: output, syntax check, variables -->
+        <aside class="output-panel">
+          <div class="panel-head">
+            <div class="panel-tabs">
+              <button class="panel-tab active" onclick="switchPanel('output', this)" data-i18n="panel.output">Output</button>
+              <button class="panel-tab" onclick="switchPanel('syntax', this)" data-i18n="panel.syntax">Syntax</button>
+              <button class="panel-tab" onclick="switchPanel('variables', this)" data-i18n="panel.vars">Variabel</button>
+            </div>
+            <div class="panel-actions">
+              <button class="icon-btn" onclick="openSapScreen()" data-i18n-title="panel.sap.tip" title="Buka hasil di layar lebar gaya SAP">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+              </button>
+              <button class="icon-btn" onclick="clearOutput()" data-i18n-title="panel.clear.tip" title="Bersihkan output">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="panel-output" class="panel-content active">
+            <div class="output-body" id="outputBody">
+              <div class="output-placeholder">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                <p data-i18n-html="ph.run">Tekan <strong>Run</strong> untuk menjalankan program</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="panel-syntax" class="panel-content">
+            <div id="syntaxResult" class="syntax-body">
+              <div class="output-placeholder">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <p data-i18n="ph.syntax">Belum ada pemeriksaan syntax</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="panel-variables" class="panel-content">
+            <div id="variablesResult" class="syntax-body">
+              <div class="output-placeholder">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>
+                <p data-i18n="ph.vars">Isi variabel tampil setelah program dijalankan</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ===== LEARN VIEW (jalur belajar pemula → mahir) ===== -->
+    <div id="view-learn" class="view">
+      <div class="page-container">
+        <div class="page-header">
+          <h2 data-i18n="learn.title">Jalur Belajar ABAP</h2>
+          <p data-i18n="learn.sub">Dari pemula sampai mahir — setiap pelajaran punya contoh yang bisa langsung dijalankan dan latihan untuk dicoba sendiri.</p>
+          <div class="learn-progress">
+            <div class="learn-progress-bar"><div class="learn-progress-fill" id="learnProgressFill"></div></div>
+            <span class="learn-progress-text" id="learnProgressText"></span>
+          </div>
+        </div>
+        <div class="docs-layout">
+          <nav class="docs-nav learn-nav" id="learnNav"></nav>
+          <article class="docs-content learn-content" id="learnContent"></article>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FILES VIEW ===== -->
+    <div id="view-files" class="view">
+      <div class="page-container">
+        <div class="page-header">
+          <h2 data-i18n="files.title">Program Saya</h2>
+          <p data-i18n="files.sub">Kelola semua program ABAP Anda</p>
+          <button class="run-btn" onclick="newFile(); switchView('editor')" data-i18n="files.new">+ Program baru</button>
+        </div>
+        <div class="files-grid" id="filesGrid"></div>
+      </div>
+    </div>
+
+    <!-- ===== TABLES (DB) VIEW ===== -->
+    <div id="view-tables" class="view">
+      <div class="page-container">
+        <div class="page-header" style="flex-direction:row; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h2 data-i18n="tables.title">Tabel Database</h2>
+            <p style="margin-top:6px" data-i18n="tables.sub">Data contoh tabel standar SAP (seperti SE16N) untuk latihan SELECT</p>
+          </div>
+          <button class="run-btn" onclick="generateSelectFromCurrentTable()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span data-i18n="tables.gen">Buat SELECT di Editor</span>
+          </button>
+        </div>
+
+        <!-- Table controls bar -->
+        <div class="table-controls-bar">
+          <div class="control-group">
+            <label class="control-label" data-i18n="tables.label">Tabel</label>
+            <select class="select-table" id="dbTableSelect" onchange="onSelectDbTable(this.value)">
+              <!-- Options populated by app.js -->
+            </select>
+          </div>
+          <div class="control-group" style="flex:1; max-width:320px;">
+            <input type="text" class="table-search-input" id="tableSearchInput" data-i18n-ph="tables.search" placeholder="Cari data, mis. Garuda, USD, FERT…" oninput="filterCurrentTableData()" />
+          </div>
+          <div class="table-stats-badge" id="tableStatsBadge"></div>
+        </div>
+
+        <!-- Table viewer container -->
+        <div class="db-grid-container" id="dbGridContainer">
+          <!-- Table HTML rendered here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SNIPPETS VIEW ===== -->
+    <div id="view-snippets" class="view">
+      <div class="page-container">
+        <div class="page-header">
+          <h2 data-i18n="snip.title">ABAP Snippets &amp; Templates</h2>
+          <p data-i18n="snip.sub">Klik snippet untuk menyisipkan ke editor</p>
+        </div>
+        <div class="snippets-filter">
+          <button class="filter-btn active" onclick="filterSnippets('all', this)" data-i18n="cat.all">Semua</button>
+          <button class="filter-btn" onclick="filterSnippets('basic', this)" data-i18n="cat.basic">Dasar</button>
+          <button class="filter-btn" onclick="filterSnippets('string', this)" data-i18n="cat.string">String</button>
+          <button class="filter-btn" onclick="filterSnippets('loop', this)" data-i18n="cat.loop">Loop</button>
+          <button class="filter-btn" onclick="filterSnippets('table', this)" data-i18n="cat.table">Internal Table</button>
+          <button class="filter-btn" onclick="filterSnippets('alv', this)" data-i18n="cat.alv">ALV Grid</button>
+          <button class="filter-btn" onclick="filterSnippets('function', this)" data-i18n="cat.function">Function Module</button>
+          <button class="filter-btn" onclick="filterSnippets('select', this)" data-i18n="cat.select">SELECT</button>
+          <button class="filter-btn" onclick="filterSnippets('class', this)" data-i18n="cat.class">OO ABAP</button>
+        </div>
+        <div class="snippets-grid" id="snippetsGrid"></div>
+      </div>
+    </div>
+
+    <!-- ===== DOCS VIEW ===== -->
+    <div id="view-docs" class="view">
+      <div class="page-container">
+        <div class="page-header">
+          <h2 data-i18n="docs.title">ABAP Quick Reference</h2>
+          <p data-i18n="docs.sub">Panduan cepat syntax dan keyword ABAP</p>
+        </div>
+        <div class="docs-layout">
+          <nav class="docs-nav" id="docsNav"></nav>
+          <article class="docs-content" id="docsContent"></article>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SAP-style result screen: the list / ALV output in a wide window, like the screen after F8 in SAP GUI -->
+  <div class="sap-overlay" id="sapScreen" onclick="if (event.target === this) closeSapScreen()">
+    <div class="sap-window" role="dialog" data-i18n-aria="sap.aria" aria-label="Hasil program">
+      <div class="sap-titlebar">
+        <span class="sap-title" id="sapTitle">Program</span>
+        <button class="sap-close" onclick="closeSapScreen()" data-i18n-title="sap.close.tip" title="Tutup (Esc)">✕</button>
+      </div>
+      <div class="sap-toolbar">
+        <button class="sap-tbtn" onclick="closeSapScreen()" data-i18n-title="sap.back.tip" title="Back (F3)"><span class="sap-ico sap-back">◀</span> <span data-i18n="sap.back">Back</span></button>
+        <button class="sap-tbtn" onclick="closeSapScreen(); openSelectionScreen()" data-i18n-title="sap.sel.tip" title="Kembali ke selection screen (F8)">▤ <span data-i18n="sap.sel">Selection Screen</span></button>
+        <button class="sap-tbtn" onclick="runCode()" data-i18n-title="sap.run.tip" title="Jalankan lagi dengan nilai DEFAULT">⟳ <span data-i18n="bar.run">Run</span></button>
+        <span class="sap-toolbar-hint" data-i18n="sap.hint">Klik judul kolom untuk memilihnya · klik dua kali untuk mengurutkan</span>
+      </div>
+      <div class="sap-body" id="sapBody"></div>
+      <div class="sap-statusbar">
+        <span class="sap-status-text" id="sapStatus"></span>
+        <span class="sap-sys">DEV (1) 800 ▸ DEVELOPER ▸ INS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: New File -->
+  <div class="modal-overlay" id="newFileModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 data-i18n="new.title">New ABAP Program</h3>
+        <button class="icon-btn" onclick="closeModal('newFileModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label" data-i18n="new.name">Program Name</label>
+        <input type="text" class="form-input" id="newFileName" placeholder="Z_MY_PROGRAM" />
+        <label class="form-label" style="margin-top:12px;" data-i18n="new.template">Template</label>
+        <select class="form-input" id="newFileTemplate">
+          <option value="empty" data-i18n="tpl.empty">Empty Program</option>
+          <option value="hello" data-i18n="tpl.hello">Hello World</option>
+          <option value="alv" data-i18n="tpl.alv">ALV Grid Report (CL_SALV_TABLE)</option>
+          <option value="alv_fieldcat" data-i18n="tpl.alv_fieldcat">ALV Classic + Field Catalog (REUSE_ALV_GRID_DISPLAY)</option>
+          <option value="reuse_alv" data-i18n="tpl.reuse_alv">ALV Classic (i_structure_name)</option>
+          <option value="function" data-i18n="tpl.function">Function Module (CALL FUNCTION)</option>
+          <option value="select" data-i18n="tpl.select">SELECT Database (SCARR Airlines)</option>
+          <option value="report" data-i18n="tpl.report">Report Template</option>
+          <option value="loop" data-i18n="tpl.loop">Loop Example</option>
+          <option value="table" data-i18n="tpl.table">Internal Table</option>
+          <option value="class" data-i18n="tpl.class">OO ABAP Class</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('newFileModal')" data-i18n="btn.cancel">Cancel</button>
+        <button class="run-btn" onclick="createNewFile()" data-i18n="new.create">Create Program</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Selection Screen (F8) -->
+  <div class="modal-overlay" id="selectionScreenModal">
+    <div class="modal" style="width: 480px;">
+      <div class="modal-header">
+        <h3 data-i18n="sel.title">Selection Screen (SE38 / SA38)</h3>
+        <button class="icon-btn" onclick="closeModal('selectionScreenModal')">✕</button>
+      </div>
+      <div class="modal-body" id="selectionScreenBody">
+        <!-- Injected dynamically based on PARAMETERS in code -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('selectionScreenModal')" data-i18n="btn.cancel">Cancel</button>
+        <button class="run-btn" onclick="executeFromSelectionScreen()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span data-i18n="sel.exec">Execute (F8)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+  <script src="i18n.js"></script>
+  <script src="dummy-data.js"></script>
+  <script src="abap-mode.js"></script>
+  <script src="abap-interpreter.js"></script>
+  <script src="snippets.js"></script>
+  <script src="docs.js"></script>
+  <script src="lessons.js"></script>
+  <script src="content-i18n.js"></script>
+  <script src="content-i18n-bodies.js"></script>
+  <script src="content-i18n-docs.js"></script>
+  <script src="messages-i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
