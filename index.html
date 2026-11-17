@@ -130,6 +130,10 @@
                     <span><span data-i18n="menu.sap">Layar hasil gaya SAP</span><small data-i18n="menu.sap.sub">Jendela lebar setelah Run</small></span>
                     <span class="switch"><input type="checkbox" id="sapScreenToggle" checked onchange="setSapScreenEnabled(this.checked)" /><span></span></span>
                   </label>
+                  <label class="menu-row" data-i18n-title="menu.assist.tip" title="Saran kode saat mengetik; Enter setelah IF, LOOP, dst. menambahkan ENDIF, ENDLOOP. Ctrl+Space selalu membuka saran.">
+                    <span><span data-i18n="menu.assist">Pelengkap kode otomatis</span><small data-i18n="menu.assist.sub">Saran dan penutup blok (IF → ENDIF)</small></span>
+                    <span class="switch"><input type="checkbox" id="assistToggle" checked onchange="setAssistEnabled(this.checked)" /><span></span></span>
+                  </label>
                   <div class="menu-row">
                     <span data-i18n="menu.theme">Tema</span>
                     <span class="segmented" id="themeSwitch">
@@ -197,7 +201,7 @@
       <div class="page-container">
         <div class="page-header">
           <h2 data-i18n="learn.title">Jalur Belajar ABAP</h2>
-          <p data-i18n="learn.sub">Dari pemula sampai mahir — setiap pelajaran punya contoh yang bisa langsung dijalankan dan latihan untuk dicoba sendiri.</p>
+          <p data-i18n="learn.sub">Dari pemula sampai pakar — setiap pelajaran punya contoh yang bisa langsung dijalankan dan latihan untuk dicoba sendiri.</p>
           <div class="learn-progress">
             <div class="learn-progress-bar"><div class="learn-progress-fill" id="learnProgressFill"></div></div>
             <span class="learn-progress-text" id="learnProgressText"></span>
@@ -378,6 +382,7 @@
   <script src="i18n.js"></script>
   <script src="dummy-data.js"></script>
   <script src="abap-mode.js"></script>
+  <script src="abap-complete.js"></script>
   <script src="abap-interpreter.js"></script>
   <script src="snippets.js"></script>
   <script src="docs.js"></script>

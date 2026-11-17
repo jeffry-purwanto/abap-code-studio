@@ -76,9 +76,9 @@
         <li><tt>TYPE n</tt> is always filled with leading zeros; <tt>TYPE p DECIMALS 2</tt> rounds to two decimal places.</li>
       </ul>`,
     task: `<ul>
-      <li>Add a variable <tt>lv_kota</tt> of type <tt>string</tt> and print its value.</li>
-      <li>Try to change a constant: <tt>gc_perusahaan = 'Lain'.</tt> Run it and read the error message.</li>
-      <li>Fill <tt>lv_kode</tt> with text longer than 4 characters (<tt>lv_kode = 'ABCDEFG'.</tt>) and see what gets stored.</li>
+      <li>Add a variable <tt>lv_city</tt> of type <tt>string</tt> and print its value.</li>
+      <li>Try to change a constant: <tt>gc_company = 'Lain'.</tt> Run it and read the error message.</li>
+      <li>Fill <tt>lv_code</tt> with text longer than 4 characters (<tt>lv_code = 'ABCDEFG'.</tt>) and see what gets stored.</li>
       <li>Use an undeclared variable (e.g. <tt>lv_typo = 1.</tt>) and note the warning.</li>
     </ul>`
   });
@@ -100,9 +100,9 @@
         <li><tt>TYPE n</tt> wird immer mit führenden Nullen aufgefüllt; <tt>TYPE p DECIMALS 2</tt> rundet auf zwei Nachkommastellen.</li>
       </ul>`,
     task: `<ul>
-      <li>Fügen Sie eine Variable <tt>lv_kota</tt> vom Typ <tt>string</tt> hinzu und geben Sie ihren Wert aus.</li>
-      <li>Versuchen Sie, eine Konstante zu ändern: <tt>gc_perusahaan = 'Lain'.</tt> Führen Sie es aus und lesen Sie die Fehlermeldung.</li>
-      <li>Füllen Sie <tt>lv_kode</tt> mit Text, der länger als 4 Zeichen ist (<tt>lv_kode = 'ABCDEFG'.</tt>), und sehen Sie, was gespeichert wird.</li>
+      <li>Fügen Sie eine Variable <tt>lv_city</tt> vom Typ <tt>string</tt> hinzu und geben Sie ihren Wert aus.</li>
+      <li>Versuchen Sie, eine Konstante zu ändern: <tt>gc_company = 'Lain'.</tt> Führen Sie es aus und lesen Sie die Fehlermeldung.</li>
+      <li>Füllen Sie <tt>lv_code</tt> mit Text, der länger als 4 Zeichen ist (<tt>lv_code = 'ABCDEFG'.</tt>), und sehen Sie, was gespeichert wird.</li>
       <li>Verwenden Sie eine nicht deklarierte Variable (z. B. <tt>lv_typo = 1.</tt>) und beachten Sie die Warnung.</li>
     </ul>`
   });
@@ -124,9 +124,9 @@
         <li><tt>TYPE n</tt> 总是以前导零填满；<tt>TYPE p DECIMALS 2</tt> 四舍五入到两位小数。</li>
       </ul>`,
     task: `<ul>
-      <li>添加一个 <tt>string</tt> 类型的变量 <tt>lv_kota</tt> 并输出它的值。</li>
-      <li>尝试修改常量：<tt>gc_perusahaan = 'Lain'.</tt> 运行并阅读其错误信息。</li>
-      <li>给 <tt>lv_kode</tt> 赋一个长于 4 个字符的文本（<tt>lv_kode = 'ABCDEFG'.</tt>），看看实际存储了什么。</li>
+      <li>添加一个 <tt>string</tt> 类型的变量 <tt>lv_city</tt> 并输出它的值。</li>
+      <li>尝试修改常量：<tt>gc_company = 'Lain'.</tt> 运行并阅读其错误信息。</li>
+      <li>给 <tt>lv_code</tt> 赋一个长于 4 个字符的文本（<tt>lv_code = 'ABCDEFG'.</tt>），看看实际存储了什么。</li>
       <li>使用一个未声明的变量（例如 <tt>lv_typo = 1.</tt>），注意它的警告。</li>
     </ul>`
   });
@@ -178,8 +178,8 @@
         <li><tt>CASE</tt> is tidier than a chain of <tt>ELSEIF</tt> when one variable is compared against many values. <tt>WHEN OTHERS</tt> catches the rest.</li>
       </ul>`,
     task: `<ul>
-      <li>Change <tt>lv_nilai</tt> to 90, 60, and 40. Check the grade.</li>
-      <li>Add a variable <tt>lv_umur</tt> and print "Child", "Teenager", or "Adult" based on the age range.</li>
+      <li>Change <tt>lv_score</tt> to 90, 60, and 40. Check the grade.</li>
+      <li>Add a variable <tt>lv_age</tt> and print "Child", "Teenager", or "Adult" based on the age range.</li>
     </ul>`
   });
   add('de', 'p04', {
@@ -190,8 +190,8 @@
         <li><tt>CASE</tt> ist übersichtlicher als eine Kette von <tt>ELSEIF</tt>, wenn eine Variable mit vielen Werten verglichen wird. <tt>WHEN OTHERS</tt> fängt den Rest ab.</li>
       </ul>`,
     task: `<ul>
-      <li>Ändern Sie <tt>lv_nilai</tt> auf 90, 60 und 40. Prüfen Sie die Note.</li>
-      <li>Fügen Sie eine Variable <tt>lv_umur</tt> hinzu und geben Sie je nach Altersbereich „Kind“, „Jugendlicher“ oder „Erwachsener“ aus.</li>
+      <li>Ändern Sie <tt>lv_score</tt> auf 90, 60 und 40. Prüfen Sie die Note.</li>
+      <li>Fügen Sie eine Variable <tt>lv_age</tt> hinzu und geben Sie je nach Altersbereich „Kind“, „Jugendlicher“ oder „Erwachsener“ aus.</li>
     </ul>`
   });
   add('zh', 'p04', {
@@ -202,8 +202,8 @@
         <li>当一个变量要与许多值比较时，<tt>CASE</tt> 比一连串 <tt>ELSEIF</tt> 更清晰。<tt>WHEN OTHERS</tt> 捕获其余情况。</li>
       </ul>`,
     task: `<ul>
-      <li>把 <tt>lv_nilai</tt> 改为 90、60 和 40，查看对应的等级。</li>
-      <li>添加变量 <tt>lv_umur</tt>，根据年龄区间输出“儿童”、“青少年”或“成人”。</li>
+      <li>把 <tt>lv_score</tt> 改为 90、60 和 40，查看对应的等级。</li>
+      <li>添加变量 <tt>lv_age</tt>，根据年龄区间输出“儿童”、“青少年”或“成人”。</li>
     </ul>`
   });
 
@@ -252,7 +252,7 @@
   add('en', 'p06', {
     body: `<ul>
         <li>Join: <tt>CONCATENATE a b INTO c SEPARATED BY space.</tt>, the <tt>&amp;&amp;</tt> operator, or a <b>string template</b> <tt>|text { variable } text|</tt>.</li>
-        <li>Cut: <tt>SPLIT text AT ';' INTO a b c.</tt> and substring access <tt>text+offset(length)</tt> — e.g. <tt>lv_tgl+0(4)</tt> takes the year.</li>
+        <li>Cut: <tt>SPLIT text AT ';' INTO a b c.</tt> and substring access <tt>text+offset(length)</tt> — e.g. <tt>lv_date+0(4)</tt> takes the year.</li>
         <li>Change: <tt>TRANSLATE … TO UPPER CASE</tt>, <tt>CONDENSE</tt> (tidy up spaces), <tt>REPLACE ALL OCCURRENCES OF … IN … WITH …</tt>.</li>
         <li>Search: <tt>FIND 'word' IN text MATCH OFFSET pos.</tt> then check <tt>sy-subrc</tt> (0 = found). The <tt>CS</tt> operator means "contains".</li>
         <li><tt>strlen( text )</tt> returns the length of the text.</li>
@@ -265,7 +265,7 @@
   add('de', 'p06', {
     body: `<ul>
         <li>Verketten: <tt>CONCATENATE a b INTO c SEPARATED BY space.</tt>, der Operator <tt>&amp;&amp;</tt> oder ein <b>String-Template</b> <tt>|text { variable } text|</tt>.</li>
-        <li>Zerlegen: <tt>SPLIT text AT ';' INTO a b c.</tt> und Teilstring-Zugriff <tt>text+offset(länge)</tt> — z. B. nimmt <tt>lv_tgl+0(4)</tt> das Jahr.</li>
+        <li>Zerlegen: <tt>SPLIT text AT ';' INTO a b c.</tt> und Teilstring-Zugriff <tt>text+offset(länge)</tt> — z. B. nimmt <tt>lv_date+0(4)</tt> das Jahr.</li>
         <li>Ändern: <tt>TRANSLATE … TO UPPER CASE</tt>, <tt>CONDENSE</tt> (Leerzeichen bereinigen), <tt>REPLACE ALL OCCURRENCES OF … IN … WITH …</tt>.</li>
         <li>Suchen: <tt>FIND 'wort' IN text MATCH OFFSET pos.</tt> dann <tt>sy-subrc</tt> prüfen (0 = gefunden). Der Operator <tt>CS</tt> bedeutet „enthält“.</li>
         <li><tt>strlen( text )</tt> gibt die Länge des Textes zurück.</li>
@@ -278,7 +278,7 @@
   add('zh', 'p06', {
     body: `<ul>
         <li>拼接：<tt>CONCATENATE a b INTO c SEPARATED BY space.</tt>、<tt>&amp;&amp;</tt> 运算符，或<b>字符串模板</b> <tt>|文本 { 变量 } 文本|</tt>。</li>
-        <li>截取：<tt>SPLIT text AT ';' INTO a b c.</tt> 以及子串访问 <tt>text+offset(length)</tt>——例如 <tt>lv_tgl+0(4)</tt> 取出年份。</li>
+        <li>截取：<tt>SPLIT text AT ';' INTO a b c.</tt> 以及子串访问 <tt>text+offset(length)</tt>——例如 <tt>lv_date+0(4)</tt> 取出年份。</li>
         <li>修改：<tt>TRANSLATE … TO UPPER CASE</tt>、<tt>CONDENSE</tt>（整理空格）、<tt>REPLACE ALL OCCURRENCES OF … IN … WITH …</tt>。</li>
         <li>查找：<tt>FIND 'word' IN text MATCH OFFSET pos.</tt> 然后检查 <tt>sy-subrc</tt>（0 = 找到）。<tt>CS</tt> 运算符表示“包含”。</li>
         <li><tt>strlen( text )</tt> 返回文本的长度。</li>
@@ -298,45 +298,45 @@
     body: `<p>A structure is a single variable with several <b>components</b> (fields). Its shape is first defined as a type:</p>
       <ul>
         <li><tt>TYPES: BEGIN OF ty_x, … END OF ty_x.</tt> creates a <b>type</b>; <tt>DATA ls_x TYPE ty_x.</tt> creates the <b>variable</b>.</li>
-        <li>Components are accessed with a hyphen: <tt>ls_karyawan-nama</tt>.</li>
+        <li>Components are accessed with a hyphen: <tt>ls_employee-name</tt>.</li>
         <li>Copying a structure copies <b>all</b> of its components; the copy is not linked to the original.</li>
-        <li>A structure may contain other structures: <tt>ls_kantor-alamat-kota</tt>.</li>
+        <li>A structure may contain other structures: <tt>ls_office-address-city</tt>.</li>
         <li><tt>MOVE-CORRESPONDING a TO b.</tt> copies only the components whose names match.</li>
       </ul>
       <p>Naming conventions: <tt>ty_</tt> type, <tt>ls_</tt>/<tt>gs_</tt> structure (work area), <tt>lt_</tt>/<tt>gt_</tt> internal table.</p>`,
     task: `<ul>
-      <li>Add an <tt>email</tt> component to <tt>ty_karyawan</tt>, then fill and print it.</li>
-      <li>Try to fill a component that does not exist (<tt>ls_karyawan-alamat = 'x'.</tt>) and read the error message.</li>
+      <li>Add an <tt>email</tt> component to <tt>ty_employee</tt>, then fill and print it.</li>
+      <li>Try to fill a component that does not exist (<tt>ls_employee-address = 'x'.</tt>) and read the error message.</li>
     </ul>`
   });
   add('de', 'd01', {
     body: `<p>Eine Struktur ist eine einzelne Variable mit mehreren <b>Komponenten</b> (Feldern). Ihre Form wird zuerst als Typ definiert:</p>
       <ul>
         <li><tt>TYPES: BEGIN OF ty_x, … END OF ty_x.</tt> erzeugt einen <b>Typ</b>; <tt>DATA ls_x TYPE ty_x.</tt> erzeugt die <b>Variable</b>.</li>
-        <li>Auf Komponenten wird mit einem Bindestrich zugegriffen: <tt>ls_karyawan-nama</tt>.</li>
+        <li>Auf Komponenten wird mit einem Bindestrich zugegriffen: <tt>ls_employee-name</tt>.</li>
         <li>Eine Struktur zu kopieren kopiert <b>alle</b> ihre Komponenten; die Kopie ist nicht mit dem Original verbunden.</li>
-        <li>Eine Struktur darf andere Strukturen enthalten: <tt>ls_kantor-alamat-kota</tt>.</li>
+        <li>Eine Struktur darf andere Strukturen enthalten: <tt>ls_office-address-city</tt>.</li>
         <li><tt>MOVE-CORRESPONDING a TO b.</tt> kopiert nur die Komponenten mit gleichem Namen.</li>
       </ul>
       <p>Namenskonventionen: <tt>ty_</tt> Typ, <tt>ls_</tt>/<tt>gs_</tt> Struktur (Work Area), <tt>lt_</tt>/<tt>gt_</tt> interne Tabelle.</p>`,
     task: `<ul>
-      <li>Fügen Sie <tt>ty_karyawan</tt> eine Komponente <tt>email</tt> hinzu, füllen und geben Sie sie aus.</li>
-      <li>Versuchen Sie, eine nicht vorhandene Komponente zu füllen (<tt>ls_karyawan-alamat = 'x'.</tt>) und lesen Sie die Fehlermeldung.</li>
+      <li>Fügen Sie <tt>ty_employee</tt> eine Komponente <tt>email</tt> hinzu, füllen und geben Sie sie aus.</li>
+      <li>Versuchen Sie, eine nicht vorhandene Komponente zu füllen (<tt>ls_employee-address = 'x'.</tt>) und lesen Sie die Fehlermeldung.</li>
     </ul>`
   });
   add('zh', 'd01', {
     body: `<p>结构体是一个包含若干<b>组件</b>（字段）的单一变量。它的形态先被定义为一个类型：</p>
       <ul>
         <li><tt>TYPES: BEGIN OF ty_x, … END OF ty_x.</tt> 创建一个<b>类型</b>；<tt>DATA ls_x TYPE ty_x.</tt> 创建<b>变量</b>。</li>
-        <li>用连字符访问组件：<tt>ls_karyawan-nama</tt>。</li>
+        <li>用连字符访问组件：<tt>ls_employee-name</tt>。</li>
         <li>复制结构体会复制它的<b>全部</b>组件；副本与原件互不关联。</li>
-        <li>结构体可以包含其他结构体：<tt>ls_kantor-alamat-kota</tt>。</li>
+        <li>结构体可以包含其他结构体：<tt>ls_office-address-city</tt>。</li>
         <li><tt>MOVE-CORRESPONDING a TO b.</tt> 只复制名称相同的组件。</li>
       </ul>
       <p>命名习惯：<tt>ty_</tt> 类型，<tt>ls_</tt>/<tt>gs_</tt> 结构体（工作区），<tt>lt_</tt>/<tt>gt_</tt> 内表。</p>`,
     task: `<ul>
-      <li>给 <tt>ty_karyawan</tt> 添加 <tt>email</tt> 组件，然后赋值并输出。</li>
-      <li>尝试给一个不存在的组件赋值（<tt>ls_karyawan-alamat = 'x'.</tt>），阅读其错误信息。</li>
+      <li>给 <tt>ty_employee</tt> 添加 <tt>email</tt> 组件，然后赋值并输出。</li>
+      <li>尝试给一个不存在的组件赋值（<tt>ls_employee-address = 'x'.</tt>），阅读其错误信息。</li>
     </ul>`
   });
 
@@ -353,7 +353,7 @@
     task: `<ul>
       <li>Add two more products and make sure the total inventory value changes with them.</li>
       <li>Print only the products priced above 500,000.</li>
-      <li>Write <tt>APPEND gs_produk TO gs_produk-nama.</tt> and run it — this is the mistake beginners make most often.</li>
+      <li>Write <tt>APPEND gs_product TO gs_product-name.</tt> and run it — this is the mistake beginners make most often.</li>
     </ul>`
   });
   add('de', 'd02', {
@@ -368,7 +368,7 @@
     task: `<ul>
       <li>Fügen Sie zwei weitere Produkte hinzu und stellen Sie sicher, dass sich der Gesamtbestandswert mitändert.</li>
       <li>Geben Sie nur die Produkte mit einem Preis über 500.000 aus.</li>
-      <li>Schreiben Sie <tt>APPEND gs_produk TO gs_produk-nama.</tt> und führen Sie es aus — das ist der häufigste Anfängerfehler.</li>
+      <li>Schreiben Sie <tt>APPEND gs_product TO gs_product-name.</tt> und führen Sie es aus — das ist der häufigste Anfängerfehler.</li>
     </ul>`
   });
   add('zh', 'd02', {
@@ -383,7 +383,7 @@
     task: `<ul>
       <li>再添加两个产品，并确认库存总价值随之变化。</li>
       <li>只输出价格高于 500,000 的产品。</li>
-      <li>写 <tt>APPEND gs_produk TO gs_produk-nama.</tt> 并运行——这是初学者最常犯的错误。</li>
+      <li>写 <tt>APPEND gs_product TO gs_product-name.</tt> 并运行——这是初学者最常犯的错误。</li>
     </ul>`
   });
 
@@ -398,7 +398,7 @@
       </ul>`,
     task: `<ul>
       <li>Raise the price of all products in the INPUT category by 10% with <tt>LOOP</tt> + <tt>MODIFY</tt>.</li>
-      <li>Sort by category then price (<tt>SORT gt_produk BY kategori harga DESCENDING.</tt>).</li>
+      <li>Sort by category then price (<tt>SORT gt_products BY category price DESCENDING.</tt>).</li>
     </ul>`
   });
   add('de', 'd03', {
@@ -411,7 +411,7 @@
       </ul>`,
     task: `<ul>
       <li>Erhöhen Sie den Preis aller Produkte der Kategorie INPUT um 10 % mit <tt>LOOP</tt> + <tt>MODIFY</tt>.</li>
-      <li>Sortieren Sie nach Kategorie, dann nach Preis (<tt>SORT gt_produk BY kategori harga DESCENDING.</tt>).</li>
+      <li>Sortieren Sie nach Kategorie, dann nach Preis (<tt>SORT gt_products BY category price DESCENDING.</tt>).</li>
     </ul>`
   });
   add('zh', 'd03', {
@@ -424,7 +424,7 @@
       </ul>`,
     task: `<ul>
       <li>用 <tt>LOOP</tt> + <tt>MODIFY</tt> 把 INPUT 类别所有产品的价格提高 10%。</li>
-      <li>先按类别再按价格排序（<tt>SORT gt_produk BY kategori harga DESCENDING.</tt>）。</li>
+      <li>先按类别再按价格排序（<tt>SORT gt_products BY category price DESCENDING.</tt>）。</li>
     </ul>`
   });
 
@@ -432,36 +432,36 @@
   add('en', 'd04', {
     body: `<p>A <b>field symbol</b> is a pointer to data that already exists — like an "alias" for a variable or a table row. Its name is always enclosed in <tt>&lt; &gt;</tt>.</p>
       <ul>
-        <li><tt>LOOP AT gt ASSIGNING &lt;fs&gt;.</tt> — <tt>&lt;fs&gt;</tt> points directly at the table row. Changing <tt>&lt;fs&gt;-harga</tt> changes the table directly, without <tt>MODIFY</tt>.</li>
+        <li><tt>LOOP AT gt ASSIGNING &lt;fs&gt;.</tt> — <tt>&lt;fs&gt;</tt> points directly at the table row. Changing <tt>&lt;fs&gt;-price</tt> changes the table directly, without <tt>MODIFY</tt>.</li>
         <li>Faster than <tt>INTO</tt> because no row is copied — important for large tables.</li>
         <li><tt>ASSIGN variable TO &lt;fs&gt;.</tt> points at an ordinary variable. <tt>IS ASSIGNED</tt> checks whether the field symbol already points at something.</li>
       </ul>`,
     task: `<ul>
-      <li>Change the first loop to <tt>LOOP … INTO gs_produk</tt> without <tt>MODIFY</tt>. Does the price in the table change?</li>
+      <li>Change the first loop to <tt>LOOP … INTO gs_product</tt> without <tt>MODIFY</tt>. Does the price in the table change?</li>
       <li>With a field symbol, set the stock to 100 only for products priced below 200,000 (<tt>LOOP … ASSIGNING … WHERE</tt>).</li>
     </ul>`
   });
   add('de', 'd04', {
     body: `<p>Ein <b>Feldsymbol</b> ist ein Zeiger auf bereits vorhandene Daten — wie ein „Aliasname“ für eine Variable oder eine Tabellenzeile. Sein Name steht immer in <tt>&lt; &gt;</tt>.</p>
       <ul>
-        <li><tt>LOOP AT gt ASSIGNING &lt;fs&gt;.</tt> — <tt>&lt;fs&gt;</tt> zeigt direkt auf die Tabellenzeile. Ändern von <tt>&lt;fs&gt;-harga</tt> ändert die Tabelle direkt, ohne <tt>MODIFY</tt>.</li>
+        <li><tt>LOOP AT gt ASSIGNING &lt;fs&gt;.</tt> — <tt>&lt;fs&gt;</tt> zeigt direkt auf die Tabellenzeile. Ändern von <tt>&lt;fs&gt;-price</tt> ändert die Tabelle direkt, ohne <tt>MODIFY</tt>.</li>
         <li>Schneller als <tt>INTO</tt>, weil keine Zeile kopiert wird — wichtig für große Tabellen.</li>
         <li><tt>ASSIGN variable TO &lt;fs&gt;.</tt> zeigt auf eine gewöhnliche Variable. <tt>IS ASSIGNED</tt> prüft, ob das Feldsymbol bereits auf etwas zeigt.</li>
       </ul>`,
     task: `<ul>
-      <li>Ändern Sie die erste Schleife in <tt>LOOP … INTO gs_produk</tt> ohne <tt>MODIFY</tt>. Ändert sich der Preis in der Tabelle?</li>
+      <li>Ändern Sie die erste Schleife in <tt>LOOP … INTO gs_product</tt> ohne <tt>MODIFY</tt>. Ändert sich der Preis in der Tabelle?</li>
       <li>Setzen Sie mit einem Feldsymbol den Bestand nur für Produkte unter 200.000 auf 100 (<tt>LOOP … ASSIGNING … WHERE</tt>).</li>
     </ul>`
   });
   add('zh', 'd04', {
     body: `<p><b>字段符号</b>是指向已有数据的指针——就像变量或表行的“别名”。它的名称总是用 <tt>&lt; &gt;</tt> 括起来。</p>
       <ul>
-        <li><tt>LOOP AT gt ASSIGNING &lt;fs&gt;.</tt> ——<tt>&lt;fs&gt;</tt> 直接指向表行。修改 <tt>&lt;fs&gt;-harga</tt> 会直接改变表，无需 <tt>MODIFY</tt>。</li>
+        <li><tt>LOOP AT gt ASSIGNING &lt;fs&gt;.</tt> ——<tt>&lt;fs&gt;</tt> 直接指向表行。修改 <tt>&lt;fs&gt;-price</tt> 会直接改变表，无需 <tt>MODIFY</tt>。</li>
         <li>比 <tt>INTO</tt> 更快，因为不复制行——对大表很重要。</li>
         <li><tt>ASSIGN variable TO &lt;fs&gt;.</tt> 指向一个普通变量。<tt>IS ASSIGNED</tt> 检查字段符号是否已经指向了某处。</li>
       </ul>`,
     task: `<ul>
-      <li>把第一个循环改成不带 <tt>MODIFY</tt> 的 <tt>LOOP … INTO gs_produk</tt>。表中的价格会改变吗？</li>
+      <li>把第一个循环改成不带 <tt>MODIFY</tt> 的 <tt>LOOP … INTO gs_product</tt>。表中的价格会改变吗？</li>
       <li>用字段符号，只把价格低于 200,000 的产品库存设为 100（<tt>LOOP … ASSIGNING … WHERE</tt>）。</li>
     </ul>`
   });
@@ -477,9 +477,9 @@
         <li>Variables declared inside a FORM are <b>local</b>: they disappear once the FORM finishes.</li>
       </ul>`,
     task: `<ul>
-      <li>Create a FORM <tt>hitung_diskon</tt> with <tt>USING</tt> price and percent, <tt>CHANGING</tt> the final price.</li>
-      <li>Call <tt>PERFORM hitung_luas USING 8 CHANGING gv_luas.</tt> (one parameter short) and read the error message.</li>
-      <li>In the main program, try to print <tt>lv_sementara</tt> after the <tt>PERFORM</tt>. Why can't you?</li>
+      <li>Create a FORM <tt>calculate_discount</tt> with <tt>USING</tt> price and percent, <tt>CHANGING</tt> the final price.</li>
+      <li>Call <tt>PERFORM calculate_area USING 8 CHANGING gv_area.</tt> (one parameter short) and read the error message.</li>
+      <li>In the main program, try to print <tt>lv_temp</tt> after the <tt>PERFORM</tt>. Why can't you?</li>
     </ul>`
   });
   add('de', 'd05', {
@@ -492,9 +492,9 @@
         <li>Innerhalb einer FORM deklarierte Variablen sind <b>lokal</b>: Sie verschwinden, sobald die FORM endet.</li>
       </ul>`,
     task: `<ul>
-      <li>Erstellen Sie eine FORM <tt>hitung_diskon</tt> mit <tt>USING</tt> Preis und Prozent, <tt>CHANGING</tt> den Endpreis.</li>
-      <li>Rufen Sie <tt>PERFORM hitung_luas USING 8 CHANGING gv_luas.</tt> (ein Parameter zu wenig) auf und lesen Sie die Fehlermeldung.</li>
-      <li>Versuchen Sie im Hauptprogramm, <tt>lv_sementara</tt> nach dem <tt>PERFORM</tt> auszugeben. Warum geht das nicht?</li>
+      <li>Erstellen Sie eine FORM <tt>calculate_discount</tt> mit <tt>USING</tt> Preis und Prozent, <tt>CHANGING</tt> den Endpreis.</li>
+      <li>Rufen Sie <tt>PERFORM calculate_area USING 8 CHANGING gv_area.</tt> (ein Parameter zu wenig) auf und lesen Sie die Fehlermeldung.</li>
+      <li>Versuchen Sie im Hauptprogramm, <tt>lv_temp</tt> nach dem <tt>PERFORM</tt> auszugeben. Warum geht das nicht?</li>
     </ul>`
   });
   add('zh', 'd05', {
@@ -507,9 +507,9 @@
         <li>在 FORM 内部声明的变量是<b>局部</b>的：FORM 结束后它们就消失。</li>
       </ul>`,
     task: `<ul>
-      <li>创建一个 FORM <tt>hitung_diskon</tt>，<tt>USING</tt> 价格和百分比，<tt>CHANGING</tt> 最终价格。</li>
-      <li>调用 <tt>PERFORM hitung_luas USING 8 CHANGING gv_luas.</tt>（少一个参数），阅读其错误信息。</li>
-      <li>在主程序中，尝试在 <tt>PERFORM</tt> 之后输出 <tt>lv_sementara</tt>。为什么不行？</li>
+      <li>创建一个 FORM <tt>calculate_discount</tt>，<tt>USING</tt> 价格和百分比，<tt>CHANGING</tt> 最终价格。</li>
+      <li>调用 <tt>PERFORM calculate_area USING 8 CHANGING gv_area.</tt>（少一个参数），阅读其错误信息。</li>
+      <li>在主程序中，尝试在 <tt>PERFORM</tt> 之后输出 <tt>lv_temp</tt>。为什么不行？</li>
     </ul>`
   });
 
@@ -525,7 +525,7 @@
     task: `<ul>
       <li>Open <b>Parameter</b> (F8), clear the price range, and run it. How many flights appear?</li>
       <li>Set <tt>P_CARR</tt> to <tt>SQ</tt> and adjust the price range (SQ prices are in SGD, around 1,200).</li>
-      <li>Uncheck <tt>P_DETIL</tt> and see the difference.</li>
+      <li>Uncheck <tt>P_DETAIL</tt> and see the difference.</li>
     </ul>`
   });
   add('de', 'd06', {
@@ -539,7 +539,7 @@
     task: `<ul>
       <li>Öffnen Sie <b>Parameter</b> (F8), leeren Sie den Preisbereich und führen Sie aus. Wie viele Flüge erscheinen?</li>
       <li>Setzen Sie <tt>P_CARR</tt> auf <tt>SQ</tt> und passen Sie den Preisbereich an (SQ-Preise sind in SGD, etwa 1.200).</li>
-      <li>Entfernen Sie das Häkchen bei <tt>P_DETIL</tt> und sehen Sie den Unterschied.</li>
+      <li>Entfernen Sie das Häkchen bei <tt>P_DETAIL</tt> und sehen Sie den Unterschied.</li>
     </ul>`
   });
   add('zh', 'd06', {
@@ -553,13 +553,13 @@
     task: `<ul>
       <li>打开<b>参数</b>(F8)，清空价格范围并运行。出现了多少个航班？</li>
       <li>把 <tt>P_CARR</tt> 设为 <tt>SQ</tt> 并调整价格范围（SQ 价格以 SGD 计，约 1,200）。</li>
-      <li>取消勾选 <tt>P_DETIL</tt>，看看区别。</li>
+      <li>取消勾选 <tt>P_DETAIL</tt>，看看区别。</li>
     </ul>`
   });
 
   // ---- d07: SELECT: reading the database ----
   add('en', 'd07', {
-    body: `<p><tt>SELECT</tt> reads a database table. This studio provides sample tables (see the <b>Tables (DB)</b> menu): SCARR, SPFLI, SFLIGHT, SBOOK, MARA, MAKT, KNA1, LFA1, T001, T005, VBAK, VBAP.</p>
+    body: `<p><tt>SELECT</tt> reads a database table. This studio provides sample tables (see the <b>Tables (DB)</b> menu): SCARR, SPFLI, SFLIGHT, SBOOK, MARA, MAKT, KNA1, LFA1, T001, T005, VBAK, VBAP, and twenty more.</p>
       <ul>
         <li><tt>SELECT f1 f2 FROM table INTO TABLE gt WHERE ….</tt> — many rows into an internal table.</li>
         <li><tt>SELECT SINGLE … INTO gs WHERE ….</tt> — exactly one row into a work area.</li>
@@ -575,7 +575,7 @@
     </ul>`
   });
   add('de', 'd07', {
-    body: `<p><tt>SELECT</tt> liest eine Datenbanktabelle. Dieses Studio stellt Beispieltabellen bereit (siehe Menü <b>Tabellen (DB)</b>): SCARR, SPFLI, SFLIGHT, SBOOK, MARA, MAKT, KNA1, LFA1, T001, T005, VBAK, VBAP.</p>
+    body: `<p><tt>SELECT</tt> liest eine Datenbanktabelle. Dieses Studio stellt Beispieltabellen bereit (siehe Menü <b>Tabellen (DB)</b>): SCARR, SPFLI, SFLIGHT, SBOOK, MARA, MAKT, KNA1, LFA1, T001, T005, VBAK, VBAP und zwanzig weitere.</p>
       <ul>
         <li><tt>SELECT f1 f2 FROM tabelle INTO TABLE gt WHERE ….</tt> — viele Zeilen in eine interne Tabelle.</li>
         <li><tt>SELECT SINGLE … INTO gs WHERE ….</tt> — genau eine Zeile in eine Work Area.</li>
@@ -591,7 +591,7 @@
     </ul>`
   });
   add('zh', 'd07', {
-    body: `<p><tt>SELECT</tt> 读取数据库表。本工作室提供示例表（见<b>数据表 (DB)</b>菜单）：SCARR、SPFLI、SFLIGHT、SBOOK、MARA、MAKT、KNA1、LFA1、T001、T005、VBAK、VBAP。</p>
+    body: `<p><tt>SELECT</tt> 读取数据库表。本工作室提供示例表（见<b>数据表 (DB)</b>菜单）：SCARR、SPFLI、SFLIGHT、SBOOK、MARA、MAKT、KNA1、LFA1、T001、T005、VBAK、VBAP，以及另外二十张表。</p>
       <ul>
         <li><tt>SELECT f1 f2 FROM 表 INTO TABLE gt WHERE ….</tt> ——多行读入内表。</li>
         <li><tt>SELECT SINGLE … INTO gs WHERE ….</tt> ——恰好一行读入工作区。</li>
@@ -755,9 +755,9 @@
         <li><tt>APPEND</tt> to a <tt>SORTED</tt> table is only allowed if the order stays intact; to a <tt>HASHED</tt> table it is not allowed at all.</li>
       </ul>`,
     task: `<ul>
-      <li>Write <tt>APPEND gs_kota TO gt_hashed.</tt> and read the error message.</li>
-      <li>Set <tt>gs_kota-kode = 'AAA'</tt> then <tt>APPEND gs_kota TO gt_sorted.</tt> — the program stops with a runtime error. Why is <tt>INSERT … INTO TABLE</tt> safe?</li>
-      <li>Change the sorted table's key to <tt>NON-UNIQUE KEY kode</tt> and repeat inserting a duplicate key.</li>
+      <li>Write <tt>APPEND gs_city TO gt_hashed.</tt> and read the error message.</li>
+      <li>Set <tt>gs_city-code = 'AAA'</tt> then <tt>APPEND gs_city TO gt_sorted.</tt> — the program stops with a runtime error. Why is <tt>INSERT … INTO TABLE</tt> safe?</li>
+      <li>Change the sorted table's key to <tt>NON-UNIQUE KEY code</tt> and repeat inserting a duplicate key.</li>
     </ul>`
   });
   add('de', 'd10', {
@@ -774,9 +774,9 @@
         <li><tt>APPEND</tt> an eine <tt>SORTED</tt>-Tabelle ist nur erlaubt, wenn die Reihenfolge erhalten bleibt; an eine <tt>HASHED</tt>-Tabelle gar nicht.</li>
       </ul>`,
     task: `<ul>
-      <li>Schreiben Sie <tt>APPEND gs_kota TO gt_hashed.</tt> und lesen Sie die Fehlermeldung.</li>
-      <li>Setzen Sie <tt>gs_kota-kode = 'AAA'</tt> und dann <tt>APPEND gs_kota TO gt_sorted.</tt> — das Programm stoppt mit einem Laufzeitfehler. Warum ist <tt>INSERT … INTO TABLE</tt> sicher?</li>
-      <li>Ändern Sie den Schlüssel der sortierten Tabelle auf <tt>NON-UNIQUE KEY kode</tt> und wiederholen Sie das Einfügen eines doppelten Schlüssels.</li>
+      <li>Schreiben Sie <tt>APPEND gs_city TO gt_hashed.</tt> und lesen Sie die Fehlermeldung.</li>
+      <li>Setzen Sie <tt>gs_city-code = 'AAA'</tt> und dann <tt>APPEND gs_city TO gt_sorted.</tt> — das Programm stoppt mit einem Laufzeitfehler. Warum ist <tt>INSERT … INTO TABLE</tt> sicher?</li>
+      <li>Ändern Sie den Schlüssel der sortierten Tabelle auf <tt>NON-UNIQUE KEY code</tt> und wiederholen Sie das Einfügen eines doppelten Schlüssels.</li>
     </ul>`
   });
   add('zh', 'd10', {
@@ -793,9 +793,9 @@
         <li>仅当顺序保持不变时才允许对 <tt>SORTED</tt> 表 <tt>APPEND</tt>；对 <tt>HASHED</tt> 表完全不允许。</li>
       </ul>`,
     task: `<ul>
-      <li>写 <tt>APPEND gs_kota TO gt_hashed.</tt> 并阅读其错误信息。</li>
-      <li>设置 <tt>gs_kota-kode = 'AAA'</tt> 然后 <tt>APPEND gs_kota TO gt_sorted.</tt> ——程序会以运行时错误停止。为什么 <tt>INSERT … INTO TABLE</tt> 是安全的？</li>
-      <li>把排序表的键改为 <tt>NON-UNIQUE KEY kode</tt>，重复插入一个重复的键。</li>
+      <li>写 <tt>APPEND gs_city TO gt_hashed.</tt> 并阅读其错误信息。</li>
+      <li>设置 <tt>gs_city-code = 'AAA'</tt> 然后 <tt>APPEND gs_city TO gt_sorted.</tt> ——程序会以运行时错误停止。为什么 <tt>INSERT … INTO TABLE</tt> 是安全的？</li>
+      <li>把排序表的键改为 <tt>NON-UNIQUE KEY code</tt>，重复插入一个重复的键。</li>
     </ul>`
   });
 
@@ -1063,8 +1063,8 @@
       <p>Note that the direction is reversed: an FM's <tt>IMPORTING</tt> parameter is filled through <tt>EXPORTING</tt> on the caller's side, and vice versa. Variables declared inside the FM are local.</p>`,
     task: `<ul>
       <li>Remove <tt>EXCEPTIONS</tt> from the third call and run it. What happens when an exception is not handled?</li>
-      <li>Call it with a wrong parameter name (<tt>iv_hrg = 1000</tt>) and read the error message.</li>
-      <li>Add an <tt>EXPORTING ev_diskon</tt> parameter that returns the discount value.</li>
+      <li>Call it with a wrong parameter name (<tt>iv_prc = 1000</tt>) and read the error message.</li>
+      <li>Add an <tt>EXPORTING ev_discount</tt> parameter that returns the discount value.</li>
     </ul>`
   });
   add('de', 'm09', {
@@ -1077,8 +1077,8 @@
       <p>Beachten Sie die umgekehrte Richtung: Ein <tt>IMPORTING</tt>-Parameter des FB wird über <tt>EXPORTING</tt> auf der Aufruferseite gefüllt und umgekehrt. Innerhalb des FB deklarierte Variablen sind lokal.</p>`,
     task: `<ul>
       <li>Entfernen Sie <tt>EXCEPTIONS</tt> aus dem dritten Aufruf und führen Sie es aus. Was passiert, wenn eine Ausnahme nicht behandelt wird?</li>
-      <li>Rufen Sie ihn mit einem falschen Parameternamen auf (<tt>iv_hrg = 1000</tt>) und lesen Sie die Fehlermeldung.</li>
-      <li>Fügen Sie einen Parameter <tt>EXPORTING ev_diskon</tt> hinzu, der den Rabattwert zurückgibt.</li>
+      <li>Rufen Sie ihn mit einem falschen Parameternamen auf (<tt>iv_prc = 1000</tt>) und lesen Sie die Fehlermeldung.</li>
+      <li>Fügen Sie einen Parameter <tt>EXPORTING ev_discount</tt> hinzu, der den Rabattwert zurückgibt.</li>
     </ul>`
   });
   add('zh', 'm09', {
@@ -1091,8 +1091,8 @@
       <p>注意方向是相反的：FM 的 <tt>IMPORTING</tt> 参数由调用方的 <tt>EXPORTING</tt> 填充，反之亦然。在 FM 内部声明的变量是局部的。</p>`,
     task: `<ul>
       <li>从第三个调用中删除 <tt>EXCEPTIONS</tt> 并运行。异常未被处理时会发生什么？</li>
-      <li>用错误的参数名调用（<tt>iv_hrg = 1000</tt>），阅读其错误信息。</li>
-      <li>添加一个 <tt>EXPORTING ev_diskon</tt> 参数，返回折扣值。</li>
+      <li>用错误的参数名调用（<tt>iv_prc = 1000</tt>），阅读其错误信息。</li>
+      <li>添加一个 <tt>EXPORTING ev_discount</tt> 参数，返回折扣值。</li>
     </ul>`
   });
 
@@ -1397,7 +1397,7 @@
       </ul>
       <p>Notice the <tt>status</tt> column: it does not exist in the database but is computed in the program — the hallmark of a report.</p>`,
     task: `<ul>
-      <li>Open <b>Parameter</b> (F8) and change <tt>P_BESAR</tt> to 20000000. Which orders change status?</li>
+      <li>Open <b>Parameter</b> (F8) and change <tt>P_LARGE</tt> to 20000000. Which orders change status?</li>
       <li>Add a column for the number of items per order (count from the VBAP table with <tt>SELECT COUNT( * )</tt> — then think about how to avoid a SELECT inside the LOOP).</li>
       <li>Change the display to <tt>CL_SALV_TABLE</tt>.</li>
     </ul>`
@@ -1413,7 +1413,7 @@
       </ul>
       <p>Beachten Sie die Spalte <tt>status</tt>: Sie existiert nicht in der Datenbank, sondern wird im Programm berechnet — das Kennzeichen eines Berichts.</p>`,
     task: `<ul>
-      <li>Öffnen Sie <b>Parameter</b> (F8) und ändern Sie <tt>P_BESAR</tt> auf 20000000. Welche Aufträge ändern den Status?</li>
+      <li>Öffnen Sie <b>Parameter</b> (F8) und ändern Sie <tt>P_LARGE</tt> auf 20000000. Welche Aufträge ändern den Status?</li>
       <li>Fügen Sie eine Spalte für die Anzahl der Positionen pro Auftrag hinzu (aus der Tabelle VBAP mit <tt>SELECT COUNT( * )</tt> zählen — überlegen Sie dann, wie Sie ein SELECT innerhalb der LOOP vermeiden).</li>
       <li>Ändern Sie die Anzeige auf <tt>CL_SALV_TABLE</tt>.</li>
     </ul>`
@@ -1429,7 +1429,7 @@
       </ul>
       <p>注意 <tt>status</tt> 列：它在数据库中并不存在，而是在程序中计算得出——这是报表的标志。</p>`,
     task: `<ul>
-      <li>打开<b>参数</b>(F8)，把 <tt>P_BESAR</tt> 改为 20000000。哪些订单的状态发生了变化？</li>
+      <li>打开<b>参数</b>(F8)，把 <tt>P_LARGE</tt> 改为 20000000。哪些订单的状态发生了变化？</li>
       <li>添加一列显示每个订单的项目数（用 <tt>SELECT COUNT( * )</tt> 从 VBAP 表统计——然后思考如何避免在 LOOP 内部使用 SELECT）。</li>
       <li>把显示改为 <tt>CL_SALV_TABLE</tt>。</li>
     </ul>`
@@ -1456,8 +1456,8 @@
       </ul>
       <p>Naming conventions: <tt>lcl_</tt> local class, <tt>lo_</tt> object reference, <tt>mv_</tt> attribute, <tt>iv_</tt> importing, <tt>rv_</tt> returning.</p>`,
     task: `<ul>
-      <li>In the main program write <tt>lo_andi-&gt;mv_saldo = 999.</tt> and run it. Why is it rejected?</li>
-      <li>Add a method <tt>transfer</tt> that moves a balance to another account (<tt>IMPORTING io_tujuan TYPE REF TO lcl_rekening iv_jumlah TYPE i</tt>).</li>
+      <li>In the main program write <tt>lo_andi-&gt;mv_balance = 999.</tt> and run it. Why is it rejected?</li>
+      <li>Add a method <tt>transfer</tt> that moves a balance to another account (<tt>IMPORTING io_target TYPE REF TO lcl_account iv_amount TYPE i</tt>).</li>
       <li>Call a method through a reference whose object was never created (remove <tt>CREATE OBJECT lo_andi.</tt>) and read the error.</li>
     </ul>`
   });
@@ -1476,8 +1476,8 @@
       </ul>
       <p>Namenskonventionen: <tt>lcl_</tt> lokale Klasse, <tt>lo_</tt> Objektreferenz, <tt>mv_</tt> Attribut, <tt>iv_</tt> Importing, <tt>rv_</tt> Returning.</p>`,
     task: `<ul>
-      <li>Schreiben Sie im Hauptprogramm <tt>lo_andi-&gt;mv_saldo = 999.</tt> und führen Sie es aus. Warum wird das abgewiesen?</li>
-      <li>Fügen Sie eine Methode <tt>transfer</tt> hinzu, die einen Betrag auf ein anderes Konto überträgt (<tt>IMPORTING io_tujuan TYPE REF TO lcl_rekening iv_jumlah TYPE i</tt>).</li>
+      <li>Schreiben Sie im Hauptprogramm <tt>lo_andi-&gt;mv_balance = 999.</tt> und führen Sie es aus. Warum wird das abgewiesen?</li>
+      <li>Fügen Sie eine Methode <tt>transfer</tt> hinzu, die einen Betrag auf ein anderes Konto überträgt (<tt>IMPORTING io_target TYPE REF TO lcl_account iv_amount TYPE i</tt>).</li>
       <li>Rufen Sie eine Methode über eine Referenz auf, deren Objekt nie erzeugt wurde (entfernen Sie <tt>CREATE OBJECT lo_andi.</tt>), und lesen Sie den Fehler.</li>
     </ul>`
   });
@@ -1496,8 +1496,8 @@
       </ul>
       <p>命名习惯：<tt>lcl_</tt> 局部类，<tt>lo_</tt> 对象引用，<tt>mv_</tt> 属性，<tt>iv_</tt> importing 参数，<tt>rv_</tt> returning 参数。</p>`,
     task: `<ul>
-      <li>在主程序中写 <tt>lo_andi-&gt;mv_saldo = 999.</tt> 并运行。为什么被拒绝？</li>
-      <li>添加方法 <tt>transfer</tt>，把余额转到另一个账户（<tt>IMPORTING io_tujuan TYPE REF TO lcl_rekening iv_jumlah TYPE i</tt>）。</li>
+      <li>在主程序中写 <tt>lo_andi-&gt;mv_balance = 999.</tt> 并运行。为什么被拒绝？</li>
+      <li>添加方法 <tt>transfer</tt>，把余额转到另一个账户（<tt>IMPORTING io_target TYPE REF TO lcl_account iv_amount TYPE i</tt>）。</li>
       <li>通过尚未创建对象的引用调用方法（删除 <tt>CREATE OBJECT lo_andi.</tt>），阅读其错误。</li>
     </ul>`
   });
@@ -1506,43 +1506,43 @@
   add('en', 'a02', {
     body: `<ul>
         <li>The <tt>constructor</tt> is a special method that runs automatically when an object is created. Its parameters are supplied in <tt>NEW lcl_x( … )</tt> or <tt>CREATE OBJECT … EXPORTING …</tt>. With a constructor, an object is never in a "half-finished" state.</li>
-        <li><b>Static</b> = belongs to the class, not to an object: <tt>CLASS-DATA</tt> is shared by all objects, <tt>CLASS-METHODS</tt> are called without an object. Access uses <tt>=&gt;</tt>: <tt>lcl_x=&gt;gv_jumlah</tt>.</li>
+        <li><b>Static</b> = belongs to the class, not to an object: <tt>CLASS-DATA</tt> is shared by all objects, <tt>CLASS-METHODS</tt> are called without an object. Access uses <tt>=&gt;</tt>: <tt>lcl_x=&gt;gv_count</tt>.</li>
         <li><tt>CONSTANTS</tt> inside a class are static too.</li>
         <li><tt>READ-ONLY</tt> makes a public attribute readable from outside but changeable only from inside the class.</li>
         <li>Three levels of visibility: <tt>PUBLIC</tt> (everyone), <tt>PROTECTED</tt> (the class and its subclasses), <tt>PRIVATE</tt> (that class only).</li>
       </ul>`,
     task: `<ul>
-      <li>Try <tt>lo_rina-&gt;mv_nama = 'Lain'.</tt> from the main program.</li>
-      <li>Create an object without parameters: <tt>NEW lcl_karyawan( )</tt>. What is the message?</li>
-      <li>Add a static method <tt>reset</tt> that sets <tt>gv_jumlah</tt> back to 0.</li>
+      <li>Try <tt>lo_rina-&gt;mv_name = 'Lain'.</tt> from the main program.</li>
+      <li>Create an object without parameters: <tt>NEW lcl_employee( )</tt>. What is the message?</li>
+      <li>Add a static method <tt>reset</tt> that sets <tt>gv_count</tt> back to 0.</li>
     </ul>`
   });
   add('de', 'a02', {
     body: `<ul>
         <li>Der <tt>constructor</tt> ist eine spezielle Methode, die beim Erzeugen eines Objekts automatisch läuft. Seine Parameter werden in <tt>NEW lcl_x( … )</tt> oder <tt>CREATE OBJECT … EXPORTING …</tt> übergeben. Mit einem Konstruktor ist ein Objekt nie in einem „halbfertigen“ Zustand.</li>
-        <li><b>Statisch</b> = gehört zur Klasse, nicht zu einem Objekt: <tt>CLASS-DATA</tt> wird von allen Objekten geteilt, <tt>CLASS-METHODS</tt> werden ohne Objekt aufgerufen. Der Zugriff erfolgt mit <tt>=&gt;</tt>: <tt>lcl_x=&gt;gv_jumlah</tt>.</li>
+        <li><b>Statisch</b> = gehört zur Klasse, nicht zu einem Objekt: <tt>CLASS-DATA</tt> wird von allen Objekten geteilt, <tt>CLASS-METHODS</tt> werden ohne Objekt aufgerufen. Der Zugriff erfolgt mit <tt>=&gt;</tt>: <tt>lcl_x=&gt;gv_count</tt>.</li>
         <li><tt>CONSTANTS</tt> innerhalb einer Klasse sind ebenfalls statisch.</li>
         <li><tt>READ-ONLY</tt> macht ein öffentliches Attribut von außen lesbar, aber nur innerhalb der Klasse änderbar.</li>
         <li>Drei Sichtbarkeitsstufen: <tt>PUBLIC</tt> (alle), <tt>PROTECTED</tt> (die Klasse und ihre Unterklassen), <tt>PRIVATE</tt> (nur diese Klasse).</li>
       </ul>`,
     task: `<ul>
-      <li>Versuchen Sie <tt>lo_rina-&gt;mv_nama = 'Lain'.</tt> aus dem Hauptprogramm.</li>
-      <li>Erzeugen Sie ein Objekt ohne Parameter: <tt>NEW lcl_karyawan( )</tt>. Wie lautet die Meldung?</li>
-      <li>Fügen Sie eine statische Methode <tt>reset</tt> hinzu, die <tt>gv_jumlah</tt> auf 0 zurücksetzt.</li>
+      <li>Versuchen Sie <tt>lo_rina-&gt;mv_name = 'Lain'.</tt> aus dem Hauptprogramm.</li>
+      <li>Erzeugen Sie ein Objekt ohne Parameter: <tt>NEW lcl_employee( )</tt>. Wie lautet die Meldung?</li>
+      <li>Fügen Sie eine statische Methode <tt>reset</tt> hinzu, die <tt>gv_count</tt> auf 0 zurücksetzt.</li>
     </ul>`
   });
   add('zh', 'a02', {
     body: `<ul>
         <li><tt>constructor</tt> 是在创建对象时自动运行的特殊方法。它的参数在 <tt>NEW lcl_x( … )</tt> 或 <tt>CREATE OBJECT … EXPORTING …</tt> 中提供。有了构造器，对象就不会处于“半成品”状态。</li>
-        <li><b>静态</b> = 属于类，而不属于对象：<tt>CLASS-DATA</tt> 由所有对象共享，<tt>CLASS-METHODS</tt> 无需对象即可调用。访问时使用 <tt>=&gt;</tt>：<tt>lcl_x=&gt;gv_jumlah</tt>。</li>
+        <li><b>静态</b> = 属于类，而不属于对象：<tt>CLASS-DATA</tt> 由所有对象共享，<tt>CLASS-METHODS</tt> 无需对象即可调用。访问时使用 <tt>=&gt;</tt>：<tt>lcl_x=&gt;gv_count</tt>。</li>
         <li>类内部的 <tt>CONSTANTS</tt> 也是静态的。</li>
         <li><tt>READ-ONLY</tt> 使公共属性可从外部读取，但只能在类内部修改。</li>
         <li>三级可见性：<tt>PUBLIC</tt>（所有人）、<tt>PROTECTED</tt>（类及其子类）、<tt>PRIVATE</tt>（仅该类）。</li>
       </ul>`,
     task: `<ul>
-      <li>在主程序中尝试 <tt>lo_rina-&gt;mv_nama = 'Lain'.</tt></li>
-      <li>不带参数创建对象：<tt>NEW lcl_karyawan( )</tt>。消息是什么？</li>
-      <li>添加静态方法 <tt>reset</tt>，把 <tt>gv_jumlah</tt> 重置为 0。</li>
+      <li>在主程序中尝试 <tt>lo_rina-&gt;mv_name = 'Lain'.</tt></li>
+      <li>不带参数创建对象：<tt>NEW lcl_employee( )</tt>。消息是什么？</li>
+      <li>添加静态方法 <tt>reset</tt>，把 <tt>gv_count</tt> 重置为 0。</li>
     </ul>`
   });
 
@@ -1554,11 +1554,11 @@
         <li><tt>PROTECTED</tt> attributes are visible to subclasses but not from outside.</li>
         <li>A variable typed with the superclass may point to a subclass object. The method that runs is decided by the <b>actual object</b>, not the variable's type — this is <b>polymorphism</b>.</li>
       </ul>
-      <p>Look at <tt>perkenalan</tt>: that method exists only in the superclass, but the <tt>bersuara( )</tt> it calls is each subclass's own version.</p>`,
+      <p>Look at <tt>introduce</tt>: that method exists only in the superclass, but the <tt>make_sound( )</tt> it calls is each subclass's own version.</p>`,
     task: `<ul>
-      <li>Add a class <tt>lcl_burung</tt> with its own sound.</li>
-      <li>Change <tt>mv_nama</tt> to <tt>PRIVATE</tt>. What happens in the subclasses?</li>
-      <li>Give <tt>lcl_kucing</tt> its own constructor that takes a name and a colour, then calls <tt>super-&gt;constructor( iv_nama )</tt>.</li>
+      <li>Add a class <tt>lcl_bird</tt> with its own sound.</li>
+      <li>Change <tt>mv_name</tt> to <tt>PRIVATE</tt>. What happens in the subclasses?</li>
+      <li>Give <tt>lcl_cat</tt> its own constructor that takes a name and a colour, then calls <tt>super-&gt;constructor( iv_name )</tt>.</li>
     </ul>`
   });
   add('de', 'a03', {
@@ -1568,11 +1568,11 @@
         <li><tt>PROTECTED</tt>-Attribute sind für Unterklassen sichtbar, aber nicht von außen.</li>
         <li>Eine Variable vom Typ der Oberklasse darf auf ein Objekt der Unterklasse zeigen. Welche Methode läuft, bestimmt das <b>tatsächliche Objekt</b>, nicht der Typ der Variable — das ist <b>Polymorphie</b>.</li>
       </ul>
-      <p>Beachten Sie <tt>perkenalan</tt>: Diese Methode gibt es nur in der Oberklasse, aber das von ihr aufgerufene <tt>bersuara( )</tt> ist die jeweilige Version der Unterklasse.</p>`,
+      <p>Beachten Sie <tt>introduce</tt>: Diese Methode gibt es nur in der Oberklasse, aber das von ihr aufgerufene <tt>make_sound( )</tt> ist die jeweilige Version der Unterklasse.</p>`,
     task: `<ul>
-      <li>Fügen Sie eine Klasse <tt>lcl_burung</tt> mit eigenem Laut hinzu.</li>
-      <li>Ändern Sie <tt>mv_nama</tt> auf <tt>PRIVATE</tt>. Was passiert in den Unterklassen?</li>
-      <li>Geben Sie <tt>lcl_kucing</tt> einen eigenen Konstruktor, der Name und Farbe annimmt und dann <tt>super-&gt;constructor( iv_nama )</tt> aufruft.</li>
+      <li>Fügen Sie eine Klasse <tt>lcl_bird</tt> mit eigenem Laut hinzu.</li>
+      <li>Ändern Sie <tt>mv_name</tt> auf <tt>PRIVATE</tt>. Was passiert in den Unterklassen?</li>
+      <li>Geben Sie <tt>lcl_cat</tt> einen eigenen Konstruktor, der Name und Farbe annimmt und dann <tt>super-&gt;constructor( iv_name )</tt> aufruft.</li>
     </ul>`
   });
   add('zh', 'a03', {
@@ -1582,11 +1582,11 @@
         <li><tt>PROTECTED</tt> 属性对子类可见，但对外部不可见。</li>
         <li>父类类型的变量可以指向子类对象。实际运行哪个方法由<b>真实的对象</b>决定，而不是变量的类型——这就是<b>多态</b>。</li>
       </ul>
-      <p>注意 <tt>perkenalan</tt>：该方法只存在于父类中，但它调用的 <tt>bersuara( )</tt> 是各个子类自己的版本。</p>`,
+      <p>注意 <tt>introduce</tt>：该方法只存在于父类中，但它调用的 <tt>make_sound( )</tt> 是各个子类自己的版本。</p>`,
     task: `<ul>
-      <li>添加一个有自己叫声的类 <tt>lcl_burung</tt>。</li>
-      <li>把 <tt>mv_nama</tt> 改为 <tt>PRIVATE</tt>。子类中会发生什么？</li>
-      <li>给 <tt>lcl_kucing</tt> 一个自己的构造器，接收名字和颜色，然后调用 <tt>super-&gt;constructor( iv_nama )</tt>。</li>
+      <li>添加一个有自己叫声的类 <tt>lcl_bird</tt>。</li>
+      <li>把 <tt>mv_name</tt> 改为 <tt>PRIVATE</tt>。子类中会发生什么？</li>
+      <li>给 <tt>lcl_cat</tt> 一个自己的构造器，接收名字和颜色，然后调用 <tt>super-&gt;constructor( iv_name )</tt>。</li>
     </ul>`
   });
 
@@ -1600,8 +1600,8 @@
       </ul>
       <p>The difference from inheritance: a subclass inherits the <b>content</b> of one superclass; an interface only prescribes the <b>shape</b>, and one class may implement many interfaces.</p>`,
     task: `<ul>
-      <li>Add a class <tt>lcl_segitiga</tt> (base, height). Notice: the <tt>LOOP</tt> code does not need to change.</li>
-      <li>Add a method <tt>keliling</tt> to the interface. What happens if one of the classes has not implemented it yet?</li>
+      <li>Add a class <tt>lcl_triangle</tt> (base, height). Notice: the <tt>LOOP</tt> code does not need to change.</li>
+      <li>Add a method <tt>perimeter</tt> to the interface. What happens if one of the classes has not implemented it yet?</li>
     </ul>`
   });
   add('de', 'a04', {
@@ -1613,8 +1613,8 @@
       </ul>
       <p>Der Unterschied zur Vererbung: Eine Unterklasse erbt den <b>Inhalt</b> einer Oberklasse; eine Schnittstelle schreibt nur die <b>Form</b> vor, und eine Klasse darf viele Schnittstellen implementieren.</p>`,
     task: `<ul>
-      <li>Fügen Sie eine Klasse <tt>lcl_segitiga</tt> (Grundseite, Höhe) hinzu. Beachten Sie: Der <tt>LOOP</tt>-Code muss nicht geändert werden.</li>
-      <li>Fügen Sie der Schnittstelle eine Methode <tt>keliling</tt> hinzu. Was passiert, wenn eine der Klassen sie noch nicht implementiert hat?</li>
+      <li>Fügen Sie eine Klasse <tt>lcl_triangle</tt> (Grundseite, Höhe) hinzu. Beachten Sie: Der <tt>LOOP</tt>-Code muss nicht geändert werden.</li>
+      <li>Fügen Sie der Schnittstelle eine Methode <tt>perimeter</tt> hinzu. Was passiert, wenn eine der Klassen sie noch nicht implementiert hat?</li>
     </ul>`
   });
   add('zh', 'a04', {
@@ -1626,8 +1626,8 @@
       </ul>
       <p>与继承的区别：子类从一个父类继承<b>内容</b>；接口只规定<b>形式</b>，并且一个类可以实现多个接口。</p>`,
     task: `<ul>
-      <li>添加类 <tt>lcl_segitiga</tt>（底、高）。注意：<tt>LOOP</tt> 代码无需修改。</li>
-      <li>向接口添加方法 <tt>keliling</tt>。如果某个类还没有实现它，会发生什么？</li>
+      <li>添加类 <tt>lcl_triangle</tt>（底、高）。注意：<tt>LOOP</tt> 代码无需修改。</li>
+      <li>向接口添加方法 <tt>perimeter</tt>。如果某个类还没有实现它，会发生什么？</li>
     </ul>`
   });
 
@@ -1644,7 +1644,7 @@
       <p>An exception that is not caught stops the program with a short dump.</p>`,
     task: `<ul>
       <li>Remove the <tt>TRY … ENDTRY</tt> block in part 1 and run it. Where does the program stop?</li>
-      <li>Add a second exception <tt>lcx_jumlah_tidak_valid</tt> that is raised when the withdrawal amount is ≤ 0, and catch it with a separate <tt>CATCH</tt>.</li>
+      <li>Add a second exception <tt>lcx_invalid_amount</tt> that is raised when the withdrawal amount is ≤ 0, and catch it with a separate <tt>CATCH</tt>.</li>
     </ul>`
   });
   add('de', 'a05', {
@@ -1659,7 +1659,7 @@
       <p>Eine nicht abgefangene Ausnahme stoppt das Programm mit einem Short Dump.</p>`,
     task: `<ul>
       <li>Entfernen Sie den Block <tt>TRY … ENDTRY</tt> in Teil 1 und führen Sie es aus. Wo stoppt das Programm?</li>
-      <li>Fügen Sie eine zweite Ausnahme <tt>lcx_jumlah_tidak_valid</tt> hinzu, die ausgelöst wird, wenn der Abhebungsbetrag ≤ 0 ist, und fangen Sie sie mit einem eigenen <tt>CATCH</tt> ab.</li>
+      <li>Fügen Sie eine zweite Ausnahme <tt>lcx_invalid_amount</tt> hinzu, die ausgelöst wird, wenn der Abhebungsbetrag ≤ 0 ist, und fangen Sie sie mit einem eigenen <tt>CATCH</tt> ab.</li>
     </ul>`
   });
   add('zh', 'a05', {
@@ -1674,7 +1674,7 @@
       <p>未被捕获的异常会使程序以 short dump 停止。</p>`,
     task: `<ul>
       <li>删除第 1 部分的 <tt>TRY … ENDTRY</tt> 块并运行。程序在哪里停止？</li>
-      <li>添加第二个异常 <tt>lcx_jumlah_tidak_valid</tt>，在取款金额 ≤ 0 时引发，并用单独的 <tt>CATCH</tt> 捕获。</li>
+      <li>添加第二个异常 <tt>lcx_invalid_amount</tt>，在取款金额 ≤ 0 时引发，并用单独的 <tt>CATCH</tt> 捕获。</li>
     </ul>`
   });
 
@@ -1741,7 +1741,7 @@
         <tr><th>Expression</th><th>Replaces</th></tr>
         <tr><td><tt>COND type( WHEN … THEN … ELSE … )</tt></td><td>an <tt>IF / ELSEIF / ELSE</tt> that only fills one variable</td></tr>
         <tr><td><tt>SWITCH type( x WHEN … THEN … )</tt></td><td>a <tt>CASE</tt> that only fills one variable</td></tr>
-        <tr><td><tt>itab[ 2 ]</tt>, <tt>itab[ id = 5 ]-nama</tt></td><td><tt>READ TABLE</tt></td></tr>
+        <tr><td><tt>itab[ 2 ]</tt>, <tt>itab[ id = 5 ]-name</tt></td><td><tt>READ TABLE</tt></td></tr>
         <tr><td><tt>line_exists( itab[ … ] )</tt></td><td><tt>READ TABLE … TRANSPORTING NO FIELDS</tt> + checking <tt>sy-subrc</tt></td></tr>
         <tr><td><tt>VALUE type( FOR r IN itab WHERE ( … ) ( … ) )</tt></td><td><tt>LOOP</tt> + <tt>APPEND</tt> to build a new table</td></tr>
         <tr><td><tt>REDUCE type( INIT s = 0 FOR r IN itab NEXT s = s + r-f )</tt></td><td>a <tt>LOOP</tt> that sums / counts</td></tr>
@@ -1749,7 +1749,7 @@
       </table>
       <p>Be careful with table expressions: if the row does not exist, the result is not <tt>sy-subrc = 4</tt> but the exception <tt>cx_sy_itab_line_not_found</tt>. Use <tt>line_exists( )</tt>, <tt>VALUE #( … OPTIONAL )</tt>, or <tt>TRY … CATCH</tt>.</p>`,
     task: `<ul>
-      <li>Compute the highest score with <tt>REDUCE</tt> (hint: <tt>NEXT m = COND #( WHEN r-nilai &gt; m THEN r-nilai ELSE m )</tt>).</li>
+      <li>Compute the highest score with <tt>REDUCE</tt> (hint: <tt>NEXT m = COND #( WHEN r-score &gt; m THEN r-score ELSE m )</tt>).</li>
       <li>Build a table containing only the students who did <b>not</b> pass with <tt>VALUE … FOR … WHERE</tt>.</li>
       <li>Rewrite one <tt>COND</tt> block as an ordinary <tt>IF / ELSEIF</tt> and compare the number of lines.</li>
     </ul>`
@@ -1760,7 +1760,7 @@
         <tr><th>Ausdruck</th><th>Ersetzt</th></tr>
         <tr><td><tt>COND typ( WHEN … THEN … ELSE … )</tt></td><td>ein <tt>IF / ELSEIF / ELSE</tt>, das nur eine Variable füllt</td></tr>
         <tr><td><tt>SWITCH typ( x WHEN … THEN … )</tt></td><td>ein <tt>CASE</tt>, das nur eine Variable füllt</td></tr>
-        <tr><td><tt>itab[ 2 ]</tt>, <tt>itab[ id = 5 ]-nama</tt></td><td><tt>READ TABLE</tt></td></tr>
+        <tr><td><tt>itab[ 2 ]</tt>, <tt>itab[ id = 5 ]-name</tt></td><td><tt>READ TABLE</tt></td></tr>
         <tr><td><tt>line_exists( itab[ … ] )</tt></td><td><tt>READ TABLE … TRANSPORTING NO FIELDS</tt> + Prüfung von <tt>sy-subrc</tt></td></tr>
         <tr><td><tt>VALUE typ( FOR r IN itab WHERE ( … ) ( … ) )</tt></td><td><tt>LOOP</tt> + <tt>APPEND</tt>, um eine neue Tabelle aufzubauen</td></tr>
         <tr><td><tt>REDUCE typ( INIT s = 0 FOR r IN itab NEXT s = s + r-f )</tt></td><td>eine <tt>LOOP</tt> zum Summieren / Zählen</td></tr>
@@ -1768,7 +1768,7 @@
       </table>
       <p>Vorsicht bei Tabellenausdrücken: Existiert die Zeile nicht, ist das Ergebnis nicht <tt>sy-subrc = 4</tt>, sondern die Ausnahme <tt>cx_sy_itab_line_not_found</tt>. Verwenden Sie <tt>line_exists( )</tt>, <tt>VALUE #( … OPTIONAL )</tt> oder <tt>TRY … CATCH</tt>.</p>`,
     task: `<ul>
-      <li>Berechnen Sie die höchste Note mit <tt>REDUCE</tt> (Tipp: <tt>NEXT m = COND #( WHEN r-nilai &gt; m THEN r-nilai ELSE m )</tt>).</li>
+      <li>Berechnen Sie die höchste Note mit <tt>REDUCE</tt> (Tipp: <tt>NEXT m = COND #( WHEN r-score &gt; m THEN r-score ELSE m )</tt>).</li>
       <li>Bauen Sie mit <tt>VALUE … FOR … WHERE</tt> eine Tabelle nur mit den Schülern auf, die <b>nicht</b> bestanden haben.</li>
       <li>Schreiben Sie einen <tt>COND</tt>-Block als gewöhnliches <tt>IF / ELSEIF</tt> um und vergleichen Sie die Zeilenzahl.</li>
     </ul>`
@@ -1779,7 +1779,7 @@
         <tr><th>表达式</th><th>替代</th></tr>
         <tr><td><tt>COND 类型( WHEN … THEN … ELSE … )</tt></td><td>只给一个变量赋值的 <tt>IF / ELSEIF / ELSE</tt></td></tr>
         <tr><td><tt>SWITCH 类型( x WHEN … THEN … )</tt></td><td>只给一个变量赋值的 <tt>CASE</tt></td></tr>
-        <tr><td><tt>itab[ 2 ]</tt>、<tt>itab[ id = 5 ]-nama</tt></td><td><tt>READ TABLE</tt></td></tr>
+        <tr><td><tt>itab[ 2 ]</tt>、<tt>itab[ id = 5 ]-name</tt></td><td><tt>READ TABLE</tt></td></tr>
         <tr><td><tt>line_exists( itab[ … ] )</tt></td><td><tt>READ TABLE … TRANSPORTING NO FIELDS</tt> + 检查 <tt>sy-subrc</tt></td></tr>
         <tr><td><tt>VALUE 类型( FOR r IN itab WHERE ( … ) ( … ) )</tt></td><td>用 <tt>LOOP</tt> + <tt>APPEND</tt> 构建新表</td></tr>
         <tr><td><tt>REDUCE 类型( INIT s = 0 FOR r IN itab NEXT s = s + r-f )</tt></td><td>用于求和 / 计数的 <tt>LOOP</tt></td></tr>
@@ -1787,7 +1787,7 @@
       </table>
       <p>使用表表达式要小心：如果行不存在，结果不是 <tt>sy-subrc = 4</tt>，而是异常 <tt>cx_sy_itab_line_not_found</tt>。请使用 <tt>line_exists( )</tt>、<tt>VALUE #( … OPTIONAL )</tt> 或 <tt>TRY … CATCH</tt>。</p>`,
     task: `<ul>
-      <li>用 <tt>REDUCE</tt> 计算最高分（提示：<tt>NEXT m = COND #( WHEN r-nilai &gt; m THEN r-nilai ELSE m )</tt>）。</li>
+      <li>用 <tt>REDUCE</tt> 计算最高分（提示：<tt>NEXT m = COND #( WHEN r-score &gt; m THEN r-score ELSE m )</tt>）。</li>
       <li>用 <tt>VALUE … FOR … WHERE</tt> 构建一张只包含<b>未</b>及格学生的表。</li>
       <li>把一个 <tt>COND</tt> 块改写成普通的 <tt>IF / ELSEIF</tt>，比较行数。</li>
     </ul>`
@@ -1805,7 +1805,7 @@
       <p>Without <tt>SET HANDLER</tt> the event is still triggered but nobody reacts — and that is not an error.</p>`,
     task: `<ul>
       <li>Replace both <tt>SET HANDLER</tt> statements with a single <tt>… FOR ALL INSTANCES.</tt> How many reorders are recorded?</li>
-      <li>Add a second listener, <tt>lcl_gudang</tt>, that prints its own warning for the same event.</li>
+      <li>Add a second listener, <tt>lcl_warehouse</tt>, that prints its own warning for the same event.</li>
       <li>Add <tt>sender</tt> to the handler's <tt>IMPORTING</tt> list and call a public method of the sender.</li>
     </ul>`
   });
@@ -1820,7 +1820,7 @@
       <p>Ohne <tt>SET HANDLER</tt> wird das Ereignis trotzdem ausgelöst, aber niemand reagiert — und das ist kein Fehler.</p>`,
     task: `<ul>
       <li>Ersetzen Sie beide <tt>SET HANDLER</tt>-Anweisungen durch ein einziges <tt>… FOR ALL INSTANCES.</tt> Wie viele Nachbestellungen werden erfasst?</li>
-      <li>Fügen Sie einen zweiten Zuhörer <tt>lcl_gudang</tt> hinzu, der für dasselbe Ereignis eine eigene Warnung ausgibt.</li>
+      <li>Fügen Sie einen zweiten Zuhörer <tt>lcl_warehouse</tt> hinzu, der für dasselbe Ereignis eine eigene Warnung ausgibt.</li>
       <li>Fügen Sie <tt>sender</tt> zur <tt>IMPORTING</tt>-Liste des Handlers hinzu und rufen Sie eine öffentliche Methode des Senders auf.</li>
     </ul>`
   });
@@ -1835,7 +1835,7 @@
       <p>没有 <tt>SET HANDLER</tt> 时，事件仍会被触发，只是无人响应——这并不是错误。</p>`,
     task: `<ul>
       <li>用一条 <tt>… FOR ALL INSTANCES.</tt> 替换两条 <tt>SET HANDLER</tt>。记录了多少次补货订单？</li>
-      <li>添加第二个监听者 <tt>lcl_gudang</tt>，它为同一事件输出自己的警告。</li>
+      <li>添加第二个监听者 <tt>lcl_warehouse</tt>，它为同一事件输出自己的警告。</li>
       <li>把 <tt>sender</tt> 加入处理方法的 <tt>IMPORTING</tt> 列表，并调用发送方的一个公共方法。</li>
     </ul>`
   });
@@ -1853,8 +1853,8 @@
       </ul>
       <p>A reference that has not been filled is empty; dereferencing it raises <tt>cx_sy_ref_is_initial</tt>. Check with <tt>IS BOUND</tt>.</p>`,
     task: `<ul>
-      <li>Create a FORM <tt>cetak_struktur USING ps_data TYPE any</tt> that prints all components of any structure, then call it for <tt>gs_produk</tt> and for one SCARR row.</li>
-      <li>After <tt>CLEAR gr_produk</tt>, access <tt>gr_produk-&gt;harga</tt> and catch the exception with <tt>TRY … CATCH cx_sy_ref_is_initial</tt>.</li>
+      <li>Create a FORM <tt>print_structure USING ps_data TYPE any</tt> that prints all components of any structure, then call it for <tt>gs_product</tt> and for one SCARR row.</li>
+      <li>After <tt>CLEAR gr_product</tt>, access <tt>gr_product-&gt;price</tt> and catch the exception with <tt>TRY … CATCH cx_sy_ref_is_initial</tt>.</li>
     </ul>`
   });
   add('de', 'a10', {
@@ -1869,8 +1869,8 @@
       </ul>
       <p>Eine nicht gefüllte Referenz ist leer; sie zu dereferenzieren löst <tt>cx_sy_ref_is_initial</tt> aus. Prüfen Sie mit <tt>IS BOUND</tt>.</p>`,
     task: `<ul>
-      <li>Erstellen Sie eine FORM <tt>cetak_struktur USING ps_data TYPE any</tt>, die alle Komponenten einer beliebigen Struktur ausgibt, und rufen Sie sie für <tt>gs_produk</tt> und für eine SCARR-Zeile auf.</li>
-      <li>Greifen Sie nach <tt>CLEAR gr_produk</tt> auf <tt>gr_produk-&gt;harga</tt> zu und fangen Sie die Ausnahme mit <tt>TRY … CATCH cx_sy_ref_is_initial</tt> ab.</li>
+      <li>Erstellen Sie eine FORM <tt>print_structure USING ps_data TYPE any</tt>, die alle Komponenten einer beliebigen Struktur ausgibt, und rufen Sie sie für <tt>gs_product</tt> und für eine SCARR-Zeile auf.</li>
+      <li>Greifen Sie nach <tt>CLEAR gr_product</tt> auf <tt>gr_product-&gt;price</tt> zu und fangen Sie die Ausnahme mit <tt>TRY … CATCH cx_sy_ref_is_initial</tt> ab.</li>
     </ul>`
   });
   add('zh', 'a10', {
@@ -1885,8 +1885,8 @@
       </ul>
       <p>尚未赋值的引用为空；对它解引用会引发 <tt>cx_sy_ref_is_initial</tt>。请用 <tt>IS BOUND</tt> 检查。</p>`,
     task: `<ul>
-      <li>创建 FORM <tt>cetak_struktur USING ps_data TYPE any</tt>，输出任意结构体的所有组件，然后分别对 <tt>gs_produk</tt> 和 SCARR 的一行调用它。</li>
-      <li>在 <tt>CLEAR gr_produk</tt> 之后访问 <tt>gr_produk-&gt;harga</tt>，并用 <tt>TRY … CATCH cx_sy_ref_is_initial</tt> 捕获异常。</li>
+      <li>创建 FORM <tt>print_structure USING ps_data TYPE any</tt>，输出任意结构体的所有组件，然后分别对 <tt>gs_product</tt> 和 SCARR 的一行调用它。</li>
+      <li>在 <tt>CLEAR gr_product</tt> 之后访问 <tt>gr_product-&gt;price</tt>，并用 <tt>TRY … CATCH cx_sy_ref_is_initial</tt> 捕获异常。</li>
     </ul>`
   });
 
@@ -1908,7 +1908,7 @@
       </ul>
       <p>Run it, then click an underlined PO number.</p>`,
     task: `<ul>
-      <li>Request a column that does not exist (<tt>get_column( 'HARGA' )</tt>). Which exception is caught?</li>
+      <li>Request a column that does not exist (<tt>get_column( 'PRICE' )</tt>). Which exception is caught?</li>
       <li>Add a handler for the <tt>double_click</tt> event that shows the quantity (<tt>menge</tt>) of the clicked row.</li>
       <li>Add <tt>PARAMETERS p_bukrs</tt> and filter the POs by company code.</li>
     </ul>`
@@ -1930,7 +1930,7 @@
       </ul>
       <p>Führen Sie es aus und klicken Sie dann auf eine unterstrichene Bestellnummer.</p>`,
     task: `<ul>
-      <li>Fordern Sie eine nicht vorhandene Spalte an (<tt>get_column( 'HARGA' )</tt>). Welche Ausnahme wird abgefangen?</li>
+      <li>Fordern Sie eine nicht vorhandene Spalte an (<tt>get_column( 'PRICE' )</tt>). Welche Ausnahme wird abgefangen?</li>
       <li>Fügen Sie einen Handler für das Ereignis <tt>double_click</tt> hinzu, der die Menge (<tt>menge</tt>) der angeklickten Zeile anzeigt.</li>
       <li>Fügen Sie <tt>PARAMETERS p_bukrs</tt> hinzu und filtern Sie die Bestellungen nach Buchungskreis.</li>
     </ul>`
@@ -1952,7 +1952,7 @@
       </ul>
       <p>运行后，点击带下划线的采购订单号。</p>`,
     task: `<ul>
-      <li>请求一个不存在的列（<tt>get_column( 'HARGA' )</tt>）。捕获到了什么异常？</li>
+      <li>请求一个不存在的列（<tt>get_column( 'PRICE' )</tt>）。捕获到了什么异常？</li>
       <li>为 <tt>double_click</tt> 事件添加处理方法，显示被点击行的数量（<tt>menge</tt>）。</li>
       <li>添加 <tt>PARAMETERS p_bukrs</tt>，按公司代码筛选采购订单。</li>
     </ul>`
@@ -1962,46 +1962,46 @@
   add('en', 'a07', {
     body: `<p>The closing lesson brings everything together. A flight occupancy report is written as a single class; the main program is only four lines long.</p>
       <ul>
-        <li><b>Separate responsibilities</b>: <tt>ambil_data</tt> only reads the database, <tt>olah_data</tt> only calculates, <tt>tampilkan</tt> only deals with the screen. Each can be changed or tested on its own.</li>
+        <li><b>Separate responsibilities</b>: <tt>fetch_data</tt> only reads the database, <tt>process_data</tt> only calculates, <tt>show</tt> only deals with the screen. Each can be changed or tested on its own.</li>
         <li><b>State in attributes</b>: the result table is kept in <tt>mt_data</tt> (private), not in a global variable.</li>
-        <li><b>Types inside the class</b>: <tt>ty_baris</tt> is defined in the class's <tt>PUBLIC SECTION</tt>.</li>
+        <li><b>Types inside the class</b>: <tt>ty_row</tt> is defined in the class's <tt>PUBLIC SECTION</tt>.</li>
         <li>The <b>constructor</b> receives the selection criteria, so the report object always knows what to fetch.</li>
       </ul>
       <p>Compare it with the project in the Intermediate level: the flow is the same, but there are no longer global variables that can be changed from anywhere.</p>`,
     task: `<ul>
       <li>Run it through <b>Parameter</b> (F8) with airline <tt>SQ</tt>, then with a code that does not exist (<tt>XX</tt>).</li>
-      <li>Add a method <tt>rata_rata_okupansi</tt> that returns the average of the <tt>persen</tt> column.</li>
-      <li>Move the display into its own class <tt>lcl_tampilan</tt> that receives the data table — so that <tt>lcl_laporan</tt> knows nothing about ALV.</li>
+      <li>Add a method <tt>average_occupancy</tt> that returns the average of the <tt>percent</tt> column.</li>
+      <li>Move the display into its own class <tt>lcl_view</tt> that receives the data table — so that <tt>lcl_report</tt> knows nothing about ALV.</li>
     </ul>`
   });
   add('de', 'a07', {
     body: `<p>Die Abschlusslektion führt alles zusammen. Ein Bericht zur Flugauslastung wird als eine einzige Klasse geschrieben; das Hauptprogramm ist nur noch vier Zeilen lang.</p>
       <ul>
-        <li><b>Getrennte Verantwortlichkeiten</b>: <tt>ambil_data</tt> liest nur die Datenbank, <tt>olah_data</tt> rechnet nur, <tt>tampilkan</tt> kümmert sich nur um die Anzeige. Jede lässt sich einzeln ändern oder testen.</li>
+        <li><b>Getrennte Verantwortlichkeiten</b>: <tt>fetch_data</tt> liest nur die Datenbank, <tt>process_data</tt> rechnet nur, <tt>show</tt> kümmert sich nur um die Anzeige. Jede lässt sich einzeln ändern oder testen.</li>
         <li><b>Zustand in Attributen</b>: Die Ergebnistabelle liegt in <tt>mt_data</tt> (privat), nicht in einer globalen Variable.</li>
-        <li><b>Typen in der Klasse</b>: <tt>ty_baris</tt> ist in der <tt>PUBLIC SECTION</tt> der Klasse definiert.</li>
+        <li><b>Typen in der Klasse</b>: <tt>ty_row</tt> ist in der <tt>PUBLIC SECTION</tt> der Klasse definiert.</li>
         <li>Der <b>Konstruktor</b> nimmt die Selektionskriterien entgegen, sodass das Berichtsobjekt immer weiß, was zu lesen ist.</li>
       </ul>
       <p>Vergleichen Sie mit dem Projekt der Stufe Fortgeschritten: Der Ablauf ist derselbe, aber es gibt keine globalen Variablen mehr, die von überall geändert werden können.</p>`,
     task: `<ul>
       <li>Führen Sie es über <b>Parameter</b> (F8) mit der Fluggesellschaft <tt>SQ</tt> aus, dann mit einem nicht vorhandenen Code (<tt>XX</tt>).</li>
-      <li>Fügen Sie eine Methode <tt>rata_rata_okupansi</tt> hinzu, die den Durchschnitt der Spalte <tt>persen</tt> zurückgibt.</li>
-      <li>Lagern Sie die Anzeige in eine eigene Klasse <tt>lcl_tampilan</tt> aus, die die Datentabelle erhält — sodass <tt>lcl_laporan</tt> nichts über ALV weiß.</li>
+      <li>Fügen Sie eine Methode <tt>average_occupancy</tt> hinzu, die den Durchschnitt der Spalte <tt>percent</tt> zurückgibt.</li>
+      <li>Lagern Sie die Anzeige in eine eigene Klasse <tt>lcl_view</tt> aus, die die Datentabelle erhält — sodass <tt>lcl_report</tt> nichts über ALV weiß.</li>
     </ul>`
   });
   add('zh', 'a07', {
     body: `<p>最后一课把所有内容结合起来。航班上座率报表被写成一个类；主程序只剩四行。</p>
       <ul>
-        <li><b>职责分离</b>：<tt>ambil_data</tt> 只读取数据库，<tt>olah_data</tt> 只做计算，<tt>tampilkan</tt> 只负责显示。每一部分都可以单独修改或测试。</li>
+        <li><b>职责分离</b>：<tt>fetch_data</tt> 只读取数据库，<tt>process_data</tt> 只做计算，<tt>show</tt> 只负责显示。每一部分都可以单独修改或测试。</li>
         <li><b>状态保存在属性中</b>：结果表保存在 <tt>mt_data</tt>（私有）中，而不是全局变量。</li>
-        <li><b>类型定义在类内部</b>：<tt>ty_baris</tt> 定义在类的 <tt>PUBLIC SECTION</tt> 中。</li>
+        <li><b>类型定义在类内部</b>：<tt>ty_row</tt> 定义在类的 <tt>PUBLIC SECTION</tt> 中。</li>
         <li><b>构造器</b>接收选择条件，因此报表对象始终知道要取什么数据。</li>
       </ul>
       <p>与“中级”级别的项目比较：流程相同，但不再有可以从任何地方修改的全局变量。</p>`,
     task: `<ul>
       <li>通过<b>参数</b>(F8) 用航空公司 <tt>SQ</tt> 运行，再用一个不存在的代码（<tt>XX</tt>）运行。</li>
-      <li>添加方法 <tt>rata_rata_okupansi</tt>，返回 <tt>persen</tt> 列的平均值。</li>
-      <li>把显示部分分离到独立的类 <tt>lcl_tampilan</tt> 中，由它接收数据表——这样 <tt>lcl_laporan</tt> 就完全不了解 ALV。</li>
+      <li>添加方法 <tt>average_occupancy</tt>，返回 <tt>percent</tt> 列的平均值。</li>
+      <li>把显示部分分离到独立的类 <tt>lcl_view</tt> 中，由它接收数据表——这样 <tt>lcl_report</tt> 就完全不了解 ALV。</li>
     </ul>`
   });
 
@@ -2021,7 +2021,7 @@
       <p>On newer systems (from ABAP 7.55) the word <tt>REGEX</tt> is replaced by <tt>PCRE</tt>, written the same way: <tt>FIND PCRE …</tt>, <tt>matches( val = … pcre = … )</tt>. The simulator accepts both.</p>`,
     task: `<ul>
       <li>Change the order number pattern so that it only matches numbers starting with <tt>45</tt>.</li>
-      <li>Add the code <tt>ZZ-12A</tt> to <tt>gt_kode</tt>. Predict the result first, then run it.</li>
+      <li>Add the code <tt>ZZ-12A</tt> to <tt>gt_codes</tt>. Predict the result first, then run it.</li>
       <li>Write a postal code validation (exactly five digits) with <tt>matches( )</tt>.</li>
     </ul>`
   });
@@ -2036,7 +2036,7 @@
       <p>In neueren Systemen (ab ABAP 7.55) wird das Wort <tt>REGEX</tt> durch <tt>PCRE</tt> ersetzt, bei gleicher Schreibweise: <tt>FIND PCRE …</tt>, <tt>matches( val = … pcre = … )</tt>. Der Simulator akzeptiert beides.</p>`,
     task: `<ul>
       <li>Ändern Sie das Muster für die Auftragsnummer so, dass es nur auf Nummern passt, die mit <tt>45</tt> beginnen.</li>
-      <li>Fügen Sie den Code <tt>ZZ-12A</tt> zu <tt>gt_kode</tt> hinzu. Sagen Sie das Ergebnis zuerst voraus, führen Sie dann aus.</li>
+      <li>Fügen Sie den Code <tt>ZZ-12A</tt> zu <tt>gt_codes</tt> hinzu. Sagen Sie das Ergebnis zuerst voraus, führen Sie dann aus.</li>
       <li>Schreiben Sie eine Prüfung für Postleitzahlen (genau fünf Ziffern) mit <tt>matches( )</tt>.</li>
     </ul>`
   });
@@ -2051,7 +2051,7 @@
       <p>在较新的系统中（自 ABAP 7.55 起），关键字 <tt>REGEX</tt> 被 <tt>PCRE</tt> 取代，写法相同：<tt>FIND PCRE …</tt>、<tt>matches( val = … pcre = … )</tt>。模拟器两者都接受。</p>`,
     task: `<ul>
       <li>修改订单号的模式，使它只匹配以 <tt>45</tt> 开头的号码。</li>
-      <li>把代码 <tt>ZZ-12A</tt> 加入 <tt>gt_kode</tt>。先预测结果，再运行。</li>
+      <li>把代码 <tt>ZZ-12A</tt> 加入 <tt>gt_codes</tt>。先预测结果，再运行。</li>
       <li>用 <tt>matches( )</tt> 编写邮政编码校验（恰好五位数字）。</li>
     </ul>`
   });
@@ -2062,14 +2062,14 @@
       <ul>
         <li>The outer loop runs once per <b>group</b>, not once per row. <tt>LOOP AT GROUP</tt> inside it reads the members of that group.</li>
         <li><tt>GROUP BY gs_order-ernam … INTO DATA(gv_sales)</tt>: the variable after <tt>INTO</tt> (the group binding) holds the key value.</li>
-        <li>The key may be a structure: <tt>GROUP BY ( kunnr = … jumlah = GROUP SIZE )</tt>. <tt>GROUP SIZE</tt> holds the number of members, <tt>GROUP INDEX</tt> the sequence number of the group.</li>
+        <li>The key may be a structure: <tt>GROUP BY ( kunnr = … cnt = GROUP SIZE )</tt>. <tt>GROUP SIZE</tt> holds the number of members, <tt>GROUP INDEX</tt> the sequence number of the group.</li>
         <li><tt>ASCENDING</tt> / <tt>DESCENDING</tt> sorts the groups by their key. Without it, groups appear in the order of their first occurrence in the table.</li>
         <li>Without a trailing <tt>INTO</tt> (representative binding), the work area holds the first row of the group and serves as the group name: <tt>LOOP AT GROUP gs_order</tt>.</li>
       </ul>
       <p>The original table is not changed and does not have to be sorted first.</p>`,
     task: `<ul>
       <li>Add the field <tt>vkorg</tt> to <tt>ty_order</tt>, then print the number of orders and their total value per sales organization.</li>
-      <li>In part 2, add <tt>urut = GROUP INDEX</tt> to the key and print the number.</li>
+      <li>In part 2, add <tt>seq = GROUP INDEX</tt> to the key and print the number.</li>
       <li>Change part 3 so that it shows the <b>smallest</b> order of each customer.</li>
     </ul>`
   });
@@ -2078,14 +2078,14 @@
       <ul>
         <li>Die äußere Schleife läuft einmal je <b>Gruppe</b>, nicht einmal je Zeile. <tt>LOOP AT GROUP</tt> darin liest die Mitglieder dieser Gruppe.</li>
         <li><tt>GROUP BY gs_order-ernam … INTO DATA(gv_sales)</tt>: Die Variable hinter <tt>INTO</tt> (Gruppenbindung) enthält den Schlüsselwert.</li>
-        <li>Der Schlüssel darf eine Struktur sein: <tt>GROUP BY ( kunnr = … jumlah = GROUP SIZE )</tt>. <tt>GROUP SIZE</tt> enthält die Anzahl der Mitglieder, <tt>GROUP INDEX</tt> die laufende Nummer der Gruppe.</li>
+        <li>Der Schlüssel darf eine Struktur sein: <tt>GROUP BY ( kunnr = … cnt = GROUP SIZE )</tt>. <tt>GROUP SIZE</tt> enthält die Anzahl der Mitglieder, <tt>GROUP INDEX</tt> die laufende Nummer der Gruppe.</li>
         <li><tt>ASCENDING</tt> / <tt>DESCENDING</tt> sortiert die Gruppen nach ihrem Schlüssel. Ohne diese Angabe erscheinen die Gruppen in der Reihenfolge ihres ersten Auftretens in der Tabelle.</li>
         <li>Ohne nachgestelltes <tt>INTO</tt> (repräsentative Bindung) enthält der Arbeitsbereich die erste Zeile der Gruppe und dient als Gruppenname: <tt>LOOP AT GROUP gs_order</tt>.</li>
       </ul>
       <p>Die ursprüngliche Tabelle bleibt unverändert und muss vorher nicht sortiert werden.</p>`,
     task: `<ul>
       <li>Fügen Sie das Feld <tt>vkorg</tt> zu <tt>ty_order</tt> hinzu und geben Sie dann die Anzahl der Aufträge und ihren Gesamtwert je Verkaufsorganisation aus.</li>
-      <li>Ergänzen Sie in Teil 2 den Schlüssel um <tt>urut = GROUP INDEX</tt> und geben Sie die Nummer aus.</li>
+      <li>Ergänzen Sie in Teil 2 den Schlüssel um <tt>seq = GROUP INDEX</tt> und geben Sie die Nummer aus.</li>
       <li>Ändern Sie Teil 3 so, dass der <b>kleinste</b> Auftrag jedes Kunden angezeigt wird.</li>
     </ul>`
   });
@@ -2094,14 +2094,14 @@
       <ul>
         <li>外层循环对每个<b>组</b>执行一次，而不是对每一行执行一次。其中的 <tt>LOOP AT GROUP</tt> 读取该组的成员。</li>
         <li><tt>GROUP BY gs_order-ernam … INTO DATA(gv_sales)</tt>：<tt>INTO</tt> 后面的变量（组绑定）保存键值。</li>
-        <li>键可以是一个结构：<tt>GROUP BY ( kunnr = … jumlah = GROUP SIZE )</tt>。<tt>GROUP SIZE</tt> 保存成员数量，<tt>GROUP INDEX</tt> 保存组的序号。</li>
+        <li>键可以是一个结构：<tt>GROUP BY ( kunnr = … cnt = GROUP SIZE )</tt>。<tt>GROUP SIZE</tt> 保存成员数量，<tt>GROUP INDEX</tt> 保存组的序号。</li>
         <li><tt>ASCENDING</tt> / <tt>DESCENDING</tt> 按键对组排序。不写时，各组按它在表中首次出现的顺序出现。</li>
         <li>末尾不写 <tt>INTO</tt> 时（代表绑定），工作区保存该组的第一行，并用作组名：<tt>LOOP AT GROUP gs_order</tt>。</li>
       </ul>
       <p>原表不会被改变，也不必事先排序。</p>`,
     task: `<ul>
       <li>在 <tt>ty_order</tt> 中加入字段 <tt>vkorg</tt>，然后按销售组织输出订单数量及其总金额。</li>
-      <li>在第 2 部分的键中加入 <tt>urut = GROUP INDEX</tt>，并输出这个序号。</li>
+      <li>在第 2 部分的键中加入 <tt>seq = GROUP INDEX</tt>，并输出这个序号。</li>
       <li>修改第 3 部分，使它显示每个客户<b>最小</b>的订单。</li>
     </ul>`
   });
@@ -2117,9 +2117,9 @@
       </ul>
       <p>An expression that is too long is hard to read and hard to debug. Once an expression grows beyond a few lines, split it into named steps.</p>`,
     task: `<ul>
-      <li>Create <tt>gt_bukan_sales</tt> with <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> and print its number of rows.</li>
-      <li>Add a column <tt>rata</tt> (average salary) to <tt>ty_rekap</tt> and fill it within the same expression.</li>
-      <li>Remove <tt>EXCEPT gaji</tt> in part 4, run it, and see how the output changes.</li>
+      <li>Create <tt>gt_non_sales</tt> with <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> and print its number of rows.</li>
+      <li>Add a column <tt>average</tt> (average salary) to <tt>ty_summary</tt> and fill it within the same expression.</li>
+      <li>Remove <tt>EXCEPT salary</tt> in part 4, run it, and see how the output changes.</li>
     </ul>`
   });
   add('de', 'e03', {
@@ -2132,9 +2132,9 @@
       </ul>
       <p>Ein zu langer Ausdruck ist schwer zu lesen und schwer zu debuggen. Sobald ein Ausdruck über einige Zeilen hinauswächst, zerlegen Sie ihn in benannte Schritte.</p>`,
     task: `<ul>
-      <li>Erzeugen Sie <tt>gt_bukan_sales</tt> mit <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> und geben Sie die Zeilenzahl aus.</li>
-      <li>Fügen Sie <tt>ty_rekap</tt> eine Spalte <tt>rata</tt> (Durchschnittsgehalt) hinzu und füllen Sie sie im selben Ausdruck.</li>
-      <li>Entfernen Sie <tt>EXCEPT gaji</tt> in Teil 4, führen Sie aus und sehen Sie, wie sich die Ausgabe ändert.</li>
+      <li>Erzeugen Sie <tt>gt_non_sales</tt> mit <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> und geben Sie die Zeilenzahl aus.</li>
+      <li>Fügen Sie <tt>ty_summary</tt> eine Spalte <tt>average</tt> (Durchschnittsgehalt) hinzu und füllen Sie sie im selben Ausdruck.</li>
+      <li>Entfernen Sie <tt>EXCEPT salary</tt> in Teil 4, führen Sie aus und sehen Sie, wie sich die Ausgabe ändert.</li>
     </ul>`
   });
   add('zh', 'e03', {
@@ -2147,9 +2147,9 @@
       </ul>
       <p>过长的表达式难以阅读，也难以调试。一个表达式超过几行时，就把它拆成有名称的步骤。</p>`,
     task: `<ul>
-      <li>用 <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> 创建 <tt>gt_bukan_sales</tt>，并输出它的行数。</li>
-      <li>在 <tt>ty_rekap</tt> 中加入列 <tt>rata</tt>（平均工资），并在同一个表达式中填充它。</li>
-      <li>删除第 4 部分中的 <tt>EXCEPT gaji</tt>，运行并观察输出的变化。</li>
+      <li>用 <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> 创建 <tt>gt_non_sales</tt>，并输出它的行数。</li>
+      <li>在 <tt>ty_summary</tt> 中加入列 <tt>average</tt>（平均工资），并在同一个表达式中填充它。</li>
+      <li>删除第 4 部分中的 <tt>EXCEPT salary</tt>，运行并观察输出的变化。</li>
     </ul>`
   });
 
@@ -2160,13 +2160,13 @@
         <li><b>Subquery</b>: <tt>WHERE column [NOT] IN ( SELECT … )</tt> compares with the result of another SELECT. <tt>EXISTS ( SELECT … )</tt> is true if the subquery returns at least one row.</li>
         <li>A <b>correlated</b> subquery refers to the row of the outer query, for example <tt>WHERE kunrg = kna1~kunnr</tt> — the subquery is evaluated for every outer row.</li>
         <li><tt>CASE WHEN … THEN … ELSE … END AS name</tt> creates a result column based on conditions.</li>
-        <li>Calculations and functions may be written directly in the column list: <tt>seatsmax - seatsocc AS sisa</tt>, <tt>concat( carrid, connid )</tt>. The alias name can be used in <tt>ORDER BY</tt>.</li>
+        <li>Calculations and functions may be written directly in the column list: <tt>seatsmax - seatsocc AS free_seats</tt>, <tt>concat( carrid, connid )</tt>. The alias name can be used in <tt>ORDER BY</tt>.</li>
         <li><tt>UNION</tt> combines the results of two SELECTs with the same column layout and removes duplicate rows; <tt>UNION ALL</tt> keeps all of them.</li>
       </ul>
       <p>Look at the <b>Database</b> line below the output: five SELECTs, five accesses — and not a single SELECT inside a loop.</p>`,
     task: `<ul>
       <li>Reverse question 1: show the orders that <b>already</b> have a delivery.</li>
-      <li>Add a class <tt>MIKRO</tt> for orders below 5 million.</li>
+      <li>Add a class <tt>MICRO</tt> for orders below 5 million.</li>
       <li>Replace <tt>UNION</tt> with <tt>UNION ALL</tt>. Does the number of partners change? Why?</li>
     </ul>`
   });
@@ -2176,13 +2176,13 @@
         <li><b>Subquery</b>: <tt>WHERE spalte [NOT] IN ( SELECT … )</tt> vergleicht mit dem Ergebnis eines anderen SELECT. <tt>EXISTS ( SELECT … )</tt> ist wahr, wenn die Subquery mindestens eine Zeile liefert.</li>
         <li>Eine <b>korrelierte</b> Subquery bezieht sich auf die Zeile der äußeren Abfrage, zum Beispiel <tt>WHERE kunrg = kna1~kunnr</tt> — die Subquery wird für jede äußere Zeile ausgewertet.</li>
         <li><tt>CASE WHEN … THEN … ELSE … END AS name</tt> erzeugt eine Ergebnisspalte anhand von Bedingungen.</li>
-        <li>Berechnungen und Funktionen dürfen direkt in der Spaltenliste stehen: <tt>seatsmax - seatsocc AS sisa</tt>, <tt>concat( carrid, connid )</tt>. Der Aliasname kann in <tt>ORDER BY</tt> verwendet werden.</li>
+        <li>Berechnungen und Funktionen dürfen direkt in der Spaltenliste stehen: <tt>seatsmax - seatsocc AS free_seats</tt>, <tt>concat( carrid, connid )</tt>. Der Aliasname kann in <tt>ORDER BY</tt> verwendet werden.</li>
         <li><tt>UNION</tt> vereinigt die Ergebnisse zweier SELECTs mit gleichem Spaltenaufbau und entfernt doppelte Zeilen; <tt>UNION ALL</tt> behält alle.</li>
       </ul>
       <p>Sehen Sie sich die Zeile <b>Datenbank</b> unter der Ausgabe an: fünf SELECTs, fünf Zugriffe — und kein einziges SELECT in einer Schleife.</p>`,
     task: `<ul>
       <li>Kehren Sie Frage 1 um: Zeigen Sie die Aufträge, die <b>bereits</b> eine Lieferung haben.</li>
-      <li>Fügen Sie eine Klasse <tt>MIKRO</tt> für Aufträge unter 5 Millionen hinzu.</li>
+      <li>Fügen Sie eine Klasse <tt>MICRO</tt> für Aufträge unter 5 Millionen hinzu.</li>
       <li>Ersetzen Sie <tt>UNION</tt> durch <tt>UNION ALL</tt>. Ändert sich die Anzahl der Partner? Warum?</li>
     </ul>`
   });
@@ -2192,13 +2192,13 @@
         <li><b>子查询</b>：<tt>WHERE 列 [NOT] IN ( SELECT … )</tt> 与另一个 SELECT 的结果比较。子查询至少返回一行时，<tt>EXISTS ( SELECT … )</tt> 为真。</li>
         <li><b>相关</b>子查询引用外层查询的行，例如 <tt>WHERE kunrg = kna1~kunnr</tt>——子查询会针对每一个外层行求值。</li>
         <li><tt>CASE WHEN … THEN … ELSE … END AS 名称</tt> 根据条件生成结果列。</li>
-        <li>计算和函数可以直接写在列清单中：<tt>seatsmax - seatsocc AS sisa</tt>、<tt>concat( carrid, connid )</tt>。别名可以用在 <tt>ORDER BY</tt> 中。</li>
+        <li>计算和函数可以直接写在列清单中：<tt>seatsmax - seatsocc AS free_seats</tt>、<tt>concat( carrid, connid )</tt>。别名可以用在 <tt>ORDER BY</tt> 中。</li>
         <li><tt>UNION</tt> 合并两个列结构相同的 SELECT 的结果，并去掉重复行；<tt>UNION ALL</tt> 保留全部行。</li>
       </ul>
       <p>看输出下方的<b>数据库</b>一行：五个 SELECT，五次访问——没有任何一个 SELECT 位于循环之中。</p>`,
     task: `<ul>
       <li>把问题 1 反过来：显示<b>已经</b>有交货单的订单。</li>
-      <li>为 500 万以下的订单增加类别 <tt>MIKRO</tt>。</li>
+      <li>为 500 万以下的订单增加类别 <tt>MICRO</tt>。</li>
       <li>把 <tt>UNION</tt> 换成 <tt>UNION ALL</tt>。伙伴数量有变化吗？为什么？</li>
     </ul>`
   });
@@ -2217,8 +2217,8 @@
       <p>The simulator counts database accesses on every run. The <b>Database</b> line below the output shows the totals and flags any <tt>SELECT</tt> that ran repeatedly inside a loop.</p>`,
     task: `<ul>
       <li>Run it and read the <b>Database</b> line: which line of code is flagged, and how many times did it run?</li>
-      <li>Delete method 1 (Cara 1), run it again, and compare the number of database accesses.</li>
-      <li>Write a method 4 with <tt>FOR ALL ENTRIES IN gt_item</tt>.</li>
+      <li>Delete the <b>Way 1</b> part, run it again, and compare the number of database accesses.</li>
+      <li>Write a <b>Way 4</b> with <tt>FOR ALL ENTRIES IN gt_item</tt>.</li>
     </ul>`
   });
   add('de', 'e05', {
@@ -2234,8 +2234,8 @@
       <p>Der Simulator zählt die Datenbankzugriffe bei jeder Ausführung. Die Zeile <b>Datenbank</b> unter der Ausgabe zeigt die Summen und markiert jedes <tt>SELECT</tt>, das wiederholt in einer Schleife lief.</p>`,
     task: `<ul>
       <li>Führen Sie aus und lesen Sie die Zeile <b>Datenbank</b>: Welche Codezeile ist markiert, und wie oft lief sie?</li>
-      <li>Löschen Sie Weg 1 (Cara 1), führen Sie erneut aus und vergleichen Sie die Anzahl der Datenbankzugriffe.</li>
-      <li>Schreiben Sie einen Weg 4 mit <tt>FOR ALL ENTRIES IN gt_item</tt>.</li>
+      <li>Löschen Sie den Teil <b>Way 1</b>, führen Sie erneut aus und vergleichen Sie die Anzahl der Datenbankzugriffe.</li>
+      <li>Schreiben Sie einen <b>Way 4</b> mit <tt>FOR ALL ENTRIES IN gt_item</tt>.</li>
     </ul>`
   });
   add('zh', 'e05', {
@@ -2251,8 +2251,8 @@
       <p>模拟器在每次运行时统计数据库访问次数。输出下方的<b>数据库</b>一行显示总数，并标出在循环中重复执行的 <tt>SELECT</tt>。</p>`,
     task: `<ul>
       <li>运行并阅读<b>数据库</b>一行：哪一行代码被标出？它执行了多少次？</li>
-      <li>删除方法 1（Cara 1），再次运行，比较数据库访问次数。</li>
-      <li>用 <tt>FOR ALL ENTRIES IN gt_item</tt> 编写方法 4。</li>
+      <li>删除 <b>Way 1</b> 部分，再次运行，比较数据库访问次数。</li>
+      <li>用 <tt>FOR ALL ENTRIES IN gt_item</tt> 编写 <b>Way 4</b>。</li>
     </ul>`
   });
 
@@ -2269,7 +2269,7 @@
       <p>Test classes do not run when the program is executed with Run. In SAP tests are started with <tt>Ctrl+Shift+F10</tt>; in the simulator through the ⋯ menu → <b>Run unit tests</b>, with the same shortcut.</p>`,
     task: `<ul>
       <li>Run the unit tests: all four tests must pass.</li>
-      <li>Change <tt>&gt;= 5000000</tt> to <tt>&gt; 5000000</tt> in the method <tt>persen</tt>, run the tests again, and read the failure report.</li>
+      <li>Change <tt>&gt;= 5000000</tt> to <tt>&gt; 5000000</tt> in the method <tt>percent</tt>, run the tests again, and read the failure report.</li>
       <li>Add a 15 percent discount rule for totals from 50 million — write the test first, then the code.</li>
     </ul>`
   });
@@ -2285,7 +2285,7 @@
       <p>Testklassen laufen nicht mit, wenn das Programm mit Run ausgeführt wird. In SAP startet man Tests mit <tt>Ctrl+Shift+F10</tt>; im Simulator über das Menü ⋯ → <b>Unit-Tests ausführen</b>, mit derselben Tastenkombination.</p>`,
     task: `<ul>
       <li>Führen Sie die Unit-Tests aus: Alle vier Tests müssen bestehen.</li>
-      <li>Ändern Sie <tt>&gt;= 5000000</tt> in <tt>&gt; 5000000</tt> in der Methode <tt>persen</tt>, führen Sie die Tests erneut aus und lesen Sie den Fehlerbericht.</li>
+      <li>Ändern Sie <tt>&gt;= 5000000</tt> in <tt>&gt; 5000000</tt> in der Methode <tt>percent</tt>, führen Sie die Tests erneut aus und lesen Sie den Fehlerbericht.</li>
       <li>Fügen Sie eine Rabattregel von 15 Prozent für Summen ab 50 Millionen hinzu — schreiben Sie zuerst den Test, dann den Code.</li>
     </ul>`
   });
@@ -2301,7 +2301,7 @@
       <p>用 Run 运行程序时，测试类不会执行。在 SAP 中用 <tt>Ctrl+Shift+F10</tt> 启动测试；在模拟器中通过 ⋯ 菜单 → <b>运行单元测试</b>，快捷键相同。</p>`,
     task: `<ul>
       <li>运行单元测试：四个测试必须全部通过。</li>
-      <li>在方法 <tt>persen</tt> 中把 <tt>&gt;= 5000000</tt> 改成 <tt>&gt; 5000000</tt>，再次运行测试，并阅读失败报告。</li>
+      <li>在方法 <tt>percent</tt> 中把 <tt>&gt;= 5000000</tt> 改成 <tt>&gt; 5000000</tt>，再次运行测试，并阅读失败报告。</li>
       <li>为 5000 万及以上的总额增加 15% 的折扣规则——先写测试，再写代码。</li>
     </ul>`
   });
@@ -2310,46 +2310,46 @@
   add('en', 'e07', {
     body: `<p>A <b>design pattern</b> is a proven answer to a problem that keeps coming back. The two patterns seen most often in SAP code both govern the same thing: who may create an object, and how.</p>
       <ul>
-        <li><b>Singleton</b>: a class with <tt>CREATE PRIVATE</tt> cannot be created with <tt>NEW</tt> from outside. The only way in is a static method (<tt>ambil</tt>), which keeps the object in <tt>CLASS-DATA</tt> and always returns the same one. Suitable for settings, logs or buffers that must exist only once.</li>
+        <li><b>Singleton</b>: a class with <tt>CREATE PRIVATE</tt> cannot be created with <tt>NEW</tt> from outside. The only way in is a static method (<tt>get_instance</tt>), which keeps the object in <tt>CLASS-DATA</tt> and always returns the same one. Suitable for settings, logs or buffers that must exist only once.</li>
         <li><b>Factory</b>: a method receives a "kind" and returns the matching object, typed with an interface. The caller only knows the interface.</li>
         <li>As a result, adding a new kind — sea freight, for example — touches only the factory and one new class. The main program does not change.</li>
         <li>You have used a factory many times already: <tt>cl_salv_table=>factory( )</tt>.</li>
       </ul>
       <p>Do not overdo it: a singleton is global data in disguise and makes unit testing harder. Use it only when there really must be one object.</p>`,
     task: `<ul>
-      <li>Add <tt>lcl_laut</tt> (cost = weight × 1,200 + 50,000) and register it in the factory with the kind <tt>LAUT</tt>.</li>
-      <li>Write <tt>DATA(go_x) = NEW lcl_pengaturan( ).</tt> in the main program and read the error message.</li>
-      <li>Add a method <tt>hari</tt> to the interface that returns the delivery time of each kind.</li>
+      <li>Add <tt>lcl_sea</tt> (cost = weight × 1,200 + 50,000) and register it in the factory with the kind <tt>SEA</tt>.</li>
+      <li>Write <tt>DATA(go_x) = NEW lcl_settings( ).</tt> in the main program and read the error message.</li>
+      <li>Add a method <tt>days</tt> to the interface that returns the delivery time of each kind.</li>
     </ul>`
   });
   add('de', 'e07', {
     body: `<p>Ein <b>Entwurfsmuster</b> ist eine bewährte Antwort auf ein Problem, das immer wiederkehrt. Die beiden Muster, die in SAP-Code am häufigsten vorkommen, regeln dasselbe: wer ein Objekt erzeugen darf, und wie.</p>
       <ul>
-        <li><b>Singleton</b>: Eine Klasse mit <tt>CREATE PRIVATE</tt> lässt sich von außen nicht mit <tt>NEW</tt> erzeugen. Der einzige Weg ist eine statische Methode (<tt>ambil</tt>), die das Objekt in <tt>CLASS-DATA</tt> hält und immer dasselbe zurückgibt. Geeignet für Einstellungen, Protokolle oder Puffer, die es nur einmal geben darf.</li>
+        <li><b>Singleton</b>: Eine Klasse mit <tt>CREATE PRIVATE</tt> lässt sich von außen nicht mit <tt>NEW</tt> erzeugen. Der einzige Weg ist eine statische Methode (<tt>get_instance</tt>), die das Objekt in <tt>CLASS-DATA</tt> hält und immer dasselbe zurückgibt. Geeignet für Einstellungen, Protokolle oder Puffer, die es nur einmal geben darf.</li>
         <li><b>Factory</b>: Eine Methode erhält eine „Art“ und gibt das passende Objekt zurück, typisiert mit einem Interface. Der Aufrufer kennt nur das Interface.</li>
         <li>Dadurch berührt eine neue Art — zum Beispiel Seefracht — nur die Factory und eine neue Klasse. Das Hauptprogramm ändert sich nicht.</li>
         <li>Sie haben schon oft eine Factory benutzt: <tt>cl_salv_table=>factory( )</tt>.</li>
       </ul>
       <p>Übertreiben Sie es nicht: Ein Singleton ist versteckte globale Daten und erschwert Unit-Tests. Verwenden Sie es nur, wenn es wirklich genau ein Objekt geben muss.</p>`,
     task: `<ul>
-      <li>Fügen Sie <tt>lcl_laut</tt> hinzu (Kosten = Gewicht × 1.200 + 50.000) und registrieren Sie die Klasse in der Factory mit der Art <tt>LAUT</tt>.</li>
-      <li>Schreiben Sie <tt>DATA(go_x) = NEW lcl_pengaturan( ).</tt> ins Hauptprogramm und lesen Sie die Fehlermeldung.</li>
-      <li>Ergänzen Sie das Interface um eine Methode <tt>hari</tt>, die die Lieferdauer jeder Art zurückgibt.</li>
+      <li>Fügen Sie <tt>lcl_sea</tt> hinzu (Kosten = Gewicht × 1.200 + 50.000) und registrieren Sie die Klasse in der Factory mit der Art <tt>SEA</tt>.</li>
+      <li>Schreiben Sie <tt>DATA(go_x) = NEW lcl_settings( ).</tt> ins Hauptprogramm und lesen Sie die Fehlermeldung.</li>
+      <li>Ergänzen Sie das Interface um eine Methode <tt>days</tt>, die die Lieferdauer jeder Art zurückgibt.</li>
     </ul>`
   });
   add('zh', 'e07', {
     body: `<p><b>设计模式</b>是针对反复出现的问题、经过检验的解决办法。SAP 代码中最常见的两个模式管的是同一件事：谁可以创建对象，以及怎样创建。</p>
       <ul>
-        <li><b>单例</b>：带有 <tt>CREATE PRIVATE</tt> 的类不能在外部用 <tt>NEW</tt> 创建。唯一的途径是静态方法（<tt>ambil</tt>），它把对象保存在 <tt>CLASS-DATA</tt> 中，并且总是返回同一个对象。适用于只能有一份的设置、日志或缓冲。</li>
+        <li><b>单例</b>：带有 <tt>CREATE PRIVATE</tt> 的类不能在外部用 <tt>NEW</tt> 创建。唯一的途径是静态方法（<tt>get_instance</tt>），它把对象保存在 <tt>CLASS-DATA</tt> 中，并且总是返回同一个对象。适用于只能有一份的设置、日志或缓冲。</li>
         <li><b>工厂</b>：一个方法接收“种类”，并返回相应的对象，其类型为接口。调用方只认识接口。</li>
         <li>因此，增加新的种类——例如海运——只涉及工厂和一个新类。主程序不需要改动。</li>
         <li>你已经多次使用过工厂：<tt>cl_salv_table=>factory( )</tt>。</li>
       </ul>
       <p>不要滥用：单例是伪装起来的全局数据，会让单元测试更困难。只有在对象确实只能有一个时才使用。</p>`,
     task: `<ul>
-      <li>增加 <tt>lcl_laut</tt>（运费 = 重量 × 1,200 + 50,000），并在工厂中以种类 <tt>LAUT</tt> 注册。</li>
-      <li>在主程序中写 <tt>DATA(go_x) = NEW lcl_pengaturan( ).</tt>，并阅读错误消息。</li>
-      <li>在接口中增加方法 <tt>hari</tt>，返回每个种类的运送天数。</li>
+      <li>增加 <tt>lcl_sea</tt>（运费 = 重量 × 1,200 + 50,000），并在工厂中以种类 <tt>SEA</tt> 注册。</li>
+      <li>在主程序中写 <tt>DATA(go_x) = NEW lcl_settings( ).</tt>，并阅读错误消息。</li>
+      <li>在接口中增加方法 <tt>days</tt>，返回每个种类的运送天数。</li>
     </ul>`
   });
 
@@ -2360,7 +2360,7 @@
         <li><tt>cl_abap_typedescr=>describe_by_name( name )</tt> returns a type description object. For structures and database tables the result is <tt>CAST</tt> to <tt>cl_abap_structdescr</tt>.</li>
         <li>The attribute <tt>components</tt> holds the column list: <tt>name</tt>, <tt>type_kind</tt> (C text, N numeric text, D date, P packed, I integer), <tt>length</tt> and <tt>decimals</tt>.</li>
         <li><tt>CREATE DATA ref TYPE STANDARD TABLE OF (name)</tt> creates an internal table whose shape is only decided at runtime; <tt>ASSIGN ref-&gt;* TO &lt;fs&gt;</tt> makes it usable.</li>
-        <li>A name in parentheses also works in Open SQL: <tt>FROM (p_tabel)</tt>, and even <tt>WHERE (gv_kondisi)</tt> with the condition given as text.</li>
+        <li>A name in parentheses also works in Open SQL: <tt>FROM (p_table)</tt>, and even <tt>WHERE (gv_condition)</tt> with the condition given as text.</li>
         <li><tt>describe_by_data( variable )</tt> does the same for a variable that already exists.</li>
       </ul>
       <p>Generic code is not checked by the compiler: a wrong table name only shows up at runtime. And never build a dynamic <tt>WHERE</tt> straight from user input without checking it — that is where SQL injection gets in.</p>`,
@@ -2376,7 +2376,7 @@
         <li><tt>cl_abap_typedescr=>describe_by_name( name )</tt> gibt ein Typbeschreibungsobjekt zurück. Für Strukturen und Datenbanktabellen wird das Ergebnis per <tt>CAST</tt> in <tt>cl_abap_structdescr</tt> umgewandelt.</li>
         <li>Das Attribut <tt>components</tt> enthält die Spaltenliste: <tt>name</tt>, <tt>type_kind</tt> (C Text, N numerischer Text, D Datum, P gepackt, I Integer), <tt>length</tt> und <tt>decimals</tt>.</li>
         <li><tt>CREATE DATA ref TYPE STANDARD TABLE OF (name)</tt> erzeugt eine interne Tabelle, deren Aufbau erst zur Laufzeit feststeht; <tt>ASSIGN ref-&gt;* TO &lt;fs&gt;</tt> macht sie verwendbar.</li>
-        <li>Ein Name in Klammern funktioniert auch in Open SQL: <tt>FROM (p_tabel)</tt>, und sogar <tt>WHERE (gv_kondisi)</tt> mit der Bedingung als Text.</li>
+        <li>Ein Name in Klammern funktioniert auch in Open SQL: <tt>FROM (p_table)</tt>, und sogar <tt>WHERE (gv_condition)</tt> mit der Bedingung als Text.</li>
         <li><tt>describe_by_data( variable )</tt> leistet dasselbe für eine bereits vorhandene Variable.</li>
       </ul>
       <p>Generischen Code prüft der Compiler nicht: Ein falscher Tabellenname fällt erst zur Laufzeit auf. Und bauen Sie ein dynamisches <tt>WHERE</tt> niemals ungeprüft direkt aus Benutzereingaben zusammen — genau dort entsteht SQL-Injection.</p>`,
@@ -2392,7 +2392,7 @@
         <li><tt>cl_abap_typedescr=>describe_by_name( 名称 )</tt> 返回类型描述对象。对于结构和数据库表，要把结果 <tt>CAST</tt> 为 <tt>cl_abap_structdescr</tt>。</li>
         <li>属性 <tt>components</tt> 保存列清单：<tt>name</tt>、<tt>type_kind</tt>（C 文本，N 数字文本，D 日期，P 压缩数，I 整数）、<tt>length</tt> 和 <tt>decimals</tt>。</li>
         <li><tt>CREATE DATA ref TYPE STANDARD TABLE OF (名称)</tt> 创建一个结构在运行时才确定的内表；<tt>ASSIGN ref-&gt;* TO &lt;fs&gt;</tt> 使它可以使用。</li>
-        <li>括号中的名称在 Open SQL 中同样有效：<tt>FROM (p_tabel)</tt>，甚至可以写 <tt>WHERE (gv_kondisi)</tt>，条件以文本形式给出。</li>
+        <li>括号中的名称在 Open SQL 中同样有效：<tt>FROM (p_table)</tt>，甚至可以写 <tt>WHERE (gv_condition)</tt>，条件以文本形式给出。</li>
         <li><tt>describe_by_data( 变量 )</tt> 对已有的变量做同样的事。</li>
       </ul>
       <p>通用代码不受编译器检查：表名写错要到运行时才会发现。另外，绝不要不加检查就直接用用户输入拼出动态 <tt>WHERE</tt>——SQL 注入正是从这里进来的。</p>`,
@@ -2464,14 +2464,14 @@
         <li><b>Lookups in memory</b>: <tt>VALUE #( table[ … ]-column OPTIONAL )</tt> reads one value and returns the initial value if the row does not exist — without an exception.</li>
         <li><b>Status with COND</b>: the order of the <tt>WHEN</tt> branches matters, because the first condition that is true wins.</li>
         <li><b>Summary with GROUP BY</b>: number and value of orders per status.</li>
-        <li><b>A class with separated responsibilities</b>: <tt>ambil_data</tt>, <tt>ringkas</tt>, <tt>tampilkan</tt>.</li>
+        <li><b>A class with separated responsibilities</b>: <tt>fetch_data</tt>, <tt>summarize</tt>, <tt>show</tt>.</li>
       </ul>
       <p>Open the <b>Tables</b> menu to see the content of LIKP, LIPS, VBRK and VBRP, then match one order with its row in the report.</p>`,
     task: `<ul>
-      <li>Add a column <tt>sisa</tt>: the order value minus the value already billed.</li>
+      <li>Add a column <tt>remaining</tt>: the order value minus the value already billed.</li>
       <li>Add a parameter that filters the report by status.</li>
-      <li>Move the status rule into a method of its own that receives <tt>netwr</tt>, <tt>ditagih</tt>, <tt>dikirim</tt>, then write a test class for it.</li>
-      <li>Replace the lookup <tt>lt_tagih[ … ]</tt> with a <tt>HASHED</tt> table with the key <tt>aubel</tt>.</li>
+      <li>Move the status rule into a method of its own that receives <tt>netwr</tt>, <tt>billed</tt>, <tt>delivered</tt>, then write a test class for it.</li>
+      <li>Replace the lookup <tt>lt_billed[ … ]</tt> with a <tt>HASHED</tt> table with the key <tt>aubel</tt>.</li>
     </ul>`
   });
   add('de', 'e10', {
@@ -2481,14 +2481,14 @@
         <li><b>Suche im Speicher</b>: <tt>VALUE #( tabelle[ … ]-spalte OPTIONAL )</tt> liest einen Wert und liefert den Initialwert, wenn die Zeile fehlt — ohne Ausnahme.</li>
         <li><b>Status mit COND</b>: Die Reihenfolge der <tt>WHEN</tt>-Zweige ist entscheidend, denn die erste wahre Bedingung gewinnt.</li>
         <li><b>Zusammenfassung mit GROUP BY</b>: Anzahl und Wert der Aufträge je Status.</li>
-        <li><b>Eine Klasse mit getrennten Verantwortlichkeiten</b>: <tt>ambil_data</tt>, <tt>ringkas</tt>, <tt>tampilkan</tt>.</li>
+        <li><b>Eine Klasse mit getrennten Verantwortlichkeiten</b>: <tt>fetch_data</tt>, <tt>summarize</tt>, <tt>show</tt>.</li>
       </ul>
       <p>Öffnen Sie das Menü <b>Tabellen</b>, um den Inhalt von LIKP, LIPS, VBRK und VBRP zu sehen, und gleichen Sie dann einen Auftrag mit seiner Zeile im Bericht ab.</p>`,
     task: `<ul>
-      <li>Fügen Sie eine Spalte <tt>sisa</tt> hinzu: Auftragswert minus bereits fakturierter Wert.</li>
+      <li>Fügen Sie eine Spalte <tt>remaining</tt> hinzu: Auftragswert minus bereits fakturierter Wert.</li>
       <li>Fügen Sie einen Parameter hinzu, der den Bericht nach Status filtert.</li>
-      <li>Verlagern Sie die Statusregel in eine eigene Methode, die <tt>netwr</tt>, <tt>ditagih</tt>, <tt>dikirim</tt> erhält, und schreiben Sie dann eine Testklasse dafür.</li>
-      <li>Ersetzen Sie die Suche <tt>lt_tagih[ … ]</tt> durch eine <tt>HASHED</tt>-Tabelle mit dem Schlüssel <tt>aubel</tt>.</li>
+      <li>Verlagern Sie die Statusregel in eine eigene Methode, die <tt>netwr</tt>, <tt>billed</tt>, <tt>delivered</tt> erhält, und schreiben Sie dann eine Testklasse dafür.</li>
+      <li>Ersetzen Sie die Suche <tt>lt_billed[ … ]</tt> durch eine <tt>HASHED</tt>-Tabelle mit dem Schlüssel <tt>aubel</tt>.</li>
     </ul>`
   });
   add('zh', 'e10', {
@@ -2498,14 +2498,14 @@
         <li><b>在内存中查找</b>：<tt>VALUE #( 表[ … ]-列 OPTIONAL )</tt> 读取一个值，行不存在时返回初始值——不会产生异常。</li>
         <li><b>用 COND 确定状态</b>：<tt>WHEN</tt> 的顺序很关键，因为第一个为真的条件会被采用。</li>
         <li><b>用 GROUP BY 汇总</b>：每种状态的订单数量和金额。</li>
-        <li><b>职责分离的类</b>：<tt>ambil_data</tt>、<tt>ringkas</tt>、<tt>tampilkan</tt>。</li>
+        <li><b>职责分离的类</b>：<tt>fetch_data</tt>、<tt>summarize</tt>、<tt>show</tt>。</li>
       </ul>
       <p>打开<b>数据表</b>菜单查看 LIKP、LIPS、VBRK 和 VBRP 的内容，然后把一张订单与它在报表中的那一行对照。</p>`,
     task: `<ul>
-      <li>增加列 <tt>sisa</tt>：订单金额减去已开票金额。</li>
+      <li>增加列 <tt>remaining</tt>：订单金额减去已开票金额。</li>
       <li>增加一个按状态筛选报表的参数。</li>
-      <li>把状态规则移到一个单独的方法中，该方法接收 <tt>netwr</tt>、<tt>ditagih</tt>、<tt>dikirim</tt>，然后为它编写测试类。</li>
-      <li>把查找 <tt>lt_tagih[ … ]</tt> 换成以 <tt>aubel</tt> 为键的 <tt>HASHED</tt> 表。</li>
+      <li>把状态规则移到一个单独的方法中，该方法接收 <tt>netwr</tt>、<tt>billed</tt>、<tt>delivered</tt>，然后为它编写测试类。</li>
+      <li>把查找 <tt>lt_billed[ … ]</tt> 换成以 <tt>aubel</tt> 为键的 <tt>HASHED</tt> 表。</li>
     </ul>`
   });
 

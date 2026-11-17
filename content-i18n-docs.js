@@ -416,7 +416,14 @@ GUI_DOWNLOAD                  EXPORTING filename   TABLES data_tab " ${t.sim}
 GUI_UPLOAD                    ${t.up}
 
 " ── BAPI ─────────────────────────────────────────────────────
-BAPI_TRANSACTION_COMMIT, BAPI_TRANSACTION_ROLLBACK</code>
+BAPI_TRANSACTION_COMMIT, BAPI_TRANSACTION_ROLLBACK
+BAPI_MATERIAL_GET_DETAIL      EXPORTING material   IMPORTING material_general_data return
+BAPI_FLIGHT_GETLIST           EXPORTING airline max_rows   TABLES flight_list return
+
+" ── ${t.sLock} ──────────────────────────────────────────
+ENQUEUE_EVVBAKE (ENQUEUE_*)   EXPORTING vbeln ...  EXCEPTIONS foreign_lock system_failure
+DEQUEUE_EVVBAKE (DEQUEUE_*)   EXPORTING vbeln ...
+NUMBER_GET_NEXT               EXPORTING nr_range_nr object   IMPORTING number</code>
       <h4>${t.h2}</h4>
       <code>cl_salv_table=&gt;factory( IMPORTING r_salv_table = lo_alv CHANGING t_table = itab ).
 lo_alv-&gt;display( ).
@@ -431,6 +438,115 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
       <h4>${t.h3}</h4>
       <p>${t.p3}</p>
     `,
+
+    advanced: t => `
+      <h3>${t.h}</h3>
+      <p>${t.p}</p>
+      <h4>${t.h1}</h4>
+      <code>FIND REGEX '\\d{10}' IN lv_text MATCH OFFSET DATA(lv_pos) MATCH LENGTH DATA(lv_len).
+FIND ALL OCCURRENCES OF REGEX '\\d{10}' IN lv_text MATCH COUNT DATA(lv_count).
+FIND REGEX '(\\w+)@([\\w.]+)' IN lv_text SUBMATCHES DATA(lv_user) DATA(lv_domain).   " ${t.cGroups}
+REPLACE ALL OCCURRENCES OF REGEX '\\d{6}(\\d{4})' IN lv_text WITH '******$1'.
+
+IF matches( val = lv_code regex = '[A-Z]{2}-\\d{3}' ).      " ${t.cWhole}
+ENDIF.
+lv_first = match( val = lv_text regex = '\\d+' ).
+lv_clean = replace( val = lv_text regex = '\\d+' with = '' occ = 0 ).
+lv_count = count( val = lv_text regex = '[a-z]+' ).</code>
+      <h4>${t.h2}</h4>
+      <code>LOOP AT gt_order INTO DATA(gs_order)
+     GROUP BY ( kunnr = gs_order-kunnr  size = GROUP SIZE )
+     ASCENDING INTO DATA(gs_group).
+  LOOP AT GROUP gs_group INTO DATA(gs_member).       " ${t.cMembers}
+    lv_total = lv_total + gs_member-netwr.
+  ENDLOOP.
+  WRITE: / gs_group-kunnr, gs_group-size, lv_total.
+  CLEAR lv_total.
+ENDLOOP.</code>
+      <h4>${t.h3}</h4>
+      <code>DATA(gt_sales) = FILTER #( gt_emp WHERE orgeh = '50000030' ).        " ${t.cKey}
+DATA(gt_other) = FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' ).
+
+DATA(lv_info) = CONV string( LET n = lines( gt_emp ) IN |{ n } rows| ).
+
+DATA(gt_sum) = VALUE tt_sum(
+  FOR GROUPS grp OF e IN gt_emp GROUP BY e-orgeh ASCENDING
+  ( orgeh = grp
+    total = REDUCE i( INIT s = 0 FOR m IN GROUP grp NEXT s = s + m-salary ) ) ).
+
+DATA(gs_card) = CORRESPONDING ty_card( gs_emp MAPPING emp_no = pernr EXCEPT salary ).</code>
+      <h4>${t.h4}</h4>
+      <code>SELECT vbeln, netwr FROM vbak                              " ${t.cSub}
+  WHERE vbeln NOT IN ( SELECT vgbel FROM lips )
+  INTO TABLE @DATA(gt_open).
+
+SELECT kunnr, name1 FROM kna1                              " ${t.cCorr}
+  WHERE EXISTS ( SELECT vbeln FROM vbrk WHERE kunrg = kna1~kunnr )
+  INTO TABLE @DATA(gt_billed).
+
+SELECT carrid, connid, seatsmax - seatsocc AS free,        " ${t.cExpr}
+       CASE WHEN seatsocc &gt;= 200 THEN 'A' ELSE 'B' END AS rank
+  FROM sflight
+  ORDER BY free DESCENDING
+  INTO TABLE @DATA(gt_free).
+
+SELECT kunnr AS id, name1 FROM kna1
+UNION
+SELECT lifnr AS id, name1 FROM lfa1
+INTO TABLE @DATA(gt_partner).
+
+SELECT * FROM (lv_table) INTO TABLE &lt;gt_data&gt; WHERE (lv_where).   " ${t.cDyn}</code>
+      <h4>${t.h5}</h4>
+      <code>CLASS ltc_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
+  PRIVATE SECTION.
+    DATA mo_cut TYPE REF TO lcl_calc.
+    METHODS setup.                                         " ${t.cSetup}
+    METHODS first_test FOR TESTING.
+ENDCLASS.
+
+CLASS ltc_test IMPLEMENTATION.
+  METHOD setup.
+    mo_cut = NEW #( ).
+  ENDMETHOD.
+  METHOD first_test.
+    cl_abap_unit_assert=&gt;assert_equals( act = mo_cut-&gt;add( 2 ) exp = 4 msg = '...' ).
+  ENDMETHOD.
+ENDCLASS.
+
+" assert_equals  assert_differs  assert_true  assert_false  assert_initial
+" assert_not_initial  assert_bound  assert_not_bound  assert_subrc  fail</code>
+      <p>${t.p5}</p>
+      <h4>${t.h6}</h4>
+      <code>DATA(lo_struct) = CAST cl_abap_structdescr(
+                    cl_abap_typedescr=&gt;describe_by_name( 'SCARR' ) ).
+LOOP AT lo_struct-&gt;components INTO DATA(ls_comp).          " name  type_kind  length  decimals
+  WRITE: / ls_comp-name, ls_comp-type_kind, ls_comp-length.
+ENDLOOP.
+
+CREATE DATA lr_data TYPE STANDARD TABLE OF (lv_table).     " ${t.cCreate}
+ASSIGN lr_data-&gt;* TO &lt;gt_data&gt;.</code>
+      <h4>${t.h7}</h4>
+      <code>AUTHORITY-CHECK OBJECT 'V_VBAK_AAT' ID 'AUART' FIELD 'TA' ID 'ACTVT' FIELD '02'.
+IF sy-subrc &lt;&gt; 0.                                          " ${t.cAuth}
+  MESSAGE '...' TYPE 'E'.
+ENDIF.
+
+CALL FUNCTION 'ENQUEUE_EVVBAKE'
+  EXPORTING
+    vbeln        = lv_vbeln
+  EXCEPTIONS
+    foreign_lock = 1                                       " ${t.cLock}
+    OTHERS       = 2.
+
+UPDATE vbak SET netwr = lv_new WHERE vbeln = lv_vbeln.
+COMMIT WORK.                                               " ${t.cRoll}
+
+CALL FUNCTION 'DEQUEUE_EVVBAKE'
+  EXPORTING
+    vbeln = lv_vbeln.</code>
+      <h4>${t.h8}</h4>
+      <p>${t.p8}</p>
+`,
 
     simulator: t => `
       <h3>${t.h}</h3>
@@ -533,12 +649,39 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
         p2: 'An exception that is not mapped under <code>EXCEPTIONS</code> stops the program (short dump). FMs that are not simulated are skipped with a warning.',
         h1: 'Simulated function modules',
         same: '(same parameters as GRID)', hdr: 'header above the grid (TOP_OF_PAGE)',
-        sConv: 'Conversion', sDate: 'Dates', sDlg: 'Dialogs & files',
+        sConv: 'Conversion', sDate: 'Dates', sDlg: 'Dialogs & files', sLock: 'Locks & number ranges',
         days: '1 = Monday ... 7 = Sunday', yn: "'1' = Yes, '2' = No",
         sim: 'simulated, no real file', up: 'always raises FILE_OPEN_ERROR',
         h2: 'Simulated standard classes', lTitle: 'Title', cDemo: 'quick print of a variable / table',
         h3: 'Your own function modules',
         p3: 'Write <code>FUNCTION name. … ENDFUNCTION.</code> in the same program. Its interface is read from the <code>*"</code> comment block below the FUNCTION line (IMPORTING, EXPORTING, CHANGING, TABLES, EXCEPTIONS) — see the lesson "Writing your own function module".'
+      },
+      advanced: {
+        h: 'Advanced techniques',
+        p: 'A syntax summary for the Expert-level lessons. Every pattern below runs in the simulator.',
+        h1: 'Regular expressions',
+        cGroups: 'content of each pair of parentheses',
+        cWhole: 'the whole text must match',
+        h2: 'LOOP AT … GROUP BY',
+        cMembers: 'members of the group',
+        h3: 'FILTER, LET, FOR GROUPS, CORRESPONDING',
+        cKey: 'SORTED / HASHED table, condition on the key',
+        h4: 'Advanced SQL',
+        cSub: 'subquery',
+        cCorr: 'correlated subquery',
+        cExpr: 'calculation and CASE',
+        cDyn: 'dynamic',
+        h5: 'ABAP Unit',
+        cSetup: 'before every test',
+        p5: 'Test classes do not run with Run. Start them through the ⋯ menu → <strong>Run unit tests</strong> (Ctrl+Shift+F10).',
+        h6: 'RTTS and dynamic types',
+        cCreate: 'type decided at runtime',
+        h7: 'Authorization, locks and COMMIT',
+        cAuth: '0 = allowed',
+        cLock: 'the lock owner is in sy-msgv1',
+        cRoll: 'or ROLLBACK WORK',
+        h8: 'Database statistics',
+        p8: 'After every Run, the <strong>Database</strong> line below the output shows the number of read accesses, the rows read, and the number of changes. A SELECT that ran repeatedly inside a loop is flagged together with its line number.'
       },
       simulator: {
         h: 'What can run in this studio',
@@ -557,7 +700,11 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
           ['Exceptions', 'TRY / CATCH / ENDTRY, RAISE EXCEPTION, your own exception classes, cx_sy_zerodivide, cx_sy_ref_is_initial, cx_sy_itab_line_not_found, cx_sy_conversion_no_number'],
           ['Modern', 'DATA( ), FIELD-SYMBOL( ), VALUE (including FOR and BASE), COND, SWITCH, CONV, REDUCE, CORRESPONDING, table expressions <code>itab[ … ]</code>, line_exists( ), host variables @'],
           ['Dynamic', 'field symbols, data references (REF #, GET REFERENCE, CREATE DATA, -&gt;*), ASSIGN COMPONENT, ASSIGN (name)'],
-          ['ALV', 'REUSE_ALV_GRID_DISPLAY (field catalog, layout, sort, totals, hotspot, user command, top of page), CL_SALV_TABLE (columns, sorts, aggregations, the events link_click / double_click), CL_GUI_ALV_GRID']
+          ['ALV', 'REUSE_ALV_GRID_DISPLAY (field catalog, layout, sort, totals, hotspot, user command, top of page), CL_SALV_TABLE (columns, sorts, aggregations, the events link_click / double_click), CL_GUI_ALV_GRID'],
+          ['Advanced', 'regular expressions (FIND / REPLACE … REGEX or PCRE, matches, match, count), LOOP AT … GROUP BY, FILTER, LET, FOR GROUPS, SQL subqueries (IN, EXISTS), CASE and calculations in the column list, UNION, dynamic FROM / WHERE, RTTS (cl_abap_typedescr, cl_abap_structdescr), CREATE PRIVATE'],
+          ['Unit tests', 'CLASS … FOR TESTING, setup / teardown, cl_abap_unit_assert — started through the ⋯ menu → Run unit tests'],
+          ['Transactions', 'AUTHORITY-CHECK, ENQUEUE_ / DEQUEUE_, NUMBER_GET_NEXT, BAPIs with the RETURN parameter, a ROLLBACK WORK that really undoes the changes'],
+          ['Performance', 'the Database line below the output: number of read and write accesses, and SELECTs repeated inside a loop']
         ],
         h2: 'What differs from SAP',
         diff: [
@@ -570,8 +717,8 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
         h3: 'Not supported yet',
         not: [
           'Dynpro / screens (CALL SCREEN, MODULE, PBO / PAI): screens are built in the Screen Painter, not in code',
-          'LOOP AT … GROUP BY, SQL subqueries, UNION, CDS views, AMDP',
-          'Global classes (SE24), friends, test classes (ABAP Unit), RTTS (cl_abap_typedescr)',
+          'CDS views, AMDP, Native SQL (EXEC SQL)',
+          'Global classes (SE24), friends, test doubles / mocking, creating new types through RTTC (cl_abap_structdescr=&gt;create)',
           'Files and system: OPEN DATASET, EXPORT / IMPORT MEMORY, SUBMIT, CALL TRANSACTION (only shown as a message), background jobs',
           'Unknown statements are skipped with a warning, not executed silently'
         ]
@@ -666,12 +813,39 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
         p2: 'Eine Ausnahme, die nicht unter <code>EXCEPTIONS</code> abgebildet ist, stoppt das Programm (Short Dump). Nicht simulierte FBs werden mit einer Warnung übersprungen.',
         h1: 'Simulierte Funktionsbausteine',
         same: '(gleiche Parameter wie GRID)', hdr: 'Kopf über dem Grid (TOP_OF_PAGE)',
-        sConv: 'Konvertierung', sDate: 'Datum', sDlg: 'Dialoge & Dateien',
+        sConv: 'Konvertierung', sDate: 'Datum', sDlg: 'Dialoge & Dateien', sLock: 'Sperren & Nummernkreise',
         days: '1 = Montag ... 7 = Sonntag', yn: "'1' = Ja, '2' = Nein",
         sim: 'simuliert, keine echte Datei', up: 'löst immer FILE_OPEN_ERROR aus',
         h2: 'Simulierte Standardklassen', lTitle: 'Titel', cDemo: 'schnelle Ausgabe einer Variable / Tabelle',
         h3: 'Eigene Funktionsbausteine',
         p3: 'Schreiben Sie <code>FUNCTION name. … ENDFUNCTION.</code> im selben Programm. Die Schnittstelle wird aus dem <code>*"</code>-Kommentarblock unter der FUNCTION-Zeile gelesen (IMPORTING, EXPORTING, CHANGING, TABLES, EXCEPTIONS) — siehe die Lektion „Eigenen Funktionsbaustein erstellen“.'
+      },
+      advanced: {
+        h: 'Fortgeschrittene Techniken',
+        p: 'Eine Syntaxübersicht zu den Lektionen der Stufe Experte. Alle Muster unten laufen im Simulator.',
+        h1: 'Reguläre Ausdrücke',
+        cGroups: 'Inhalt jedes Klammerpaars',
+        cWhole: 'der gesamte Text muss passen',
+        h2: 'LOOP AT … GROUP BY',
+        cMembers: 'Mitglieder der Gruppe',
+        h3: 'FILTER, LET, FOR GROUPS, CORRESPONDING',
+        cKey: 'SORTED- / HASHED-Tabelle, Bedingung auf dem Schlüssel',
+        h4: 'SQL für Fortgeschrittene',
+        cSub: 'Subquery',
+        cCorr: 'korrelierte Subquery',
+        cExpr: 'Berechnung und CASE',
+        cDyn: 'dynamisch',
+        h5: 'ABAP Unit',
+        cSetup: 'vor jedem Test',
+        p5: 'Testklassen laufen bei Run nicht mit. Starten Sie sie über das Menü ⋯ → <strong>Unit-Tests ausführen</strong> (Ctrl+Shift+F10).',
+        h6: 'RTTS und dynamische Typen',
+        cCreate: 'Typ steht erst zur Laufzeit fest',
+        h7: 'Berechtigung, Sperren und COMMIT',
+        cAuth: '0 = erlaubt',
+        cLock: 'der Sperrende steht in sy-msgv1',
+        cRoll: 'oder ROLLBACK WORK',
+        h8: 'Datenbankstatistik',
+        p8: 'Nach jedem Run zeigt die Zeile <strong>Datenbank</strong> unter der Ausgabe die Anzahl der Lesezugriffe, die gelesenen Zeilen und die Anzahl der Änderungen. Ein SELECT, das wiederholt in einer Schleife lief, wird zusammen mit seiner Zeilennummer markiert.'
       },
       simulator: {
         h: 'Was in diesem Studio läuft',
@@ -690,7 +864,11 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
           ['Ausnahmen', 'TRY / CATCH / ENDTRY, RAISE EXCEPTION, eigene Ausnahmeklassen, cx_sy_zerodivide, cx_sy_ref_is_initial, cx_sy_itab_line_not_found, cx_sy_conversion_no_number'],
           ['Modern', 'DATA( ), FIELD-SYMBOL( ), VALUE (einschließlich FOR und BASE), COND, SWITCH, CONV, REDUCE, CORRESPONDING, Tabellenausdrücke <code>itab[ … ]</code>, line_exists( ), Host-Variablen @'],
           ['Dynamisch', 'Feldsymbole, Datenreferenzen (REF #, GET REFERENCE, CREATE DATA, -&gt;*), ASSIGN COMPONENT, ASSIGN (name)'],
-          ['ALV', 'REUSE_ALV_GRID_DISPLAY (Feldkatalog, Layout, Sortierung, Summen, Hotspot, User Command, Top of Page), CL_SALV_TABLE (Spalten, Sortierungen, Aggregationen, die Ereignisse link_click / double_click), CL_GUI_ALV_GRID']
+          ['ALV', 'REUSE_ALV_GRID_DISPLAY (Feldkatalog, Layout, Sortierung, Summen, Hotspot, User Command, Top of Page), CL_SALV_TABLE (Spalten, Sortierungen, Aggregationen, die Ereignisse link_click / double_click), CL_GUI_ALV_GRID'],
+          ['Fortgeschritten', 'reguläre Ausdrücke (FIND / REPLACE … REGEX oder PCRE, matches, match, count), LOOP AT … GROUP BY, FILTER, LET, FOR GROUPS, SQL-Subqueries (IN, EXISTS), CASE und Berechnungen in der Spaltenliste, UNION, dynamisches FROM / WHERE, RTTS (cl_abap_typedescr, cl_abap_structdescr), CREATE PRIVATE'],
+          ['Unit-Tests', 'CLASS … FOR TESTING, setup / teardown, cl_abap_unit_assert — Start über das Menü ⋯ → Unit-Tests ausführen'],
+          ['Transaktionen', 'AUTHORITY-CHECK, ENQUEUE_ / DEQUEUE_, NUMBER_GET_NEXT, BAPIs mit dem Parameter RETURN, ein ROLLBACK WORK, das die Änderungen wirklich zurücknimmt'],
+          ['Performance', 'die Zeile Datenbank unter der Ausgabe: Anzahl der Lese- und Schreibzugriffe sowie in einer Schleife wiederholte SELECTs']
         ],
         h2: 'Was sich von SAP unterscheidet',
         diff: [
@@ -703,8 +881,8 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
         h3: 'Noch nicht unterstützt',
         not: [
           'Dynpro / Bilder (CALL SCREEN, MODULE, PBO / PAI): Bilder werden im Screen Painter erstellt, nicht im Code',
-          'LOOP AT … GROUP BY, SQL-Unterabfragen, UNION, CDS-Views, AMDP',
-          'Globale Klassen (SE24), Friends, Testklassen (ABAP Unit), RTTS (cl_abap_typedescr)',
+          'CDS-Views, AMDP, Native SQL (EXEC SQL)',
+          'Globale Klassen (SE24), Friends, Test-Doubles / Mocking, Erzeugen neuer Typen über RTTC (cl_abap_structdescr=&gt;create)',
           'Dateien und System: OPEN DATASET, EXPORT / IMPORT MEMORY, SUBMIT, CALL TRANSACTION (wird nur als Meldung angezeigt), Hintergrundjobs',
           'Unbekannte Anweisungen werden mit einer Warnung übersprungen, nicht stillschweigend ausgeführt'
         ]
@@ -799,12 +977,39 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
         p2: '未在 <code>EXCEPTIONS</code> 中映射的异常会使程序停止（short dump）。尚未模拟的 FM 会被跳过并给出警告。',
         h1: '已模拟的函数模块',
         same: '（参数与 GRID 相同）', hdr: '表格上方的表头 (TOP_OF_PAGE)',
-        sConv: '转换', sDate: '日期', sDlg: '对话框与文件',
+        sConv: '转换', sDate: '日期', sDlg: '对话框与文件', sLock: '锁与号码范围',
         days: '1 = 周一 ... 7 = 周日', yn: "'1' = 是，'2' = 否",
         sim: '模拟，不生成真实文件', up: '总是引发 FILE_OPEN_ERROR',
         h2: '已模拟的标准类', lTitle: '标题', cDemo: '快速输出变量 / 表',
         h3: '自定义函数模块',
         p3: '在同一个程序中编写 <code>FUNCTION 名称. … ENDFUNCTION.</code>。它的接口从 FUNCTION 行下方的 <code>*"</code> 注释块读取（IMPORTING、EXPORTING、CHANGING、TABLES、EXCEPTIONS）——参见“编写自己的函数模块”一课。'
+      },
+      advanced: {
+        h: '进阶技术',
+        p: '“专家”级别课程的语法摘要。下面的所有写法都可以在模拟器中运行。',
+        h1: '正则表达式',
+        cGroups: '每对圆括号的内容',
+        cWhole: '整个文本必须匹配',
+        h2: 'LOOP AT … GROUP BY',
+        cMembers: '组的成员',
+        h3: 'FILTER、LET、FOR GROUPS、CORRESPONDING',
+        cKey: 'SORTED / HASHED 表，条件使用键',
+        h4: '进阶 SQL',
+        cSub: '子查询',
+        cCorr: '相关子查询',
+        cExpr: '计算与 CASE',
+        cDyn: '动态',
+        h5: 'ABAP Unit',
+        cSetup: '每个测试之前',
+        p5: '用 Run 运行时测试类不会执行。请通过 ⋯ 菜单 → <strong>运行单元测试</strong>（Ctrl+Shift+F10）启动。',
+        h6: 'RTTS 与动态类型',
+        cCreate: '类型在运行时确定',
+        h7: '权限、锁与 COMMIT',
+        cAuth: '0 = 允许',
+        cLock: '加锁的用户在 sy-msgv1 中',
+        cRoll: '或 ROLLBACK WORK',
+        h8: '数据库统计',
+        p8: '每次 Run 之后，输出下方的<strong>数据库</strong>一行会显示读取次数、读取的行数和修改次数。在循环中重复执行的 SELECT 会连同行号一起被标出。'
       },
       simulator: {
         h: '本工作室可以运行什么',
@@ -823,7 +1028,11 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
           ['异常', 'TRY / CATCH / ENDTRY、RAISE EXCEPTION、自定义异常类、cx_sy_zerodivide、cx_sy_ref_is_initial、cx_sy_itab_line_not_found、cx_sy_conversion_no_number'],
           ['现代语法', 'DATA( )、FIELD-SYMBOL( )、VALUE（包括 FOR 和 BASE）、COND、SWITCH、CONV、REDUCE、CORRESPONDING、表表达式 <code>itab[ … ]</code>、line_exists( )、宿主变量 @'],
           ['动态', '字段符号、数据引用（REF #、GET REFERENCE、CREATE DATA、-&gt;*）、ASSIGN COMPONENT、ASSIGN (name)'],
-          ['ALV', 'REUSE_ALV_GRID_DISPLAY（字段目录、布局、排序、合计、热点、user command、top of page）、CL_SALV_TABLE（列、排序、聚合、事件 link_click / double_click）、CL_GUI_ALV_GRID']
+          ['ALV', 'REUSE_ALV_GRID_DISPLAY（字段目录、布局、排序、合计、热点、user command、top of page）、CL_SALV_TABLE（列、排序、聚合、事件 link_click / double_click）、CL_GUI_ALV_GRID'],
+          ['进阶', '正则表达式（FIND / REPLACE … REGEX 或 PCRE、matches、match、count）、LOOP AT … GROUP BY、FILTER、LET、FOR GROUPS、SQL 子查询（IN、EXISTS）、列清单中的 CASE 与计算、UNION、动态 FROM / WHERE、RTTS（cl_abap_typedescr、cl_abap_structdescr）、CREATE PRIVATE'],
+          ['单元测试', 'CLASS … FOR TESTING、setup / teardown、cl_abap_unit_assert——通过 ⋯ 菜单 → 运行单元测试 启动'],
+          ['事务', 'AUTHORITY-CHECK、ENQUEUE_ / DEQUEUE_、NUMBER_GET_NEXT、带 RETURN 参数的 BAPI、真正撤销修改的 ROLLBACK WORK'],
+          ['性能', '输出下方的“数据库”一行：读取和写入次数，以及在循环中重复执行的 SELECT']
         ],
         h2: '与 SAP 的不同之处',
         diff: [
@@ -836,8 +1045,8 @@ cl_demo_output=&gt;display( lt_data ).        " ${t.cDemo}</code>
         h3: '尚未支持',
         not: [
           'Dynpro / 屏幕（CALL SCREEN、MODULE、PBO / PAI）：屏幕在 Screen Painter 中创建，而不是在代码中',
-          'LOOP AT … GROUP BY、SQL 子查询、UNION、CDS 视图、AMDP',
-          '全局类（SE24）、friend、测试类（ABAP Unit）、RTTS（cl_abap_typedescr）',
+          'CDS 视图、AMDP、Native SQL（EXEC SQL）',
+          '全局类（SE24）、friend、测试替身 / mocking、通过 RTTC 创建新类型（cl_abap_structdescr=&gt;create）',
           '文件与系统：OPEN DATASET、EXPORT / IMPORT MEMORY、SUBMIT、CALL TRANSACTION（仅显示为消息）、后台作业',
           '无法识别的语句会被跳过并给出警告，而不是悄悄执行'
         ]

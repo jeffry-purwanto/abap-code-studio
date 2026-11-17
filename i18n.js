@@ -57,6 +57,13 @@
     'menu.sap':        ['Layar hasil gaya SAP', 'SAP-style result screen', 'Ergebnisbild im SAP-Stil', 'SAP 风格结果屏幕'],
     'menu.sap.sub':    ['Jendela lebar setelah Run', 'Wide window after Run', 'Breites Fenster nach dem Ausführen', '运行后打开宽窗口'],
     'menu.sap.tip':    ['Setelah Run, hasil dibuka di jendela lebar bergaya SAP GUI (Esc / F3 untuk kembali)', 'After Run the result opens in a wide SAP GUI style window (Esc / F3 to go back)', 'Nach dem Ausführen öffnet sich das Ergebnis in einem breiten Fenster im SAP-GUI-Stil (Esc / F3 = zurück)', '运行后结果在 SAP GUI 风格的宽窗口中打开（Esc / F3 返回）'],
+    'menu.assist':     ['Pelengkap kode otomatis', 'Automatic code completion', 'Automatische Code-Vervollständigung', '自动代码补全'],
+    'menu.assist.sub': ['Saran dan penutup blok (IF → ENDIF)', 'Suggestions and block closers (IF → ENDIF)', 'Vorschläge und Blockabschluss (IF → ENDIF)', '代码建议与块结尾（IF → ENDIF）'],
+    'menu.assist.tip': ['Saran kode saat mengetik; Enter setelah IF, LOOP, dst. menambahkan ENDIF, ENDLOOP. Ctrl+Space selalu membuka saran.', 'Suggestions while you type; Enter after IF, LOOP, etc. adds ENDIF, ENDLOOP. Ctrl+Space always opens the suggestions.', 'Vorschläge beim Tippen; Enter nach IF, LOOP usw. ergänzt ENDIF, ENDLOOP. Strg+Leertaste öffnet die Vorschläge jederzeit.', '输入时给出建议；在 IF、LOOP 等之后按 Enter 会补上 ENDIF、ENDLOOP。Ctrl+Space 随时打开建议。'],
+    'hint.tpl':        ['pola', 'template', 'Vorlage', '模板'],
+    'hint.field':      ['field', 'field', 'Feld', '字段'],
+    'hint.table':      ['tabel', 'table', 'Tabelle', '表'],
+    'hint.member':     ['anggota', 'member', 'Mitglied', '成员'],
     'menu.theme':      ['Tema', 'Theme', 'Design', '主题'],
     'theme.dark':      ['Gelap', 'Dark', 'Dunkel', '深色'],
     'theme.light':     ['Terang', 'Light', 'Hell', '浅色'],
@@ -134,7 +141,7 @@
 
     // ── learning path
     'learn.title':     ['Jalur Belajar ABAP', 'ABAP Learning Path', 'ABAP-Lernpfad', 'ABAP 学习路径'],
-    'learn.sub':       ['Dari pemula sampai mahir — setiap pelajaran punya contoh yang bisa langsung dijalankan dan latihan untuk dicoba sendiri.', 'From beginner to advanced — every lesson has an example you can run right away and an exercise to try yourself.', 'Vom Einsteiger zum Profi — jede Lektion hat ein sofort ausführbares Beispiel und eine Übung zum Selbstprobieren.', '从入门到精通 — 每节课都有可立即运行的示例和供自己动手的练习。'],
+    'learn.sub':       ['Dari pemula sampai pakar — setiap pelajaran punya contoh yang bisa langsung dijalankan dan latihan untuk dicoba sendiri.', 'From beginner to expert — every lesson has an example you can run right away and an exercise to try yourself.', 'Vom Einsteiger zum Experten — jede Lektion hat ein sofort ausführbares Beispiel und eine Übung zum Selbstprobieren.', '从入门到精通 — 每节课都有可立即运行的示例和供自己动手的练习。'],
     'learn.progress':  ['{done} dari {total} pelajaran selesai', '{done} of {total} lessons completed', '{done} von {total} Lektionen abgeschlossen', '已完成 {done} / {total} 节课'],
     'learn.level':     ['Level {n}', 'Level {n}', 'Stufe {n}', '第 {n} 级'],
     'level.1':         ['Pemula', 'Beginner', 'Einsteiger', '入门'],

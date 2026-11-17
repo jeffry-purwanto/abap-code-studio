@@ -48,7 +48,12 @@
     // OO ABAP and exceptions
     "DEFINITION","IMPLEMENTATION","METHODS","CLASS-METHODS","CLASS-DATA","INTERFACES","REDEFINITION",
     "DEFERRED","READ-ONLY","NEW","RAISING","EXCEPTION","RECEIVING","FIELD-SYMBOL","ENDFUNCTION",
-    "CS","NS","CP","NP","CO","CN","CA","NA","MOD","DIV"
+    "CS","NS","CP","NP","CO","CN","CA","NA","MOD","DIV",
+    // blocks, events and newer syntax
+    "DEFINE","END-OF-DEFINITION","ENDMODULE","TOP-OF-PAGE","END-OF-PAGE","LOAD-OF-PROGRAM","AT LINE-SELECTION",
+    "UPDATE","SET","GET","EVENTS","HANDLER","ALIASES","TESTING","DURATION","SHORT","RISK","LEVEL","HARMLESS",
+    "COND","SWITCH","CONV","CAST","REDUCE","FILTER","LET","INIT","NEXT","THEN","UNTIL","BASE","MAPPING","EXCEPT",
+    "GROUPS","UNION","EXISTS","REGEX","PCRE","SUBMATCHES","UNIQUE","NON-UNIQUE","EMPTY","TIME","RUN","NO-GAP"
   ]);
 
   const builtins = new Set([
@@ -142,22 +147,8 @@
 
   CodeMirror.defineMIME("text/x-abap", "abap");
 
-  // Auto-complete hint words
-  CodeMirror.registerHelper("hint", "abap", function(editor) {
-    const cur = editor.getCursor();
-    const token = editor.getTokenAt(cur);
-    const word = token.string.toUpperCase();
-    const list = [];
-    const all = [...keywords, ...builtins,
-      "lv_string","lv_int","lv_result","lt_table","ls_line","lo_object",
-      "wa_line","it_data","es_result","ev_value","iv_input","cv_data",
-      "me->","super->","NEW ","CAST ","REF #("
-    ];
-    for (const kw of all) {
-      if (kw.toUpperCase().startsWith(word)) list.push(kw);
-    }
-    return { list, from: CodeMirror.Pos(cur.line, token.start), to: CodeMirror.Pos(cur.line, token.end) };
-  });
+  // the word lists are shared with the suggestions in abap-complete.js
+  CodeMirror.abapWords = { keywords, builtins };
 
 })(CodeMirror);
 

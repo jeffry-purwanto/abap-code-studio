@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderLearn();
   initTablesView();
   setSapScreenEnabled(sapScreenEnabled());
+  setAssistEnabled(assistEnabled());
 
   // If no files, create a starter
   if (!files.length) {
@@ -89,7 +90,7 @@ CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
     t_outtab         = gt_scarr.`,
   alv_fieldcat: `REPORT z_alv_fieldcat.
 
-* Classic ALV dengan Field Catalog manual
+* Classic ALV with a manual field catalog
 TYPES: BEGIN OF ty_mara,
          matnr TYPE mara-matnr,
          ersda TYPE mara-ersda,
@@ -122,7 +123,7 @@ START-OF-SELECTION.
   CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
     EXPORTING
       i_callback_program = sy-repid
-      i_grid_title       = 'Daftar Material'
+      i_grid_title       = 'Material List'
       is_layout          = gs_layout
       it_fieldcat        = gt_fieldcat
     TABLES
@@ -132,10 +133,10 @@ START-OF-SELECTION.
       OTHERS             = 2.
 
   IF sy-subrc <> 0.
-    MESSAGE 'ALV gagal ditampilkan' TYPE 'E'.
+    MESSAGE 'The ALV could not be displayed' TYPE 'E'.
   ENDIF.
 
-* Tambah satu kolom ke field catalog
+* Add one column to the field catalog
 FORM add_field USING pv_field TYPE c
                      pv_text  TYPE c.
   CLEAR gs_fieldcat.
@@ -145,8 +146,8 @@ FORM add_field USING pv_field TYPE c
 ENDFORM.`,
   function: `REPORT z_function_demo.
 
-* Memanggil Function Module: EXPORTING = data masuk, IMPORTING = hasil,
-* EXCEPTIONS = error yang dipetakan ke sy-subrc
+* Calling a function module: EXPORTING = data passed in, IMPORTING = results,
+* EXCEPTIONS = errors mapped to sy-subrc
 DATA: lv_kunnr TYPE kunnr VALUE '1000',
       lv_out   TYPE kunnr,
       lv_last  TYPE d,
@@ -168,7 +169,7 @@ CALL FUNCTION 'RP_LAST_DAY_OF_MONTHS'
     day_in_no_date    = 1
     OTHERS            = 2.
 IF sy-subrc = 0.
-  WRITE: / 'Akhir bulan :', lv_last.
+  WRITE: / 'Month end   :', lv_last.
 ENDIF.
 
 CALL FUNCTION 'DATE_COMPUTE_DAY'
@@ -176,19 +177,19 @@ CALL FUNCTION 'DATE_COMPUTE_DAY'
     date = '20241101'
   IMPORTING
     day  = lv_day.
-WRITE: / 'Hari ke-    :', lv_day, '(1 = Senin ... 7 = Minggu)'.`,
+WRITE: / 'Day number  :', lv_day, '(1 = Monday ... 7 = Sunday)'.`,
   select: `REPORT z_select_scarr.
 
-* Deklarasi internal table & work area
+* Declare the internal table & work area
 DATA: gt_scarr TYPE TABLE OF scarr,
       gs_scarr TYPE scarr.
 
-* Parameter filter maskapai
+* Airline filter parameter
 PARAMETERS: p_carrid TYPE scarr-carrid DEFAULT 'AA'.
 
 START-OF-SELECTION.
 
-* OpenSQL SELECT dari dummy table SCARR
+* Open SQL SELECT from the sample table SCARR
 SELECT carrid, carrname, currcode, url
   FROM scarr
   INTO TABLE @gt_scarr
@@ -197,7 +198,7 @@ SELECT carrid, carrname, currcode, url
 END-OF-SELECTION.
 
 IF gt_scarr IS NOT INITIAL.
-  WRITE: / 'Hasil Pencarian Maskapai:'.
+  WRITE: / 'Airline search result:'.
   ULINE.
   LOOP AT gt_scarr INTO gs_scarr.
     WRITE: / gs_scarr-carrid,
@@ -206,7 +207,7 @@ IF gt_scarr IS NOT INITIAL.
              gs_scarr-url.
   ENDLOOP.
 ELSE.
-  WRITE: / 'Data maskapai tidak ditemukan untuk ID tersebut.'.
+  WRITE: / 'No airline found for this ID.'.
 ENDIF.`,
   report: `REPORT z_my_report.
 
@@ -280,15 +281,19 @@ function initEditor() {
     indentUnit: 2,
     tabSize: 2,
     extraKeys: {
-      'Ctrl-Space': 'autocomplete',
+      'Ctrl-Space': cm => (window.ABAP_ASSIST ? ABAP_ASSIST.show(cm, true) : undefined),
       'Ctrl-/': 'toggleComment',
       Tab: cm => {
         if (cm.somethingSelected()) cm.indentSelection('add');
         else cm.replaceSelection('  ', 'end');
       }
-    },
-    hintOptions: { hint: CodeMirror.hint.abap, completeSingle: false }
+    }
   });
+  // suggestions, code templates, block closers (abap-complete.js)
+  if (window.ABAP_ASSIST) {
+    ABAP_ASSIST.enabled = assistEnabled();
+    ABAP_ASSIST.attach(editor);
+  }
 
   let autosaveTimer = null;
   editor.on('change', () => {
@@ -305,13 +310,18 @@ function initEditor() {
       markTabModified(f.id, false);
     }, 1200);
   });
+}
 
-  // Auto-hint on typing
-  editor.on('inputRead', (cm, change) => {
-    if (!cm.state.completionActive && change.text[0] && /[A-Za-z_\-]/.test(change.text[0])) {
-      CodeMirror.commands.autocomplete(cm, CodeMirror.hint.abap, { completeSingle: false });
-    }
-  });
+// ── code completion switch (⋯ menu). Off: no automatic suggestions or block closers; Ctrl+Space still works.
+const ASSIST_KEY = 'abap_studio_assist';
+function assistEnabled() {
+  try { return localStorage.getItem(ASSIST_KEY) !== '0'; } catch { return true; }
+}
+function setAssistEnabled(on) {
+  try { localStorage.setItem(ASSIST_KEY, on ? '1' : '0'); } catch { /* storage unavailable */ }
+  if (window.ABAP_ASSIST) ABAP_ASSIST.enabled = !!on;
+  const box = document.getElementById('assistToggle');
+  if (box) box.checked = !!on;
 }
 
 // ───────────────────────────────────────────────────────────
@@ -1026,8 +1036,10 @@ function toggleLessonDone(id) {
 function tryLesson(id, reset) {
   const l = lessonList().find(x => x.id === id);
   if (!l) return;
-  const name = `Z_BELAJAR_${id.toUpperCase().replace(/[^A-Z0-9]/g, '_')}`;
-  const existing = files.find(f => f.name === name);
+  const suffix = id.toUpperCase().replace(/[^A-Z0-9]/g, '_');
+  const name = `Z_LEARN_${suffix}`;
+  // a file opened before the programs got English names keeps the learner's edits
+  const existing = files.find(f => f.name === name) || files.find(f => f.name === `Z_BELAJAR_${suffix}`);
   if (existing) {
     if (reset) { existing.code = l.code; existing.modified = false; saveFiles(); }
     openFile(existing.id);
@@ -1226,13 +1238,13 @@ SELECT ${fields}
 END-OF-SELECTION.
 
 IF ${itabName} IS NOT INITIAL.
-  WRITE: / 'Data dari tabel ${tableName}:'.
+  WRITE: / 'Data from table ${tableName}:'.
   ULINE.
   LOOP AT ${itabName} INTO ${waName}.
     WRITE: / sy-tabix, '|', ${waName}-${keyField}.
   ENDLOOP.
 ELSE.
-  WRITE: / 'Data tidak ditemukan.'.
+  WRITE: / 'No data found.'.
 ENDIF.`;
 
   createFileWithCode(`Z_SELECT_${tableName}`, code);

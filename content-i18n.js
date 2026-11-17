@@ -188,7 +188,13 @@ window.ABAP_CONTENT_I18N = {
       fm_alpha: { desc: 'CALL FUNCTION with EXPORTING / IMPORTING: pad and strip the leading zeros of a number.' },
       fm_exceptions: { desc: 'Handle function module exceptions via sy-subrc.' },
       fm_download: { desc: 'Pass an internal table to a function module via TABLES (GUI_DOWNLOAD simulation).' },
-      class_oo: { desc: 'An example of an object-oriented ABAP class.' }
+      class_oo: { desc: 'An example of an object-oriented ABAP class.' },
+      regex: { desc: 'Validate a format and extract parts of a text with regular expressions.' },
+      group_by: { desc: 'Group the rows of an internal table and total each group.' },
+      sql_subquery: { desc: 'Advanced SQL: subqueries, a CASE column, and UNION.' },
+      unit_test: { desc: 'A test class with setup and asserts. Run it through the ⋯ menu → Run unit tests.' },
+      lock_commit: { desc: 'Change data safely: ENQUEUE, UPDATE, COMMIT WORK, DEQUEUE.' },
+      rtts_viewer: { desc: 'Display any table: its name and columns are only known at runtime.' }
     },
     de: {
       hello: { desc: 'Das einfachste ABAP-Programm überhaupt.' },
@@ -213,7 +219,13 @@ window.ABAP_CONTENT_I18N = {
       fm_alpha: { desc: 'CALL FUNCTION mit EXPORTING / IMPORTING: führende Nullen einer Nummer ergänzen und entfernen.' },
       fm_exceptions: { desc: 'Ausnahmen eines Funktionsbausteins über sy-subrc behandeln.' },
       fm_download: { desc: 'Eine interne Tabelle über TABLES an einen Funktionsbaustein übergeben (GUI_DOWNLOAD-Simulation).' },
-      class_oo: { desc: 'Ein Beispiel für eine objektorientierte ABAP-Klasse.' }
+      class_oo: { desc: 'Ein Beispiel für eine objektorientierte ABAP-Klasse.' },
+      regex: { desc: 'Ein Format prüfen und Textteile mit regulären Ausdrücken herauslösen.' },
+      group_by: { desc: 'Zeilen einer internen Tabelle gruppieren und je Gruppe summieren.' },
+      sql_subquery: { desc: 'SQL für Fortgeschrittene: Subqueries, eine CASE-Spalte und UNION.' },
+      unit_test: { desc: 'Eine Testklasse mit setup und Asserts. Start über das Menü ⋯ → Unit-Tests ausführen.' },
+      lock_commit: { desc: 'Daten sicher ändern: ENQUEUE, UPDATE, COMMIT WORK, DEQUEUE.' },
+      rtts_viewer: { desc: 'Eine beliebige Tabelle anzeigen: Name und Spalten sind erst zur Laufzeit bekannt.' }
     },
     zh: {
       hello: { desc: '最简单的 ABAP 程序。' },
@@ -238,7 +250,13 @@ window.ABAP_CONTENT_I18N = {
       fm_alpha: { desc: '带 EXPORTING / IMPORTING 的 CALL FUNCTION：补齐并去除数字的前导零。' },
       fm_exceptions: { desc: '通过 sy-subrc 处理函数模块异常。' },
       fm_download: { desc: '通过 TABLES 把内表传给函数模块（模拟 GUI_DOWNLOAD）。' },
-      class_oo: { desc: '面向对象 ABAP 类的示例。' }
+      class_oo: { desc: '面向对象 ABAP 类的示例。' },
+      regex: { desc: '用正则表达式校验格式并提取文本的一部分。' },
+      group_by: { desc: '对内表的行分组，并对每个组求和。' },
+      sql_subquery: { desc: '进阶 SQL：子查询、CASE 列和 UNION。' },
+      unit_test: { desc: '带 setup 和断言的测试类。通过 ⋯ 菜单 → 运行单元测试 启动。' },
+      lock_commit: { desc: '安全地修改数据：ENQUEUE、UPDATE、COMMIT WORK、DEQUEUE。' },
+      rtts_viewer: { desc: '显示任意数据表：表名和列在运行时才知道。' }
     }
   },
 
@@ -249,7 +267,7 @@ window.ABAP_CONTENT_I18N = {
       string: { title: 'String Operations' }, itab: { title: 'Internal Tables' },
       subroutines: { title: 'Subroutines & Methods' }, sysfields: { title: 'System Fields (SY-)' },
       select: { title: 'SELECT Statement' }, alv: { title: 'ALV Grid Viewer' },
-      function: { title: 'Function Module' }, simulator: { title: 'Simulator Coverage' }
+      function: { title: 'Function Module' }, advanced: { title: 'Advanced Techniques' }, simulator: { title: 'Simulator Coverage' }
     },
     de: {
       intro: { title: 'Einführung in ABAP' }, data: { title: 'DATA & Typen' },
@@ -257,7 +275,7 @@ window.ABAP_CONTENT_I18N = {
       string: { title: 'String-Operationen' }, itab: { title: 'Interne Tabellen' },
       subroutines: { title: 'Unterprogramme & Methoden' }, sysfields: { title: 'Systemfelder (SY-)' },
       select: { title: 'SELECT-Anweisung' }, alv: { title: 'ALV-Grid-Viewer' },
-      function: { title: 'Funktionsbaustein' }, simulator: { title: 'Simulator-Umfang' }
+      function: { title: 'Funktionsbaustein' }, advanced: { title: 'Fortgeschrittene Techniken' }, simulator: { title: 'Simulator-Umfang' }
     },
     zh: {
       intro: { title: 'ABAP 简介' }, data: { title: 'DATA 与数据类型' },
@@ -265,7 +283,7 @@ window.ABAP_CONTENT_I18N = {
       string: { title: '字符串操作' }, itab: { title: '内表' },
       subroutines: { title: '子程序与方法' }, sysfields: { title: '系统字段 (SY-)' },
       select: { title: 'SELECT 语句' }, alv: { title: 'ALV 表格查看器' },
-      function: { title: '函数模块' }, simulator: { title: '模拟器支持范围' }
+      function: { title: '函数模块' }, advanced: { title: '进阶技术' }, simulator: { title: '模拟器支持范围' }
     }
   }
 };

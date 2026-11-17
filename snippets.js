@@ -248,16 +248,16 @@ ENDFORM.`
     desc: 'Query data maskapai dari dummy table SCARR dengan PARAMETERS.',
     code: `REPORT z_select_scarr.
 
-* Deklarasi internal table & work area
+* Declare the internal table & work area
 DATA: gt_scarr TYPE TABLE OF scarr,
       gs_scarr TYPE scarr.
 
-* Parameter maskapai (coba ubah: AA, GA, LH, SQ)
+* Airline parameter (try: AA, GA, LH, SQ)
 PARAMETERS: p_carrid TYPE scarr-carrid DEFAULT 'GA'.
 
 START-OF-SELECTION.
 
-* OpenSQL SELECT dengan filter WHERE
+* Open SQL SELECT with a WHERE filter
 SELECT carrid, carrname, currcode, url
   FROM scarr
   INTO TABLE @gt_scarr
@@ -266,7 +266,7 @@ SELECT carrid, carrname, currcode, url
 END-OF-SELECTION.
 
 IF gt_scarr IS NOT INITIAL.
-  WRITE: / 'Data Maskapai Ditemukan:'.
+  WRITE: / 'Airline found:'.
   ULINE.
   LOOP AT gt_scarr INTO gs_scarr.
     WRITE: / gs_scarr-carrid,
@@ -275,7 +275,7 @@ IF gt_scarr IS NOT INITIAL.
              gs_scarr-url.
   ENDLOOP.
 ELSE.
-  WRITE: / 'Data maskapai tidak ditemukan untuk ID tersebut.'.
+  WRITE: / 'No airline found for this ID.'.
 ENDIF.`
   },
   {
@@ -292,7 +292,7 @@ START-OF-SELECTION.
 
 SELECT * FROM scarr INTO TABLE @gt_scarr.
 
-WRITE: / 'Daftar Semua Maskapai (SCARR):'.
+WRITE: / 'All airlines (SCARR):'.
 ULINE.
 
 LOOP AT gt_scarr INTO gs_scarr.
@@ -322,7 +322,7 @@ SELECT carrid, connid, fldate, price, currency, planetype
   WHERE carrid = @p_carr.
 
 IF gt_flights IS NOT INITIAL.
-  WRITE: / 'Jadwal Penerbangan Maskapai:', p_carr.
+  WRITE: / 'Flight schedule of the airline:', p_carr.
   ULINE.
   LOOP AT gt_flights INTO gs_flight.
     WRITE: / gs_flight-connid,
@@ -332,7 +332,7 @@ IF gt_flights IS NOT INITIAL.
              gs_flight-currency.
   ENDLOOP.
 ELSE.
-  WRITE: / 'Tidak ada jadwal penerbangan untuk maskapai ini.'.
+  WRITE: / 'No flights for this airline.'.
 ENDIF.`
   },
   {
@@ -372,16 +372,16 @@ ENDLOOP.`
     desc: 'Menampilkan data penerbangan (SFLIGHT) dalam ALV Grid interaktif.',
     code: `REPORT z_alv_flight_grid.
 
-* Deklarasi internal table & OO ALV reference
+* Declare the internal table & the OO ALV reference
 DATA: gt_sflight TYPE TABLE OF sflight,
       lo_alv     TYPE REF TO cl_salv_table.
 
 START-OF-SELECTION.
 
-* Ambil data dari dummy table SFLIGHT
+* Read the data from the sample table SFLIGHT
 SELECT * FROM sflight INTO TABLE @gt_sflight.
 
-* Instansiasi dan tampilkan ALV Grid
+* Create and display the ALV grid
 cl_salv_table=>factory(
   IMPORTING
     r_salv_table = lo_alv
@@ -397,17 +397,17 @@ lo_alv->display( ).`
     desc: 'ALV Grid klasik dengan function module REUSE_ALV_GRID_DISPLAY.',
     code: `REPORT z_reuse_alv_airlines.
 
-* Deklarasi internal table maskapai
+* Declare the airline internal table
 DATA: gt_scarr TYPE TABLE OF scarr.
 
 START-OF-SELECTION.
 
-* Ambil data maskapai dari tabel SCARR
+* Read the airlines from table SCARR
 SELECT carrid, carrname, currcode, url
   FROM scarr
   INTO TABLE @gt_scarr.
 
-* Tampilkan dengan Function Module Classic ALV
+* Display with the classic ALV function module
 CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
   EXPORTING
     i_structure_name = 'SCARR'
@@ -440,19 +440,19 @@ START-OF-SELECTION.
     FROM sflight
     INTO TABLE gt_flight.
 
-  PERFORM add_field USING 'CARRID'   'Maskapai'      'X' ' '.
-  PERFORM add_field USING 'CONNID'   'No. Penerbangan' 'X' ' '.
-  PERFORM add_field USING 'FLDATE'   'Tanggal'       ' ' ' '.
-  PERFORM add_field USING 'PRICE'    'Harga'         ' ' ' '.
-  PERFORM add_field USING 'CURRENCY' 'Mata Uang'     ' ' ' '.
-  PERFORM add_field USING 'SEATSOCC' 'Kursi Terisi'  ' ' 'X'.
+  PERFORM add_field USING 'CARRID'   'Airline'      'X' ' '.
+  PERFORM add_field USING 'CONNID'   'Flight No.' 'X' ' '.
+  PERFORM add_field USING 'FLDATE'   'Date'           ' ' ' '.
+  PERFORM add_field USING 'PRICE'    'Price'          ' ' ' '.
+  PERFORM add_field USING 'CURRENCY' 'Currency'       ' ' ' '.
+  PERFORM add_field USING 'SEATSOCC' 'Seats Occupied' ' ' 'X'.
 
   gs_layout-zebra = 'X'.
 
   CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
     EXPORTING
       i_callback_program = sy-repid
-      i_grid_title       = 'Jadwal Penerbangan'
+      i_grid_title       = 'Flight Schedule'
       is_layout          = gs_layout
       it_fieldcat        = gt_fieldcat
     TABLES
@@ -461,7 +461,7 @@ START-OF-SELECTION.
       program_error      = 1
       OTHERS             = 2.
 
-* Satu baris field catalog per kolom
+* One field catalog row per column
 FORM add_field USING pv_field TYPE c
                      pv_text  TYPE c
                      pv_key   TYPE c
@@ -481,27 +481,27 @@ ENDFORM.`
     desc: 'CALL FUNCTION dengan EXPORTING / IMPORTING: melengkapi dan membuang nol di depan nomor.',
     code: `REPORT z_fm_alpha.
 
-DATA: lv_input  TYPE kunnr VALUE '1000',
-      lv_intern TYPE kunnr,
-      lv_extern TYPE kunnr.
+DATA: lv_input    TYPE kunnr VALUE '1000',
+      lv_internal TYPE kunnr,
+      lv_extern   TYPE kunnr.
 
-* Format internal: nol di depan sampai panjang field (10)
+* Internal format: leading zeros up to the field length (10)
 CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
   EXPORTING
     input  = lv_input
   IMPORTING
-    output = lv_intern.
+    output = lv_internal.
 
-* Format tampilan: nol di depan dibuang
+* Display format: leading zeros removed
 CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
   EXPORTING
-    input  = lv_intern
+    input  = lv_internal
   IMPORTING
     output = lv_extern.
 
-WRITE: / 'Masukan  :', lv_input.
-WRITE: / 'Internal :', lv_intern.
-WRITE: / 'Tampilan :', lv_extern.`
+WRITE: / 'Input    :', lv_input.
+WRITE: / 'Internal :', lv_internal.
+WRITE: / 'Display  :', lv_extern.`
   },
   {
     id: 'fm_exceptions',
@@ -510,30 +510,30 @@ WRITE: / 'Tampilan :', lv_extern.`
     desc: 'Menangani exception function module lewat sy-subrc.',
     code: `REPORT z_fm_exceptions.
 
-DATA: lv_tanggal TYPE d,
-      lv_akhir   TYPE d.
+DATA: lv_date      TYPE d,
+      lv_month_end TYPE d.
 
-PARAMETERS p_tgl TYPE d DEFAULT '20240210'.
+PARAMETERS p_date TYPE d DEFAULT '20240210'.
 
 START-OF-SELECTION.
-  lv_tanggal = p_tgl.
+  lv_date = p_date.
 
   CALL FUNCTION 'RP_LAST_DAY_OF_MONTHS'
     EXPORTING
-      day_in            = lv_tanggal
+      day_in            = lv_date
     IMPORTING
-      last_day_of_month = lv_akhir
+      last_day_of_month = lv_month_end
     EXCEPTIONS
       day_in_no_date    = 1
       OTHERS            = 2.
 
   CASE sy-subrc.
     WHEN 0.
-      WRITE: / 'Hari terakhir bulan itu:', lv_akhir.
+      WRITE: / 'Last day of that month:', lv_month_end.
     WHEN 1.
-      WRITE: / lv_tanggal, 'bukan tanggal yang valid (sy-subrc = 1).'.
+      WRITE: / lv_date, 'is not a valid date (sy-subrc = 1).'.
     WHEN OTHERS.
-      WRITE / 'Error lain dari function module.'.
+      WRITE / 'Another error from the function module.'.
   ENDCASE.`
   },
   {
@@ -550,7 +550,7 @@ SELECT * FROM scarr INTO TABLE gt_scarr.
 
 CALL FUNCTION 'GUI_DOWNLOAD'
   EXPORTING
-    filename         = 'C:\\temp\\maskapai.txt'
+    filename         = 'C:\\temp\\airlines.txt'
     filetype         = 'ASC'
   IMPORTING
     filelength       = gv_size
@@ -562,9 +562,9 @@ CALL FUNCTION 'GUI_DOWNLOAD'
     OTHERS           = 3.
 
 IF sy-subrc = 0.
-  WRITE: / 'Download selesai,', gv_size, 'byte.'.
+  WRITE: / 'Download finished,', gv_size, 'byte.'.
 ELSE.
-  WRITE: / 'Download gagal, sy-subrc =', sy-subrc.
+  WRITE: / 'Download failed, sy-subrc =', sy-subrc.
 ENDIF.`
   },
   {
@@ -605,6 +605,192 @@ CREATE OBJECT lo_calc EXPORTING iv_name = 'Basic Calc'.
 lo_calc->display_info( ).
 lv_res = lo_calc->add( iv_a = 42 iv_b = 58 ).
 WRITE: / 'Result: ', lv_res.`
+  },
+  {
+    id: 'regex',
+    title: 'Regular Expression',
+    category: 'string',
+    desc: 'Validasi format dan mengambil bagian teks dengan regular expression.',
+    code: `REPORT z_regex.
+
+DATA: lv_mail TYPE string VALUE 'anna.smith@example.com',
+      lv_text TYPE string VALUE 'Invoice 90000001 and 90000002 are open'.
+
+" Validate: the WHOLE text must fit the pattern
+IF matches( val = lv_mail regex = '[\\w.]+@[\\w.]+\\.[a-z]{2,}' ).
+  WRITE: / lv_mail, 'is a valid address'.
+ENDIF.
+
+" Extract with groups
+FIND REGEX '([\\w.]+)@([\\w.]+)' IN lv_mail SUBMATCHES DATA(lv_user) DATA(lv_host).
+WRITE: / 'User:', lv_user, ' Host:', lv_host.
+
+" Count, read and replace
+FIND ALL OCCURRENCES OF REGEX '\\d{8}' IN lv_text MATCH COUNT DATA(lv_count).
+DATA(lv_first) = match( val = lv_text regex = '\\d{8}' ).
+WRITE: / lv_count, 'numbers, the first is', lv_first.
+
+REPLACE ALL OCCURRENCES OF REGEX '\\d{4}(\\d{4})' IN lv_text WITH '****$1'.
+WRITE: / lv_text.`
+  },
+  {
+    id: 'group_by',
+    title: 'LOOP AT ... GROUP BY',
+    category: 'table',
+    desc: 'Mengelompokkan baris internal table dan menjumlahkan tiap kelompok.',
+    code: `REPORT z_group_by.
+
+DATA lv_total TYPE vbak-netwr.
+
+SELECT vbeln, kunnr, netwr FROM vbak INTO TABLE @DATA(lt_order).
+
+LOOP AT lt_order INTO DATA(ls_order)
+     GROUP BY ( kunnr = ls_order-kunnr  count = GROUP SIZE )
+     ASCENDING INTO DATA(ls_group).
+  CLEAR lv_total.
+  LOOP AT GROUP ls_group INTO DATA(ls_member).
+    lv_total = lv_total + ls_member-netwr.
+  ENDLOOP.
+  WRITE: / ls_group-kunnr, 14 ls_group-count, 'orders', 26 lv_total.
+ENDLOOP.`
+  },
+  {
+    id: 'sql_subquery',
+    title: 'Subquery, CASE, UNION',
+    category: 'select',
+    desc: 'SQL lanjutan: subquery, kolom CASE, dan UNION.',
+    code: `REPORT z_sql_advanced.
+
+" Orders without a delivery
+SELECT vbeln, netwr FROM vbak
+  WHERE vbeln NOT IN ( SELECT vgbel FROM lips )
+  ORDER BY vbeln
+  INTO TABLE @DATA(lt_open).
+WRITE: / 'Orders without delivery:', lines( lt_open ).
+
+" A calculated column
+SELECT vbeln, netwr,
+       CASE WHEN netwr >= 20000000 THEN 'LARGE' ELSE 'NORMAL' END AS size
+  FROM vbak
+  ORDER BY netwr DESCENDING
+  INTO TABLE @DATA(lt_size)
+  UP TO 3 ROWS.
+LOOP AT lt_size INTO DATA(ls_size).
+  WRITE: / ls_size-vbeln, 14 ls_size-netwr, 28 ls_size-size.
+ENDLOOP.
+
+" Two tables in one result
+SELECT kunnr AS id, name1 FROM kna1
+UNION
+SELECT lifnr AS id, name1 FROM lfa1
+INTO TABLE @DATA(lt_partner).
+WRITE: / 'Customers and vendors:', lines( lt_partner ).`
+  },
+  {
+    id: 'unit_test',
+    title: 'ABAP Unit Test',
+    category: 'class',
+    desc: 'Test class dengan setup dan assert. Jalankan lewat menu ⋯ → Jalankan Unit Test.',
+    code: `REPORT z_unit_test.
+
+CLASS lcl_tax DEFINITION.
+  PUBLIC SECTION.
+    METHODS gross IMPORTING iv_net TYPE i RETURNING VALUE(rv_gross) TYPE i.
+ENDCLASS.
+
+CLASS lcl_tax IMPLEMENTATION.
+  METHOD gross.
+    rv_gross = iv_net + iv_net * 11 / 100.
+  ENDMETHOD.
+ENDCLASS.
+
+CLASS ltc_tax DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
+  PRIVATE SECTION.
+    DATA mo_cut TYPE REF TO lcl_tax.
+    METHODS setup.
+    METHODS adds_eleven_percent FOR TESTING.
+    METHODS zero_stays_zero     FOR TESTING.
+ENDCLASS.
+
+CLASS ltc_tax IMPLEMENTATION.
+  METHOD setup.
+    mo_cut = NEW #( ).
+  ENDMETHOD.
+  METHOD adds_eleven_percent.
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->gross( 1000 ) exp = 1110 ).
+  ENDMETHOD.
+  METHOD zero_stays_zero.
+    cl_abap_unit_assert=>assert_initial( mo_cut->gross( 0 ) ).
+  ENDMETHOD.
+ENDCLASS.
+
+START-OF-SELECTION.
+  DATA(lo_tax) = NEW lcl_tax( ).
+  DATA(lv_gross) = lo_tax->gross( 250000 ).
+  WRITE: / 'Gross:', lv_gross.`
+  },
+  {
+    id: 'lock_commit',
+    title: 'Lock, Update, Commit',
+    category: 'function',
+    desc: 'Mengubah data dengan aman: ENQUEUE, UPDATE, COMMIT WORK, DEQUEUE.',
+    code: `REPORT z_lock_commit.
+
+PARAMETERS p_vbeln TYPE vbak-vbeln DEFAULT '0000000010'.
+
+START-OF-SELECTION.
+  CALL FUNCTION 'ENQUEUE_EVVBAKE'
+    EXPORTING
+      vbeln        = p_vbeln
+    EXCEPTIONS
+      foreign_lock = 1
+      OTHERS       = 2.
+  IF sy-subrc <> 0.
+    WRITE: / 'Order', p_vbeln, 'is locked by', sy-msgv1.
+    RETURN.
+  ENDIF.
+
+  UPDATE vbak SET netwr = netwr + 1000 WHERE vbeln = p_vbeln.
+  IF sy-subrc = 0.
+    COMMIT WORK.
+    WRITE: / 'Order', p_vbeln, 'changed and saved.'.
+  ELSE.
+    ROLLBACK WORK.
+    WRITE: / 'Order', p_vbeln, 'not found - nothing changed.'.
+  ENDIF.
+
+  CALL FUNCTION 'DEQUEUE_EVVBAKE'
+    EXPORTING
+      vbeln = p_vbeln.`
+  },
+  {
+    id: 'rtts_viewer',
+    title: 'Dynamic Table Viewer (RTTS)',
+    category: 'select',
+    desc: 'Menampilkan tabel apa pun: nama tabel dan kolomnya baru diketahui saat runtime.',
+    code: `REPORT z_table_viewer.
+
+PARAMETERS p_table TYPE string DEFAULT 'SPFLI'.
+
+DATA lr_data TYPE REF TO data.
+FIELD-SYMBOLS: <lt_data> TYPE STANDARD TABLE,
+               <ls_row>  TYPE any,
+               <lv_cell> TYPE any.
+
+START-OF-SELECTION.
+  DATA(lo_struct) = CAST cl_abap_structdescr( cl_abap_typedescr=>describe_by_name( p_table ) ).
+
+  CREATE DATA lr_data TYPE STANDARD TABLE OF (p_table).
+  ASSIGN lr_data->* TO <lt_data>.
+  SELECT * FROM (p_table) INTO TABLE <lt_data> UP TO 3 ROWS.
+
+  LOOP AT <lt_data> ASSIGNING <ls_row>.
+    SKIP.
+    LOOP AT lo_struct->components INTO DATA(ls_comp).
+      ASSIGN COMPONENT ls_comp-name OF STRUCTURE <ls_row> TO <lv_cell>.
+      WRITE: / ls_comp-name, 14 <lv_cell>.
+    ENDLOOP.
+  ENDLOOP.`
   }
 ];
 

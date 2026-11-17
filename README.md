@@ -4,7 +4,7 @@
 
 **Learn SAP ABAP in your browser — no SAP system required.**
 
-ABAP Code Studio is an ABAP editor, simulator and course in one page. You write ABAP, press **Run**, and see the result as a classic list or an ALV grid, the way an SAP report would show it. A learning path of 38 lessons takes you from your first `WRITE` statement to object-oriented reports.
+ABAP Code Studio is an ABAP editor, simulator and course in one page. You write ABAP, press **Run**, and see the result as a classic list or an ALV grid, the way an SAP report would show it. A learning path of 48 lessons takes you from your first `WRITE` statement to object-oriented reports, unit tests and safe database transactions.
 
 Created by **jeffrypurwanto**.
 
@@ -24,13 +24,16 @@ An internet connection is needed on first load, because the code editor (CodeMir
 | Area | What it offers |
 |---|---|
 | **Editor** | Syntax highlighting, tabs for several programs, Pretty Printer, import and export of `.abap` files |
+| **Code completion** | Enter after `IF`, `LOOP`, `CASE`, `METHOD` … adds the matching `ENDIF`, `ENDLOOP` … and indents; code templates with Tab stops; suggestions for your own names, table names, structure components (`gs_order-`), SQL columns (`a~`) and class members (`lo_obj->`). Can be switched off in the ⋯ menu; Ctrl+Space always opens the suggestions |
 | **Run** | Output panel with list output, inline ALV grids, messages with clickable line numbers, a syntax check and a variable inspector |
 | **SAP-style result screen** | A wide window that looks like SAP GUI: title bar, toolbar, ALV colours, totals row, status bar |
 | **Selection screen** | `PARAMETERS` and `SELECT-OPTIONS` of your program become an input dialog (F8) |
-| **Learn** | 38 lessons in 4 levels, each with an explanation, a runnable example and exercises; progress is tracked |
-| **Tables** | 19 sample copies of standard SAP tables (SCARR, SFLIGHT, MARA, KNA1, VBAK, EKKO and more) to practise `SELECT` |
-| **Snippets** | 23 ready-to-run examples, from Hello World to ALV and function modules |
-| **Docs** | A quick reference for syntax, internal tables, Open SQL, ALV and function modules |
+| **Unit tests** | Test classes (`FOR TESTING`) run from the ⋯ menu or with Ctrl+Shift+F10; the report shows every test method, passed or failed, with expected and actual values |
+| **Database statistics** | After each run, a line below the output counts the database accesses and flags a `SELECT` that ran repeatedly inside a loop |
+| **Learn** | 48 lessons in 5 levels, each with an explanation, a runnable example and exercises; progress is tracked |
+| **Tables** | 32 sample copies of standard SAP tables covering flights, materials, purchasing, the sales flow (order → delivery → billing), goods movements and HR master data |
+| **Snippets** | 29 ready-to-run examples, from Hello World to ALV, regular expressions and unit tests |
+| **Docs** | A quick reference for syntax, internal tables, Open SQL, ALV, function modules and the advanced techniques |
 | **Themes** | A dark ("ink") and a light ("paper") theme, switched from the ⋯ menu |
 
 ### Languages
@@ -42,7 +45,7 @@ The whole application is available in four languages. Use the globe button at th
 - Deutsch
 - 中文
 
-The interface, all lessons, the reference and the simulator's error messages are translated. Example programs keep their original identifiers and comments, because they are runnable code.
+The interface, all lessons, the reference and the simulator's error messages are translated. Example programs are runnable code and are the same in every language: program names, identifiers, comments and output texts are written in English. Sample data (names of people, companies and cities) is left as it is.
 
 ## The learning path
 
@@ -52,6 +55,7 @@ The interface, all lessons, the reference and the simulator's error messages are
 | 2 — Basics | 10 | Structures, internal tables, field symbols, `FORM` / `PERFORM`, selection screens, `SELECT`, report events, control levels, table kinds |
 | 3 — Intermediate | 11 | `JOIN` and `FOR ALL ENTRIES`, aggregates and data changes, messages, function modules, classic and modern ALV, interactive ALV, legacy code, a complete sales report |
 | 4 — Advanced | 11 | Classes and objects, constructors, inheritance, interfaces, exceptions, modern syntax and expressions, class events, data references, advanced SALV, an object-oriented case study |
+| 5 — Expert | 10 | Regular expressions, `LOOP AT … GROUP BY`, `FILTER` / `LET` / `FOR GROUPS`, subqueries and `UNION`, performance, ABAP Unit, design patterns, RTTS and dynamic SQL, authorization checks and locks, an order-to-cash case study |
 
 ## What the simulator supports
 
@@ -64,12 +68,15 @@ The interface, all lessons, the reference and the simulator's error messages are
 - **ABAP Objects:** local classes, inheritance, interfaces, events, class-based exceptions
 - **Modern ABAP (7.40+):** inline declarations, `VALUE`, `COND`, `SWITCH`, `REDUCE`, `CORRESPONDING`, table expressions, string templates
 - **ALV:** `REUSE_ALV_GRID_DISPLAY` with field catalog, layout, sorting, totals, hotspots and callbacks; `CL_SALV_TABLE` with columns, sorts, aggregations and events
+- **Advanced:** regular expressions (`FIND` / `REPLACE … REGEX` or `PCRE`, `matches`, `match`), `LOOP AT … GROUP BY`, `FILTER`, `LET`, `FOR GROUPS`, SQL subqueries, `CASE` and calculations in the column list, `UNION`, dynamic `FROM` / `WHERE`, RTTS (`cl_abap_typedescr`)
+- **ABAP Unit:** test classes with `setup` / `teardown` and `cl_abap_unit_assert`
+- **Transactions:** `AUTHORITY-CHECK`, lock modules (`ENQUEUE_…` / `DEQUEUE_…`), `NUMBER_GET_NEXT`, BAPIs with a `RETURN` parameter
 
 ### Limitations
 
 - Dynpro screens (`CALL SCREEN`, PBO / PAI) are not simulated.
-- `LOOP AT … GROUP BY`, SQL subqueries, `UNION`, CDS views and AMDP are not supported.
-- Global classes, ABAP Unit and RTTS are not available.
+- CDS views, AMDP and Native SQL are not supported.
+- Global classes, test doubles and the creation of new types at runtime (RTTC) are not available.
 - Database changes last only while a program runs; the sample data is restored for the next run.
 - A statement the simulator does not know is skipped with a warning.
 
@@ -87,6 +94,7 @@ Plain HTML, CSS and JavaScript with no build step and no dependencies to install
 | `app.js` | UI controller: editor, output rendering, ALV grids, views |
 | `abap-interpreter.js` | The ABAP interpreter |
 | `abap-mode.js` | ABAP syntax highlighting for CodeMirror |
+| `abap-complete.js` | Code completion: suggestions, templates, automatic block closers, indentation |
 | `dummy-data.js` | Sample database tables |
 | `lessons.js`, `snippets.js`, `docs.js` | Learning content (Indonesian source) |
 | `i18n.js` | Interface texts in four languages and the language switcher |

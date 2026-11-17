@@ -30,20 +30,20 @@ window.ABAP_LESSONS = [
       </ul>
       <p><tt>WRITE</tt> mencetak ke layar. Tanda <tt>/</tt> berarti pindah baris. Statement berantai ditulis
          <tt>KEYWORD: a, b, c.</tt> — titik dua setelah keyword, lalu bagian-bagiannya dipisah koma.</p>`,
-    code: `REPORT z_belajar_halo.
+    code: `REPORT z_learn_hello.
 
-* Komentar satu baris penuh: tanda bintang di KOLOM PERTAMA
-WRITE 'Halo, dunia ABAP!'.          " komentar di akhir baris pakai tanda kutip ganda
+* A full-line comment: an asterisk in the FIRST COLUMN
+WRITE 'Hello, ABAP world!'.          " a comment at the end of a line uses a double quote
 
-* Tanda / berarti pindah ke baris baru
-WRITE / 'Setiap statement diakhiri dengan titik.'.
+* The / sign means: start a new line
+WRITE / 'Every statement ends with a period.'.
 
-* Statement berantai: titik dua setelah keyword, lalu dipisah koma
-WRITE: / 'Belajar', 'ABAP', 'itu', 'menyenangkan.'.
+* Chained statement: a colon after the keyword, then parts separated by commas
+WRITE: / 'Learning', 'ABAP', 'is', 'fun.'.
 
-SKIP.                               " satu baris kosong
-ULINE.                              " garis horizontal
-WRITE / 'Program selesai.'.`,
+SKIP.                               " one empty line
+ULINE.                              " horizontal line
+WRITE / 'Program finished.'.`,
     task: `<ul>
       <li>Tambahkan baris yang mencetak nama Anda sendiri.</li>
       <li>Hapus titik di akhir salah satu statement, jalankan, dan lihat apa yang terjadi pada output.</li>
@@ -73,35 +73,35 @@ WRITE / 'Program selesai.'.`,
         <li>Variabel <tt>TYPE c</tt> hanya menampung sebanyak panjangnya: kelebihannya <b>terpotong</b> tanpa error. <tt>TYPE c</tt> tanpa panjang berarti satu karakter.</li>
         <li><tt>TYPE n</tt> selalu terisi penuh dengan nol di depan; <tt>TYPE p DECIMALS 2</tt> membulatkan ke dua desimal.</li>
       </ul>`,
-    code: `REPORT z_belajar_variabel.
+    code: `REPORT z_learn_variables.
 
-DATA: lv_nama     TYPE string VALUE 'Budi Santoso',
-      lv_umur     TYPE i VALUE 25,
-      lv_gaji     TYPE p DECIMALS 2 VALUE '7500000.50',
-      lv_kode(4)  TYPE c VALUE 'A001',
-      lv_nik      TYPE n LENGTH 6 VALUE '000123',
-      lv_tanggal  TYPE d,
-      lv_aktif    TYPE abap_bool VALUE abap_true.
+DATA: lv_name     TYPE string VALUE 'Budi Santoso',
+      lv_age      TYPE i VALUE 25,
+      lv_salary   TYPE p DECIMALS 2 VALUE '7500000.50',
+      lv_code(4)  TYPE c VALUE 'A001',
+      lv_emp_id   TYPE n LENGTH 6 VALUE '000123',
+      lv_date     TYPE d,
+      lv_active   TYPE abap_bool VALUE abap_true.
 
-CONSTANTS gc_perusahaan TYPE string VALUE 'PT Maju Bersama'.
+CONSTANTS gc_company TYPE string VALUE 'PT Maju Bersama'.
 
-lv_tanggal = sy-datum.              " tanggal sistem, format YYYYMMDD
-lv_umur    = lv_umur + 1.
+lv_date    = sy-datum.              " system date, format YYYYMMDD
+lv_age     = lv_age + 1.
 
-WRITE: / 'Perusahaan :', gc_perusahaan.
-WRITE: / 'Nama       :', lv_nama.
-WRITE: / 'Umur       :', lv_umur.
-WRITE: / 'Gaji       :', lv_gaji.
-WRITE: / 'Kode / NIK :', lv_kode, lv_nik.
-WRITE: / 'Tanggal    :', lv_tanggal.
-WRITE: / 'Aktif      :', lv_aktif.
+WRITE: / 'Company    :', gc_company.
+WRITE: / 'Name       :', lv_name.
+WRITE: / 'Age        :', lv_age.
+WRITE: / 'Salary     :', lv_salary.
+WRITE: / 'Code / ID  :', lv_code, lv_emp_id.
+WRITE: / 'Date       :', lv_date.
+WRITE: / 'Active     :', lv_active.
 
-CLEAR lv_umur.
-WRITE: / 'Setelah CLEAR, umur =', lv_umur.`,
+CLEAR lv_age.
+WRITE: / 'After CLEAR, age =', lv_age.`,
     task: `<ul>
-      <li>Tambahkan variabel <tt>lv_kota</tt> bertipe <tt>string</tt> dan cetak nilainya.</li>
-      <li>Coba ubah nilai konstanta: <tt>gc_perusahaan = 'Lain'.</tt> Jalankan dan baca pesan error-nya.</li>
-      <li>Isi <tt>lv_kode</tt> dengan teks yang lebih panjang dari 4 karakter (<tt>lv_kode = 'ABCDEFG'.</tt>) dan lihat apa yang tersimpan.</li>
+      <li>Tambahkan variabel <tt>lv_city</tt> bertipe <tt>string</tt> dan cetak nilainya.</li>
+      <li>Coba ubah nilai konstanta: <tt>gc_company = 'Lain'.</tt> Jalankan dan baca pesan error-nya.</li>
+      <li>Isi <tt>lv_code</tt> dengan teks yang lebih panjang dari 4 karakter (<tt>lv_code = 'ABCDEFG'.</tt>) dan lihat apa yang tersimpan.</li>
       <li>Pakai variabel yang belum dideklarasikan (misalnya <tt>lv_typo = 1.</tt>) dan perhatikan peringatannya.</li>
     </ul>`
   },
@@ -117,30 +117,30 @@ WRITE: / 'Setelah CLEAR, umur =', lv_umur.`,
         <li>Hasil yang disimpan ke variabel <tt>TYPE i</tt> <b>dibulatkan</b>, bukan dipotong: 17 / 5 = 3,4 menjadi 3, sedangkan 18 / 5 = 3,6 menjadi 4.</li>
         <li>Bentuk lama yang masih sering ditemui: <tt>ADD</tt>, <tt>SUBTRACT</tt>, <tt>MULTIPLY</tt>, <tt>DIVIDE</tt>.</li>
       </ul>`,
-    code: `REPORT z_belajar_hitung.
+    code: `REPORT z_learn_calculation.
 
-DATA: lv_a     TYPE i VALUE 17,
-      lv_b     TYPE i VALUE 5,
-      lv_hasil TYPE i,
-      lv_bagi  TYPE p DECIMALS 2.
+DATA: lv_a        TYPE i VALUE 17,
+      lv_b        TYPE i VALUE 5,
+      lv_result   TYPE i,
+      lv_quotient TYPE p DECIMALS 2.
 
-lv_hasil = lv_a + lv_b.        WRITE: / '17 + 5        =', lv_hasil.
-lv_hasil = lv_a - lv_b.        WRITE: / '17 - 5        =', lv_hasil.
-lv_hasil = lv_a * lv_b.        WRITE: / '17 * 5        =', lv_hasil.
-lv_bagi  = lv_a / lv_b.        WRITE: / '17 / 5        =', lv_bagi.
-lv_hasil = lv_a / lv_b.        WRITE: / '17 / 5 (ke i) =', lv_hasil, '<- dibulatkan'.
-lv_hasil = lv_a DIV lv_b.      WRITE: / '17 DIV 5      =', lv_hasil.
-lv_hasil = lv_a MOD lv_b.      WRITE: / '17 MOD 5      =', lv_hasil.
+lv_result   = lv_a + lv_b.     WRITE: / '17 + 5        =', lv_result.
+lv_result   = lv_a - lv_b.     WRITE: / '17 - 5        =', lv_result.
+lv_result   = lv_a * lv_b.     WRITE: / '17 * 5        =', lv_result.
+lv_quotient = lv_a / lv_b.     WRITE: / '17 / 5        =', lv_quotient.
+lv_result   = lv_a / lv_b.     WRITE: / '17 / 5 (to i) =', lv_result, '<- rounded'.
+lv_result   = lv_a DIV lv_b.   WRITE: / '17 DIV 5      =', lv_result.
+lv_result   = lv_a MOD lv_b.   WRITE: / '17 MOD 5      =', lv_result.
 
-* Urutan pengerjaan dan tanda kurung
-lv_hasil = lv_a + lv_b * 2.    WRITE: / '17 + 5 * 2    =', lv_hasil.
-lv_hasil = ( lv_a + lv_b ) * 2. WRITE: / '( 17 + 5 ) * 2 =', lv_hasil.
+* Order of evaluation and parentheses
+lv_result = lv_a + lv_b * 2.    WRITE: / '17 + 5 * 2    =', lv_result.
+lv_result = ( lv_a + lv_b ) * 2. WRITE: / '( 17 + 5 ) * 2 =', lv_result.
 
-* Bentuk statement lama
-ADD 10 TO lv_hasil.            WRITE: / 'ADD 10        =', lv_hasil.
-SUBTRACT 4 FROM lv_hasil.      WRITE: / 'SUBTRACT 4    =', lv_hasil.
-MULTIPLY lv_hasil BY 2.        WRITE: / 'MULTIPLY BY 2 =', lv_hasil.
-DIVIDE lv_hasil BY 4.          WRITE: / 'DIVIDE BY 4   =', lv_hasil.`,
+* The old statement forms
+ADD 10 TO lv_result.           WRITE: / 'ADD 10        =', lv_result.
+SUBTRACT 4 FROM lv_result.     WRITE: / 'SUBTRACT 4    =', lv_result.
+MULTIPLY lv_result BY 2.       WRITE: / 'MULTIPLY BY 2 =', lv_result.
+DIVIDE lv_result BY 4.         WRITE: / 'DIVIDE BY 4   =', lv_result.`,
     task: `<ul>
       <li>Hitung luas dan keliling persegi panjang berukuran 12 × 7.</li>
       <li>Ubah <tt>lv_b</tt> menjadi 0 lalu jalankan. Program berhenti dengan exception <tt>CX_SY_ZERODIVIDE</tt> — cara menangkapnya dibahas di level Mahir.</li>
@@ -158,53 +158,53 @@ DIVIDE lv_hasil BY 4.          WRITE: / 'DIVIDE BY 4   =', lv_hasil.`,
         <li><tt>BETWEEN a AND b</tt> menguji rentang; <tt>IS INITIAL</tt> menguji apakah variabel masih kosong.</li>
         <li><tt>CASE</tt> lebih rapi daripada rangkaian <tt>ELSEIF</tt> bila satu variabel dibandingkan dengan banyak nilai. <tt>WHEN OTHERS</tt> menangkap sisanya.</li>
       </ul>`,
-    code: `REPORT z_belajar_if.
+    code: `REPORT z_learn_if.
 
-DATA: lv_nilai TYPE i VALUE 78,
+DATA: lv_score TYPE i VALUE 78,
       lv_grade TYPE c LENGTH 1,
-      lv_hari  TYPE i VALUE 6,
-      lv_nama  TYPE string.
+      lv_day   TYPE i VALUE 6,
+      lv_name  TYPE string.
 
-IF lv_nilai >= 85.
+IF lv_score >= 85.
   lv_grade = 'A'.
-ELSEIF lv_nilai >= 70.
+ELSEIF lv_score >= 70.
   lv_grade = 'B'.
-ELSEIF lv_nilai >= 55.
+ELSEIF lv_score >= 55.
   lv_grade = 'C'.
 ELSE.
   lv_grade = 'D'.
 ENDIF.
-WRITE: / 'Nilai', lv_nilai, '-> grade', lv_grade.
+WRITE: / 'Score', lv_score, '-> grade', lv_grade.
 
-IF lv_nilai BETWEEN 55 AND 100 AND lv_grade <> 'D'.
-  WRITE / 'Status: LULUS'.
+IF lv_score BETWEEN 55 AND 100 AND lv_grade <> 'D'.
+  WRITE / 'Status: PASSED'.
 ENDIF.
 
-IF lv_nama IS INITIAL.
-  WRITE / 'Nama belum diisi.'.
+IF lv_name IS INITIAL.
+  WRITE / 'The name is still empty.'.
 ENDIF.
 
-IF NOT ( lv_hari = 6 OR lv_hari = 7 ).
-  WRITE / 'Hari kerja.'.
+IF NOT ( lv_day = 6 OR lv_day = 7 ).
+  WRITE / 'Working day.'.
 ELSE.
-  WRITE / 'Akhir pekan.'.
+  WRITE / 'Weekend.'.
 ENDIF.
 
-CASE lv_hari.
+CASE lv_day.
   WHEN 1.
-    WRITE / 'Senin'.
+    WRITE / 'Monday'.
   WHEN 2 OR 3 OR 4.
-    WRITE / 'Tengah minggu'.
+    WRITE / 'Midweek'.
   WHEN 5.
-    WRITE / 'Jumat'.
+    WRITE / 'Friday'.
   WHEN 6 OR 7.
-    WRITE / 'Sabtu atau Minggu'.
+    WRITE / 'Saturday or Sunday'.
   WHEN OTHERS.
-    WRITE / 'Nomor hari tidak valid'.
+    WRITE / 'Invalid day number'.
 ENDCASE.`,
     task: `<ul>
-      <li>Ubah <tt>lv_nilai</tt> menjadi 90, 60, dan 40. Cek grade-nya.</li>
-      <li>Tambahkan variabel <tt>lv_umur</tt> dan cetak "Anak", "Remaja", atau "Dewasa" berdasarkan rentang umur.</li>
+      <li>Ubah <tt>lv_score</tt> menjadi 90, 60, dan 40. Cek grade-nya.</li>
+      <li>Tambahkan variabel <tt>lv_age</tt> dan cetak "Anak", "Remaja", atau "Dewasa" berdasarkan rentang umur.</li>
     </ul>`
   },
   {
@@ -218,25 +218,25 @@ ENDCASE.`,
         <li><tt>DO.</tt> tanpa jumlah berulang tanpa batas — <b>wajib</b> ada <tt>EXIT</tt> di dalamnya.</li>
         <li><tt>EXIT</tt> keluar dari loop, <tt>CONTINUE</tt> lompat ke putaran berikutnya, <tt>CHECK kondisi</tt> sama dengan "kalau kondisi salah, CONTINUE".</li>
       </ul>`,
-    code: `REPORT z_belajar_loop.
+    code: `REPORT z_learn_loop.
 
-DATA: lv_angka TYPE i VALUE 1,
-      lv_i     TYPE i,
-      lv_total TYPE i.
+DATA: lv_number TYPE i VALUE 1,
+      lv_i      TYPE i,
+      lv_total  TYPE i.
 
-* 1) Jumlah putaran pasti
+* 1) A fixed number of passes
 DO 5 TIMES.
   lv_total = lv_total + sy-index.
-  WRITE: / 'Putaran', sy-index, '| total sementara', lv_total.
+  WRITE: / 'Pass', sy-index, '| running total', lv_total.
 ENDDO.
 
-* 2) Selama kondisi benar
-WHILE lv_angka <= 50.
-  lv_angka = lv_angka * 2.
+* 2) As long as the condition is true
+WHILE lv_number <= 50.
+  lv_number = lv_number * 2.
 ENDWHILE.
-WRITE: / 'Kelipatan 2 pertama di atas 50:', lv_angka.
+WRITE: / 'First value above 50 when doubling:', lv_number.
 
-* 3) Loop tanpa batas + EXIT / CONTINUE: cetak bilangan ganjil di bawah 10
+* 3) Endless loop + EXIT / CONTINUE: print the odd numbers below 10
 ULINE.
 DO.
   lv_i = lv_i + 1.
@@ -246,14 +246,14 @@ DO.
   IF lv_i MOD 2 = 0.
     CONTINUE.
   ENDIF.
-  WRITE: / 'Ganjil:', lv_i.
+  WRITE: / 'Odd:', lv_i.
 ENDDO.
 
-* 4) CHECK: hanya kelipatan 3 yang lolos
+* 4) CHECK: only multiples of 3 get through
 ULINE.
 DO 10 TIMES.
   CHECK sy-index MOD 3 = 0.
-  WRITE: / 'Kelipatan 3:', sy-index.
+  WRITE: / 'Multiple of 3:', sy-index.
 ENDDO.`,
     task: `<ul>
       <li>Cetak tabel perkalian 7 (7 × 1 sampai 7 × 10).</li>
@@ -268,56 +268,56 @@ ENDDO.`,
     body: `
       <ul>
         <li>Gabung: <tt>CONCATENATE a b INTO c SEPARATED BY space.</tt>, operator <tt>&amp;&amp;</tt>, atau <b>string template</b> <tt>|teks { variabel } teks|</tt>.</li>
-        <li>Potong: <tt>SPLIT teks AT ';' INTO a b c.</tt> dan akses sebagian <tt>teks+offset(panjang)</tt> — misalnya <tt>lv_tgl+0(4)</tt> mengambil tahun.</li>
+        <li>Potong: <tt>SPLIT teks AT ';' INTO a b c.</tt> dan akses sebagian <tt>teks+offset(panjang)</tt> — misalnya <tt>lv_date+0(4)</tt> mengambil tahun.</li>
         <li>Ubah: <tt>TRANSLATE … TO UPPER CASE</tt>, <tt>CONDENSE</tt> (rapikan spasi), <tt>REPLACE ALL OCCURRENCES OF … IN … WITH …</tt>.</li>
         <li>Cari: <tt>FIND 'kata' IN teks MATCH OFFSET posisi.</tt> lalu periksa <tt>sy-subrc</tt> (0 = ketemu). Operator <tt>CS</tt> berarti "mengandung".</li>
         <li><tt>strlen( teks )</tt> mengembalikan panjang teks.</li>
       </ul>`,
-    code: `REPORT z_belajar_string.
+    code: `REPORT z_learn_string.
 
-DATA: lv_depan    TYPE string VALUE 'Siti',
-      lv_belakang TYPE string VALUE 'Rahayu',
-      lv_lengkap  TYPE string,
-      lv_teks     TYPE string VALUE '   belajar   abap   itu   seru   ',
-      lv_csv      TYPE string VALUE 'Jakarta;Bandung;Surabaya',
-      lv_kota1    TYPE string,
-      lv_kota2    TYPE string,
-      lv_kota3    TYPE string,
-      lv_tgl      TYPE d VALUE '20250817',
-      lv_len      TYPE i,
-      lv_pos      TYPE i.
+DATA: lv_first_name TYPE string VALUE 'Siti',
+      lv_last_name  TYPE string VALUE 'Rahayu',
+      lv_full_name  TYPE string,
+      lv_text       TYPE string VALUE '   learning   abap   is   fun   ',
+      lv_csv        TYPE string VALUE 'Jakarta;Bandung;Surabaya',
+      lv_city1      TYPE string,
+      lv_city2      TYPE string,
+      lv_city3      TYPE string,
+      lv_date       TYPE d VALUE '20250817',
+      lv_len        TYPE i,
+      lv_pos        TYPE i.
 
-* Menggabung dengan tiga cara
-CONCATENATE lv_depan lv_belakang INTO lv_lengkap SEPARATED BY space.
-WRITE: / 'CONCATENATE :', lv_lengkap.
-lv_lengkap = lv_depan && ' ' && lv_belakang.
-WRITE: / 'Operator && :', lv_lengkap.
-lv_lengkap = |{ lv_depan } { lv_belakang } ({ strlen( lv_depan ) } huruf di nama depan)|.
-WRITE: / 'Template    :', lv_lengkap.
+* Three ways to concatenate
+CONCATENATE lv_first_name lv_last_name INTO lv_full_name SEPARATED BY space.
+WRITE: / 'CONCATENATE :', lv_full_name.
+lv_full_name = lv_first_name && ' ' && lv_last_name.
+WRITE: / 'Operator && :', lv_full_name.
+lv_full_name = |{ lv_first_name } { lv_last_name } ({ strlen( lv_first_name ) } letters in the first name)|.
+WRITE: / 'Template    :', lv_full_name.
 
-* Panjang, huruf besar, merapikan spasi
-lv_len = strlen( lv_teks ).
-WRITE: / 'Panjang awal:', lv_len.
-CONDENSE lv_teks.
-WRITE: / 'CONDENSE    :', lv_teks.
-TRANSLATE lv_teks TO UPPER CASE.
-WRITE: / 'UPPER CASE  :', lv_teks.
+* Length, upper case, tidying up spaces
+lv_len = strlen( lv_text ).
+WRITE: / 'Start length:', lv_len.
+CONDENSE lv_text.
+WRITE: / 'CONDENSE    :', lv_text.
+TRANSLATE lv_text TO UPPER CASE.
+WRITE: / 'UPPER CASE  :', lv_text.
 
-* Mengganti dan mencari
-REPLACE ALL OCCURRENCES OF 'SERU' IN lv_teks WITH 'MUDAH'.
-WRITE: / 'REPLACE     :', lv_teks.
-FIND 'ABAP' IN lv_teks MATCH OFFSET lv_pos.
+* Replacing and searching
+REPLACE ALL OCCURRENCES OF 'FUN' IN lv_text WITH 'EASY'.
+WRITE: / 'REPLACE     :', lv_text.
+FIND 'ABAP' IN lv_text MATCH OFFSET lv_pos.
 IF sy-subrc = 0.
-  WRITE: / 'Kata ABAP ada di offset', lv_pos.
+  WRITE: / 'The word ABAP is at offset', lv_pos.
 ENDIF.
-IF lv_teks CS 'mudah'.
-  WRITE / 'Teks mengandung kata MUDAH (CS tidak membedakan huruf besar/kecil).'.
+IF lv_text CS 'easy'.
+  WRITE / 'The text contains the word EASY (CS ignores upper/lower case).'.
 ENDIF.
 
-* Memecah dan mengambil sebagian
-SPLIT lv_csv AT ';' INTO lv_kota1 lv_kota2 lv_kota3.
-WRITE: / 'SPLIT       :', lv_kota1, '|', lv_kota2, '|', lv_kota3.
-WRITE: / 'Tanggal     :', lv_tgl+6(2), '-', lv_tgl+4(2), '-', lv_tgl+0(4).`,
+* Splitting and taking a part
+SPLIT lv_csv AT ';' INTO lv_city1 lv_city2 lv_city3.
+WRITE: / 'SPLIT       :', lv_city1, '|', lv_city2, '|', lv_city3.
+WRITE: / 'Date        :', lv_date+6(2), '-', lv_date+4(2), '-', lv_date+0(4).`,
     task: `<ul>
       <li>Buat inisial dari nama depan dan belakang (contoh: "S.R.") memakai <tt>+0(1)</tt>.</li>
       <li>Pecah alamat email di tanda <tt>@</tt> menjadi nama pengguna dan domain.</li>
@@ -335,67 +335,67 @@ WRITE: / 'Tanggal     :', lv_tgl+6(2), '-', lv_tgl+4(2), '-', lv_tgl+0(4).`,
       <p>Struktur adalah satu variabel yang punya beberapa <b>komponen</b> (field). Bentuknya didefinisikan dulu sebagai tipe:</p>
       <ul>
         <li><tt>TYPES: BEGIN OF ty_x, … END OF ty_x.</tt> membuat <b>tipe</b>; <tt>DATA ls_x TYPE ty_x.</tt> membuat <b>variabelnya</b>.</li>
-        <li>Komponen diakses dengan tanda hubung: <tt>ls_karyawan-nama</tt>.</li>
+        <li>Komponen diakses dengan tanda hubung: <tt>ls_employee-name</tt>.</li>
         <li>Menyalin struktur berarti menyalin <b>semua</b> komponennya; salinan tidak terhubung ke aslinya.</li>
-        <li>Struktur boleh berisi struktur lain: <tt>ls_kantor-alamat-kota</tt>.</li>
+        <li>Struktur boleh berisi struktur lain: <tt>ls_office-address-city</tt>.</li>
         <li><tt>MOVE-CORRESPONDING a TO b.</tt> menyalin hanya komponen yang namanya sama.</li>
       </ul>
       <p>Kebiasaan penamaan: <tt>ty_</tt> tipe, <tt>ls_</tt>/<tt>gs_</tt> struktur (work area), <tt>lt_</tt>/<tt>gt_</tt> internal table.</p>`,
-    code: `REPORT z_belajar_struktur.
+    code: `REPORT z_learn_structures.
 
-TYPES: BEGIN OF ty_karyawan,
-         nik    TYPE n LENGTH 6,
-         nama   TYPE string,
-         divisi TYPE c LENGTH 10,
-         gaji   TYPE i,
-       END OF ty_karyawan.
+TYPES: BEGIN OF ty_employee,
+         emp_id   TYPE n LENGTH 6,
+         name     TYPE string,
+         division TYPE c LENGTH 10,
+         salary   TYPE i,
+       END OF ty_employee.
 
-TYPES: BEGIN OF ty_alamat,
-         kota    TYPE string,
-         kodepos TYPE n LENGTH 5,
-       END OF ty_alamat.
+TYPES: BEGIN OF ty_address,
+         city     TYPE string,
+         postcode TYPE n LENGTH 5,
+       END OF ty_address.
 
-TYPES: BEGIN OF ty_kontak,
-         nama TYPE string,
-         kota TYPE string,
-       END OF ty_kontak.
+TYPES: BEGIN OF ty_contact,
+         name TYPE string,
+         city TYPE string,
+       END OF ty_contact.
 
-DATA: ls_karyawan TYPE ty_karyawan,
-      ls_salinan  TYPE ty_karyawan,
-      ls_kontak   TYPE ty_kontak.
+DATA: ls_employee TYPE ty_employee,
+      ls_copy     TYPE ty_employee,
+      ls_contact  TYPE ty_contact.
 
-* Struktur bersarang yang langsung dideklarasikan sebagai variabel
-DATA: BEGIN OF ls_kantor,
-        nama   TYPE string,
-        alamat TYPE ty_alamat,
-      END OF ls_kantor.
+* A nested structure declared directly as a variable
+DATA: BEGIN OF ls_office,
+        name    TYPE string,
+        address TYPE ty_address,
+      END OF ls_office.
 
-ls_karyawan-nik    = '000101'.
-ls_karyawan-nama   = 'Rudi Hartono'.
-ls_karyawan-divisi = 'IT'.
-ls_karyawan-gaji   = 9500000.
+ls_employee-emp_id   = '000101'.
+ls_employee-name     = 'Rudi Hartono'.
+ls_employee-division = 'IT'.
+ls_employee-salary   = 9500000.
 
-ls_salinan = ls_karyawan.             " semua komponen ikut tersalin
-ls_salinan-nama = 'Dewi Lestari'.     " aslinya tidak berubah
+ls_copy = ls_employee.                " all components are copied
+ls_copy-name = 'Dewi Lestari'.        " the original is unchanged
 
-WRITE: / 'Asli    :', ls_karyawan-nik, ls_karyawan-nama, ls_karyawan-divisi, ls_karyawan-gaji.
-WRITE: / 'Salinan :', ls_salinan-nik, ls_salinan-nama, ls_salinan-divisi, ls_salinan-gaji.
+WRITE: / 'Original:', ls_employee-emp_id, ls_employee-name, ls_employee-division, ls_employee-salary.
+WRITE: / 'Copy    :', ls_copy-emp_id, ls_copy-name, ls_copy-division, ls_copy-salary.
 
-ls_kantor-nama           = 'Kantor Pusat'.
-ls_kantor-alamat-kota    = 'Jakarta'.
-ls_kantor-alamat-kodepos = '10220'.
-WRITE: / ls_kantor-nama, '-', ls_kantor-alamat-kota, ls_kantor-alamat-kodepos.
+ls_office-name             = 'Head Office'.
+ls_office-address-city     = 'Jakarta'.
+ls_office-address-postcode = '10220'.
+WRITE: / ls_office-name, '-', ls_office-address-city, ls_office-address-postcode.
 
-MOVE-CORRESPONDING ls_karyawan TO ls_kontak.   " hanya komponen NAMA yang cocok
-WRITE: / 'Kontak  :', ls_kontak-nama, '| kota:', ls_kontak-kota.
+MOVE-CORRESPONDING ls_employee TO ls_contact.   " only the matching component NAMA
+WRITE: / 'Contact :', ls_contact-name, '| city:', ls_contact-city.
 
-CLEAR ls_karyawan.
-IF ls_karyawan IS INITIAL.
-  WRITE / 'Setelah CLEAR semua komponen kembali kosong.'.
+CLEAR ls_employee.
+IF ls_employee IS INITIAL.
+  WRITE / 'After CLEAR all components are empty again.'.
 ENDIF.`,
     task: `<ul>
-      <li>Tambahkan komponen <tt>email</tt> ke <tt>ty_karyawan</tt> lalu isi dan cetak.</li>
-      <li>Coba isi komponen yang tidak ada (<tt>ls_karyawan-alamat = 'x'.</tt>) dan baca pesan error-nya.</li>
+      <li>Tambahkan komponen <tt>email</tt> ke <tt>ty_employee</tt> lalu isi dan cetak.</li>
+      <li>Coba isi komponen yang tidak ada (<tt>ls_employee-address = 'x'.</tt>) dan baca pesan error-nya.</li>
     </ul>`
   },
   {
@@ -412,49 +412,49 @@ ENDIF.`,
         <li><tt>LOOP … WHERE kondisi.</tt> hanya memproses baris yang memenuhi kondisi.</li>
         <li><tt>lines( gt_x )</tt> mengembalikan jumlah baris.</li>
       </ul>`,
-    code: `REPORT z_belajar_itab.
+    code: `REPORT z_learn_itab.
 
-TYPES: BEGIN OF ty_produk,
-         kode  TYPE c LENGTH 5,
-         nama  TYPE string,
-         harga TYPE i,
-         stok  TYPE i,
-       END OF ty_produk.
+TYPES: BEGIN OF ty_product,
+         code  TYPE c LENGTH 5,
+         name  TYPE string,
+         price TYPE i,
+         stock TYPE i,
+       END OF ty_product.
 
-DATA: gt_produk TYPE STANDARD TABLE OF ty_produk,   " internal table
-      gs_produk TYPE ty_produk,                     " work area (satu baris)
-      gv_jumlah TYPE i,
-      gv_nilai  TYPE i.
+DATA: gt_products TYPE STANDARD TABLE OF ty_product, " internal table
+      gs_product  TYPE ty_product,                   " work area (one row)
+      gv_count    TYPE i,
+      gv_value    TYPE i.
 
-gs_produk-kode = 'P001'. gs_produk-nama = 'Keyboard'. gs_produk-harga = 350000.  gs_produk-stok = 12.
-APPEND gs_produk TO gt_produk.
-gs_produk-kode = 'P002'. gs_produk-nama = 'Mouse'.    gs_produk-harga = 150000.  gs_produk-stok = 40.
-APPEND gs_produk TO gt_produk.
-gs_produk-kode = 'P003'. gs_produk-nama = 'Monitor'.  gs_produk-harga = 2500000. gs_produk-stok = 5.
-APPEND gs_produk TO gt_produk.
-gs_produk-kode = 'P004'. gs_produk-nama = 'Webcam'.   gs_produk-harga = 600000.  gs_produk-stok = 0.
-APPEND gs_produk TO gt_produk.
+gs_product-code = 'P001'. gs_product-name = 'Keyboard'. gs_product-price = 350000.  gs_product-stock = 12.
+APPEND gs_product TO gt_products.
+gs_product-code = 'P002'. gs_product-name = 'Mouse'.    gs_product-price = 150000.  gs_product-stock = 40.
+APPEND gs_product TO gt_products.
+gs_product-code = 'P003'. gs_product-name = 'Monitor'.  gs_product-price = 2500000. gs_product-stock = 5.
+APPEND gs_product TO gt_products.
+gs_product-code = 'P004'. gs_product-name = 'Webcam'.   gs_product-price = 600000.  gs_product-stock = 0.
+APPEND gs_product TO gt_products.
 
-gv_jumlah = lines( gt_produk ).
-WRITE: / 'Jumlah produk:', gv_jumlah.
+gv_count = lines( gt_products ).
+WRITE: / 'Number of products:', gv_count.
 ULINE.
 
-LOOP AT gt_produk INTO gs_produk.
-  gv_nilai = gv_nilai + gs_produk-harga * gs_produk-stok.
-  WRITE: / sy-tabix, gs_produk-kode, gs_produk-nama, gs_produk-harga, gs_produk-stok.
+LOOP AT gt_products INTO gs_product.
+  gv_value = gv_value + gs_product-price * gs_product-stock.
+  WRITE: / sy-tabix, gs_product-code, gs_product-name, gs_product-price, gs_product-stock.
 ENDLOOP.
 ULINE.
-WRITE: / 'Total nilai persediaan:', gv_nilai.
+WRITE: / 'Total stock value:', gv_value.
 
 SKIP.
-WRITE / 'Stok menipis (di bawah 10):'.
-LOOP AT gt_produk INTO gs_produk WHERE stok < 10.
-  WRITE: / '-', gs_produk-nama, 'sisa', gs_produk-stok.
+WRITE / 'Low stock (below 10):'.
+LOOP AT gt_products INTO gs_product WHERE stock < 10.
+  WRITE: / '-', gs_product-name, 'left', gs_product-stock.
 ENDLOOP.`,
     task: `<ul>
       <li>Tambahkan dua produk lagi dan pastikan total nilai persediaan ikut berubah.</li>
       <li>Cetak hanya produk yang harganya di atas 500.000.</li>
-      <li>Tulis <tt>APPEND gs_produk TO gs_produk-nama.</tt> dan jalankan — inilah error yang paling sering dibuat pemula.</li>
+      <li>Tulis <tt>APPEND gs_product TO gs_product-name.</tt> dan jalankan — inilah error yang paling sering dibuat pemula.</li>
     </ul>`
   },
   {
@@ -469,63 +469,63 @@ ENDLOOP.`,
         <li><tt>DELETE gt WHERE kondisi.</tt> / <tt>DELETE gt INDEX n.</tt> menghapus baris.</li>
         <li><tt>SORT gt BY field [DESCENDING].</tt> mengurutkan; <tt>DELETE ADJACENT DUPLICATES FROM gt COMPARING field.</tt> membuang duplikat (tabel harus sudah diurutkan).</li>
       </ul>`,
-    code: `REPORT z_belajar_itab_ops.
+    code: `REPORT z_learn_itab_ops.
 
-TYPES: BEGIN OF ty_produk,
-         kode     TYPE c LENGTH 5,
-         nama     TYPE string,
-         kategori TYPE c LENGTH 10,
-         harga    TYPE i,
-       END OF ty_produk.
+TYPES: BEGIN OF ty_product,
+         code     TYPE c LENGTH 5,
+         name     TYPE string,
+         category TYPE c LENGTH 10,
+         price    TYPE i,
+       END OF ty_product.
 
-DATA: gt_produk TYPE STANDARD TABLE OF ty_produk,
-      gs_produk TYPE ty_produk.
+DATA: gt_products TYPE STANDARD TABLE OF ty_product,
+      gs_product TYPE ty_product.
 
-gs_produk-kode = 'P003'. gs_produk-nama = 'Monitor'.  gs_produk-kategori = 'DISPLAY'. gs_produk-harga = 2500000.
-APPEND gs_produk TO gt_produk.
-gs_produk-kode = 'P001'. gs_produk-nama = 'Keyboard'. gs_produk-kategori = 'INPUT'.   gs_produk-harga = 350000.
-APPEND gs_produk TO gt_produk.
-gs_produk-kode = 'P002'. gs_produk-nama = 'Mouse'.    gs_produk-kategori = 'INPUT'.   gs_produk-harga = 150000.
-APPEND gs_produk TO gt_produk.
-gs_produk-kode = 'P004'. gs_produk-nama = 'Proyektor'. gs_produk-kategori = 'DISPLAY'. gs_produk-harga = 0.
-APPEND gs_produk TO gt_produk.
+gs_product-code = 'P003'. gs_product-name = 'Monitor'.  gs_product-category = 'DISPLAY'. gs_product-price = 2500000.
+APPEND gs_product TO gt_products.
+gs_product-code = 'P001'. gs_product-name = 'Keyboard'. gs_product-category = 'INPUT'.   gs_product-price = 350000.
+APPEND gs_product TO gt_products.
+gs_product-code = 'P002'. gs_product-name = 'Mouse'.    gs_product-category = 'INPUT'.   gs_product-price = 150000.
+APPEND gs_product TO gt_products.
+gs_product-code = 'P004'. gs_product-name = 'Projector'. gs_product-category = 'DISPLAY'. gs_product-price = 0.
+APPEND gs_product TO gt_products.
 
-* Baca berdasarkan nomor baris
-READ TABLE gt_produk INTO gs_produk INDEX 2.
-WRITE: / 'Baris ke-2      :', gs_produk-nama.
+* Read by row number
+READ TABLE gt_products INTO gs_product INDEX 2.
+WRITE: / 'Row 2           :', gs_product-name.
 
-* Baca berdasarkan isi, lalu ubah dan tulis balik
-READ TABLE gt_produk INTO gs_produk WITH KEY kode = 'P002'.
+* Read by content, then change it and write it back
+READ TABLE gt_products INTO gs_product WITH KEY code = 'P002'.
 IF sy-subrc = 0.
-  gs_produk-harga = 175000.
-  MODIFY gt_produk FROM gs_produk INDEX sy-tabix.
-  WRITE: / 'Harga P002 diubah di baris', sy-tabix.
+  gs_product-price = 175000.
+  MODIFY gt_products FROM gs_product INDEX sy-tabix.
+  WRITE: / 'Price of P002 changed in row', sy-tabix.
 ENDIF.
 
-READ TABLE gt_produk INTO gs_produk WITH KEY kode = 'P999'.
+READ TABLE gt_products INTO gs_product WITH KEY code = 'P999'.
 IF sy-subrc <> 0.
-  WRITE: / 'P999 tidak ditemukan, sy-subrc =', sy-subrc.
+  WRITE: / 'P999 not found, sy-subrc =', sy-subrc.
 ENDIF.
 
-* Hapus produk tanpa harga, lalu urutkan dari yang termahal
-DELETE gt_produk WHERE harga = 0.
-SORT gt_produk BY harga DESCENDING.
+* Delete products without a price, then sort from the most expensive
+DELETE gt_products WHERE price = 0.
+SORT gt_products BY price DESCENDING.
 
 ULINE.
-LOOP AT gt_produk INTO gs_produk.
-  WRITE: / sy-tabix, gs_produk-kode, gs_produk-nama, gs_produk-kategori, gs_produk-harga.
+LOOP AT gt_products INTO gs_product.
+  WRITE: / sy-tabix, gs_product-code, gs_product-name, gs_product-category, gs_product-price.
 ENDLOOP.
 
-* Daftar kategori unik
-SORT gt_produk BY kategori.
-DELETE ADJACENT DUPLICATES FROM gt_produk COMPARING kategori.
+* List of unique categories
+SORT gt_products BY category.
+DELETE ADJACENT DUPLICATES FROM gt_products COMPARING category.
 ULINE.
-LOOP AT gt_produk INTO gs_produk.
-  WRITE: / 'Kategori:', gs_produk-kategori.
+LOOP AT gt_products INTO gs_product.
+  WRITE: / 'Categories:', gs_product-category.
 ENDLOOP.`,
     task: `<ul>
       <li>Naikkan harga semua produk kategori INPUT sebesar 10% dengan <tt>LOOP</tt> + <tt>MODIFY</tt>.</li>
-      <li>Urutkan berdasarkan kategori lalu harga (<tt>SORT gt_produk BY kategori harga DESCENDING.</tt>).</li>
+      <li>Urutkan berdasarkan kategori lalu harga (<tt>SORT gt_products BY category price DESCENDING.</tt>).</li>
     </ul>`
   },
   {
@@ -536,57 +536,57 @@ ENDLOOP.`,
       <p><b>Field-symbol</b> adalah penunjuk ke data yang sudah ada — mirip "nama lain" untuk sebuah variabel atau baris tabel.
          Namanya selalu diapit tanda <tt>&lt; &gt;</tt>.</p>
       <ul>
-        <li><tt>LOOP AT gt ASSIGNING &lt;fs&gt;.</tt> — <tt>&lt;fs&gt;</tt> menunjuk langsung ke baris tabel. Mengubah <tt>&lt;fs&gt;-harga</tt> langsung mengubah tabel, tanpa <tt>MODIFY</tt>.</li>
+        <li><tt>LOOP AT gt ASSIGNING &lt;fs&gt;.</tt> — <tt>&lt;fs&gt;</tt> menunjuk langsung ke baris tabel. Mengubah <tt>&lt;fs&gt;-price</tt> langsung mengubah tabel, tanpa <tt>MODIFY</tt>.</li>
         <li>Lebih cepat daripada <tt>INTO</tt> karena tidak ada penyalinan baris — penting untuk tabel besar.</li>
         <li><tt>ASSIGN variabel TO &lt;fs&gt;.</tt> menunjuk ke variabel biasa. <tt>IS ASSIGNED</tt> memeriksa apakah field-symbol sudah menunjuk ke sesuatu.</li>
       </ul>`,
-    code: `REPORT z_belajar_fs.
+    code: `REPORT z_learn_fs.
 
-TYPES: BEGIN OF ty_produk,
-         kode  TYPE c LENGTH 5,
-         nama  TYPE string,
-         harga TYPE i,
-         stok  TYPE i,
-       END OF ty_produk.
+TYPES: BEGIN OF ty_product,
+         code  TYPE c LENGTH 5,
+         name  TYPE string,
+         price TYPE i,
+         stock TYPE i,
+       END OF ty_product.
 
-DATA: gt_produk TYPE STANDARD TABLE OF ty_produk,
-      gs_produk TYPE ty_produk,
-      gv_angka  TYPE i VALUE 10.
+DATA: gt_products TYPE STANDARD TABLE OF ty_product,
+      gs_product  TYPE ty_product,
+      gv_number   TYPE i VALUE 10.
 
-FIELD-SYMBOLS: <fs_produk> TYPE ty_produk,
-               <fs_angka>  TYPE i.
+FIELD-SYMBOLS: <fs_product> TYPE ty_product,
+               <fs_number>  TYPE i.
 
-gs_produk-kode = 'P001'. gs_produk-nama = 'Keyboard'. gs_produk-harga = 350000. gs_produk-stok = 12.
-APPEND gs_produk TO gt_produk.
-gs_produk-kode = 'P002'. gs_produk-nama = 'Mouse'.    gs_produk-harga = 150000. gs_produk-stok = 40.
-APPEND gs_produk TO gt_produk.
+gs_product-code = 'P001'. gs_product-name = 'Keyboard'. gs_product-price = 350000. gs_product-stock = 12.
+APPEND gs_product TO gt_products.
+gs_product-code = 'P002'. gs_product-name = 'Mouse'.    gs_product-price = 150000. gs_product-stock = 40.
+APPEND gs_product TO gt_products.
 
-* Naikkan semua harga 10% langsung di dalam tabel
-LOOP AT gt_produk ASSIGNING <fs_produk>.
-  <fs_produk>-harga = <fs_produk>-harga * 110 / 100.
+* Raise all prices by 10% directly inside the table
+LOOP AT gt_products ASSIGNING <fs_product>.
+  <fs_product>-price = <fs_product>-price * 110 / 100.
 ENDLOOP.
 
-* Cari satu baris dan ubah di tempat
-READ TABLE gt_produk ASSIGNING <fs_produk> WITH KEY kode = 'P002'.
+* Find one row and change it in place
+READ TABLE gt_products ASSIGNING <fs_product> WITH KEY code = 'P002'.
 IF sy-subrc = 0.
-  <fs_produk>-stok = 0.
+  <fs_product>-stock = 0.
 ENDIF.
 
-LOOP AT gt_produk INTO gs_produk.
-  WRITE: / gs_produk-kode, gs_produk-nama, gs_produk-harga, gs_produk-stok.
+LOOP AT gt_products INTO gs_product.
+  WRITE: / gs_product-code, gs_product-name, gs_product-price, gs_product-stock.
 ENDLOOP.
 
-* Field-symbol ke variabel biasa
-ASSIGN gv_angka TO <fs_angka>.
-<fs_angka> = 99.
-WRITE: / 'gv_angka sekarang:', gv_angka.
+* A field symbol for an ordinary variable
+ASSIGN gv_number TO <fs_number>.
+<fs_number> = 99.
+WRITE: / 'gv_number is now:', gv_number.
 
-UNASSIGN <fs_angka>.
-IF <fs_angka> IS NOT ASSIGNED.
-  WRITE / 'Field-symbol sudah dilepas.'.
+UNASSIGN <fs_number>.
+IF <fs_number> IS NOT ASSIGNED.
+  WRITE / 'The field symbol has been unassigned.'.
 ENDIF.`,
     task: `<ul>
-      <li>Ganti loop pertama menjadi <tt>LOOP … INTO gs_produk</tt> tanpa <tt>MODIFY</tt>. Apakah harga di tabel berubah?</li>
+      <li>Ganti loop pertama menjadi <tt>LOOP … INTO gs_product</tt> tanpa <tt>MODIFY</tt>. Apakah harga di tabel berubah?</li>
       <li>Dengan field-symbol, set stok menjadi 100 hanya untuk produk yang harganya di bawah 200.000 (<tt>LOOP … ASSIGNING … WHERE</tt>).</li>
     </ul>`
   },
@@ -603,50 +603,50 @@ ENDIF.`,
         <li>Parameter dicocokkan berdasarkan <b>urutan</b>, bukan nama. Jumlahnya harus sama di <tt>PERFORM</tt> dan <tt>FORM</tt>.</li>
         <li>Variabel yang dideklarasikan di dalam FORM bersifat <b>lokal</b>: hilang setelah FORM selesai.</li>
       </ul>`,
-    code: `REPORT z_belajar_form.
+    code: `REPORT z_learn_form.
 
-DATA: gv_luas  TYPE i,
-      gv_total TYPE i,
-      gt_angka TYPE STANDARD TABLE OF i.
+DATA: gv_area    TYPE i,
+      gv_total   TYPE i,
+      gt_numbers TYPE STANDARD TABLE OF i.
 
 START-OF-SELECTION.
-  PERFORM tampil_judul USING 'Latihan Subroutine'.
+  PERFORM show_title USING 'Subroutine exercise'.
 
-  PERFORM hitung_luas USING 8 5 CHANGING gv_luas.
-  WRITE: / 'Luas 8 x 5 =', gv_luas.
+  PERFORM calculate_area USING 8 5 CHANGING gv_area.
+  WRITE: / 'Area 8 x 5 =', gv_area.
 
-  APPEND 10 TO gt_angka.
-  APPEND 25 TO gt_angka.
-  APPEND 40 TO gt_angka.
-  PERFORM jumlahkan TABLES gt_angka CHANGING gv_total.
-  WRITE: / 'Jumlah isi tabel =', gv_total.
+  APPEND 10 TO gt_numbers.
+  APPEND 25 TO gt_numbers.
+  APPEND 40 TO gt_numbers.
+  PERFORM sum_up TABLES gt_numbers CHANGING gv_total.
+  WRITE: / 'Sum of the table =', gv_total.
 
 *&---------------------------------------------------------------------*
-FORM tampil_judul USING pv_judul TYPE string.
-  WRITE / pv_judul.
+FORM show_title USING pv_title TYPE string.
+  WRITE / pv_title.
   ULINE.
 ENDFORM.
 
-FORM hitung_luas USING    pv_panjang TYPE i
-                          pv_lebar   TYPE i
-                 CHANGING cv_luas    TYPE i.
-  DATA lv_sementara TYPE i.            " variabel lokal
-  lv_sementara = pv_panjang * pv_lebar.
-  cv_luas = lv_sementara.
+FORM calculate_area USING    pv_length TYPE i
+                          pv_width     TYPE i
+                 CHANGING cv_area      TYPE i.
+  DATA lv_temp TYPE i.            " local variable
+  lv_temp = pv_length * pv_width.
+  cv_area = lv_temp.
 ENDFORM.
 
-FORM jumlahkan TABLES   pt_angka
+FORM sum_up TABLES   pt_numbers
                CHANGING cv_total TYPE i.
-  DATA lv_angka TYPE i.
+  DATA lv_number TYPE i.
   CLEAR cv_total.
-  LOOP AT pt_angka INTO lv_angka.
-    cv_total = cv_total + lv_angka.
+  LOOP AT pt_numbers INTO lv_number.
+    cv_total = cv_total + lv_number.
   ENDLOOP.
 ENDFORM.`,
     task: `<ul>
-      <li>Buat FORM <tt>hitung_diskon</tt> dengan <tt>USING</tt> harga dan persen, <tt>CHANGING</tt> harga akhir.</li>
-      <li>Panggil <tt>PERFORM hitung_luas USING 8 CHANGING gv_luas.</tt> (kurang satu parameter) dan baca pesan error-nya.</li>
-      <li>Di program utama, coba cetak <tt>lv_sementara</tt> setelah <tt>PERFORM</tt>. Mengapa tidak bisa?</li>
+      <li>Buat FORM <tt>calculate_discount</tt> dengan <tt>USING</tt> harga dan persen, <tt>CHANGING</tt> harga akhir.</li>
+      <li>Panggil <tt>PERFORM calculate_area USING 8 CHANGING gv_area.</tt> (kurang satu parameter) dan baca pesan error-nya.</li>
+      <li>Di program utama, coba cetak <tt>lv_temp</tt> setelah <tt>PERFORM</tt>. Mengapa tidak bisa?</li>
     </ul>`
   },
   {
@@ -662,7 +662,7 @@ ENDFORM.`,
       </ul>
       <p>Di studio ini, klik <b>Parameters (F8)</b> untuk membuka selection screen dan mengisi nilainya.
          Tombol <b>Run Program</b> langsung memakai nilai <tt>DEFAULT</tt>.</p>`,
-    code: `REPORT z_belajar_selscreen.
+    code: `REPORT z_learn_selscreen.
 
 DATA: gt_flight TYPE STANDARD TABLE OF sflight,
       gs_flight TYPE sflight,
@@ -670,12 +670,12 @@ DATA: gt_flight TYPE STANDARD TABLE OF sflight,
 
 PARAMETERS: p_carr  TYPE sflight-carrid DEFAULT 'GA',
             p_max   TYPE i DEFAULT 10,
-            p_detil AS CHECKBOX DEFAULT 'X'.
+            p_detail AS CHECKBOX DEFAULT 'X'.
 
 SELECT-OPTIONS s_price FOR gv_price DEFAULT 500000 TO 1000000.
 
 INITIALIZATION.
-  " dijalankan sekali, sebelum selection screen ditampilkan
+  " runs once, before the selection screen is shown
 
 START-OF-SELECTION.
   SELECT * FROM sflight
@@ -685,10 +685,10 @@ START-OF-SELECTION.
       AND price IN s_price.
 
   IF sy-subrc <> 0.
-    WRITE: / 'Tidak ada penerbangan', p_carr, 'pada rentang harga tersebut.'.
+    WRITE: / 'No flights', p_carr, 'in that price range.'.
   ELSE.
-    WRITE: / 'Maskapai', p_carr, '-', sy-dbcnt, 'penerbangan ditemukan.'.
-    IF p_detil = 'X'.
+    WRITE: / 'Airline', p_carr, '-', sy-dbcnt, 'flights found.'.
+    IF p_detail = 'X'.
       ULINE.
       LOOP AT gt_flight INTO gs_flight.
         WRITE: / gs_flight-connid, gs_flight-fldate, gs_flight-price, gs_flight-currency.
@@ -698,7 +698,7 @@ START-OF-SELECTION.
     task: `<ul>
       <li>Buka <b>Parameters (F8)</b>, kosongkan rentang harga, dan jalankan. Berapa penerbangan yang muncul?</li>
       <li>Isi <tt>P_CARR</tt> dengan <tt>SQ</tt> dan sesuaikan rentang harganya (harga SQ dalam SGD, sekitar 1.200).</li>
-      <li>Hilangkan centang <tt>P_DETIL</tt> dan lihat perbedaannya.</li>
+      <li>Hilangkan centang <tt>P_DETAIL</tt> dan lihat perbedaannya.</li>
     </ul>`
   },
   {
@@ -707,7 +707,7 @@ START-OF-SELECTION.
     goal: 'Mengambil data dari tabel database ke internal table dengan OpenSQL.',
     body: `
       <p><tt>SELECT</tt> membaca tabel database. Studio ini menyediakan tabel contoh (lihat menu <b>Tables (DB)</b>):
-         SCARR, SPFLI, SFLIGHT, SBOOK, MARA, MAKT, KNA1, LFA1, T001, T005, VBAK, VBAP.</p>
+         SCARR, SPFLI, SFLIGHT, SBOOK, MARA, MAKT, KNA1, LFA1, T001, T005, VBAK, VBAP, dan dua puluh tabel lainnya.</p>
       <ul>
         <li><tt>SELECT f1 f2 FROM tabel INTO TABLE gt WHERE ….</tt> — banyak baris ke internal table.</li>
         <li><tt>SELECT SINGLE … INTO gs WHERE ….</tt> — tepat satu baris ke work area.</li>
@@ -716,7 +716,7 @@ START-OF-SELECTION.
         <li><tt>ORDER BY</tt> mengurutkan, <tt>UP TO n ROWS</tt> membatasi jumlah, <tt>LIKE 'PT%'</tt> mencocokkan pola, <tt>COUNT( * )</tt> menghitung baris.</li>
       </ul>
       <p>Jangan menaruh <tt>SELECT</tt> di dalam <tt>LOOP</tt> — itu pola paling lambat di ABAP. Solusinya (JOIN, FOR ALL ENTRIES) ada di level berikutnya.</p>`,
-    code: `REPORT z_belajar_select.
+    code: `REPORT z_learn_select.
 
 TYPES: BEGIN OF ty_cust,
          kunnr TYPE kna1-kunnr,
@@ -725,33 +725,33 @@ TYPES: BEGIN OF ty_cust,
          land1 TYPE kna1-land1,
        END OF ty_cust.
 
-DATA: gt_cust TYPE STANDARD TABLE OF ty_cust,
-      gs_cust TYPE ty_cust,
-      gs_t001 TYPE t001,
-      gv_jml  TYPE i.
+DATA: gt_cust  TYPE STANDARD TABLE OF ty_cust,
+      gs_cust  TYPE ty_cust,
+      gs_t001  TYPE t001,
+      gv_count TYPE i.
 
-* Banyak baris -> internal table
+* Many rows -> internal table
 SELECT kunnr name1 ort01 land1
   FROM kna1
   INTO TABLE gt_cust
   WHERE land1 = 'ID'
   ORDER BY name1.
 
-WRITE: / 'Customer Indonesia:', sy-dbcnt, 'baris'.
+WRITE: / 'Customers in Indonesia:', sy-dbcnt, 'rows'.
 LOOP AT gt_cust INTO gs_cust.
   WRITE: / gs_cust-kunnr, gs_cust-name1, gs_cust-ort01.
 ENDLOOP.
 
-* Satu baris -> work area
+* One row -> work area
 ULINE.
 SELECT SINGLE * FROM t001 INTO gs_t001 WHERE bukrs = '1000'.
 IF sy-subrc = 0.
   WRITE: / 'Company code 1000:', gs_t001-butxt, gs_t001-waers.
 ELSE.
-  WRITE / 'Company code 1000 tidak ada.'.
+  WRITE / 'Company code 1000 does not exist.'.
 ENDIF.
 
-* Pola teks dan pembatasan jumlah baris
+* Text patterns and limiting the number of rows
 ULINE.
 SELECT kunnr name1 ort01 land1
   FROM kna1
@@ -759,12 +759,12 @@ SELECT kunnr name1 ort01 land1
   UP TO 2 ROWS
   WHERE name1 LIKE 'PT%'.
 LOOP AT gt_cust INTO gs_cust.
-  WRITE: / 'Berawalan PT:', gs_cust-name1.
+  WRITE: / 'Starting with PT:', gs_cust-name1.
 ENDLOOP.
 
-* Menghitung baris
-SELECT COUNT( * ) FROM kna1 INTO gv_jml WHERE land1 <> 'ID'.
-WRITE: / 'Customer luar negeri:', gv_jml.`,
+* Counting rows
+SELECT COUNT( * ) FROM kna1 INTO gv_count WHERE land1 <> 'ID'.
+WRITE: / 'Foreign customers:', gv_count.`,
     task: `<ul>
       <li>Tampilkan semua material bertipe <tt>FERT</tt> dari tabel MARA (kolom <tt>matnr</tt>, <tt>mtart</tt>, <tt>meins</tt>).</li>
       <li>Tulis nama kolom yang salah (misalnya <tt>namee1</tt>) dan baca pesan error-nya.</li>
@@ -792,7 +792,7 @@ WRITE: / 'Customer luar negeri:', gv_jml.`,
         <li><tt>WRITE: /5 teks, 20 angka.</tt> — angka di depan nilai adalah <b>posisi kolom</b>; <tt>(10)</tt> adalah panjang output.</li>
       </ul>
       <p>Blok event di contoh ini sengaja ditulis <b>tidak berurutan</b> — hasilnya tetap sama.</p>`,
-    code: `REPORT z_belajar_event.
+    code: `REPORT z_learn_event.
 
 PARAMETERS: p_carr TYPE sflight-carrid,
             p_min  TYPE i DEFAULT 100.
@@ -801,34 +801,34 @@ DATA: gt_flight TYPE STANDARD TABLE OF sflight,
       gs_flight TYPE sflight,
       gv_total  TYPE i.
 
-* Ditulis paling atas, tetapi dijalankan paling akhir
+* Written at the top, but executed last
 END-OF-SELECTION.
   LOOP AT gt_flight INTO gs_flight.
     WRITE: /3 gs_flight-connid, 12 gs_flight-fldate, 26 gs_flight-seatsocc.
     gv_total = gv_total + gs_flight-seatsocc.
   ENDLOOP.
   ULINE /1(40).
-  WRITE: /3 'Total penumpang', 26 gv_total.
+  WRITE: /3 'Total passengers', 26 gv_total.
 
-* Otomatis, tepat sebelum baris pertama list dicetak
+* Automatic, right before the first line of the list is printed
 TOP-OF-PAGE.
-  WRITE: / 'Penerbangan', p_carr, 'dengan minimal', p_min, 'penumpang'.
-  WRITE: /3 'No.', 12 'Tanggal', 26 'Terisi'.
+  WRITE: / 'Flights', p_carr, 'with at least', p_min, 'passengers'.
+  WRITE: /3 'No.', 12 'Date', 26 'Occupied'.
   ULINE /1(40).
 
-* Proses utama
+* Main processing
 START-OF-SELECTION.
   SELECT * FROM sflight INTO TABLE gt_flight
     WHERE carrid = p_carr
       AND seatsocc >= p_min.
 
-* Validasi masukan
+* Input validation
 AT SELECTION-SCREEN.
   IF p_min < 0.
-    MESSAGE 'Jumlah penumpang minimum tidak boleh negatif' TYPE 'E'.
+    MESSAGE 'The minimum number of passengers must not be negative' TYPE 'E'.
   ENDIF.
 
-* Nilai awal selection screen
+* Initial values of the selection screen
 INITIALIZATION.
   p_carr = 'GA'.`,
     task: `<ul>
@@ -855,57 +855,57 @@ INITIALIZATION.
         <li>Field kelompok harus berada di <b>kiri</b> struktur, dan tabel harus di-<tt>SORT</tt> lebih dulu.</li>
         <li><tt>COLLECT wa INTO itab.</tt> menjumlahkan field angka ke baris yang field non-angkanya sama — cara cepat membuat rekap.</li>
       </ul>`,
-    code: `REPORT z_belajar_control_level.
+    code: `REPORT z_learn_control_level.
 
-TYPES: BEGIN OF ty_jual,
-         wilayah TYPE c LENGTH 10,
+TYPES: BEGIN OF ty_sale,
+         region  TYPE c LENGTH 10,
          sales   TYPE c LENGTH 10,
-         nilai   TYPE i,
-       END OF ty_jual.
+         amount  TYPE i,
+       END OF ty_sale.
 
-DATA: gt_jual  TYPE STANDARD TABLE OF ty_jual,
-      gt_rekap TYPE STANDARD TABLE OF ty_jual,
-      gs_jual  TYPE ty_jual.
+DATA: gt_sales   TYPE STANDARD TABLE OF ty_sale,
+      gt_summary TYPE STANDARD TABLE OF ty_sale,
+      gs_sale    TYPE ty_sale.
 
-gs_jual-wilayah = 'TIMUR'. gs_jual-sales = 'Rina'.  gs_jual-nilai = 400. APPEND gs_jual TO gt_jual.
-gs_jual-wilayah = 'BARAT'. gs_jual-sales = 'Andi'.  gs_jual-nilai = 250. APPEND gs_jual TO gt_jual.
-gs_jual-wilayah = 'BARAT'. gs_jual-sales = 'Budi'.  gs_jual-nilai = 300. APPEND gs_jual TO gt_jual.
-gs_jual-wilayah = 'TIMUR'. gs_jual-sales = 'Sari'.  gs_jual-nilai = 150. APPEND gs_jual TO gt_jual.
-gs_jual-wilayah = 'BARAT'. gs_jual-sales = 'Andi'.  gs_jual-nilai = 100. APPEND gs_jual TO gt_jual.
+gs_sale-region = 'EAST'. gs_sale-sales = 'Rina'.    gs_sale-amount = 400. APPEND gs_sale TO gt_sales.
+gs_sale-region = 'WEST'. gs_sale-sales = 'Andi'.    gs_sale-amount = 250. APPEND gs_sale TO gt_sales.
+gs_sale-region = 'WEST'. gs_sale-sales = 'Budi'.    gs_sale-amount = 300. APPEND gs_sale TO gt_sales.
+gs_sale-region = 'EAST'. gs_sale-sales = 'Sari'.    gs_sale-amount = 150. APPEND gs_sale TO gt_sales.
+gs_sale-region = 'WEST'. gs_sale-sales = 'Andi'.    gs_sale-amount = 100. APPEND gs_sale TO gt_sales.
 
-SORT gt_jual BY wilayah sales.
+SORT gt_sales BY region sales.
 
-LOOP AT gt_jual INTO gs_jual.
+LOOP AT gt_sales INTO gs_sale.
   AT FIRST.
-    WRITE / 'Laporan Penjualan'.
+    WRITE / 'Sales Report'.
     ULINE /1(32).
   ENDAT.
-  AT NEW wilayah.
-    WRITE: / 'Wilayah', gs_jual-wilayah.
+  AT NEW region.
+    WRITE: / 'Region', gs_sale-region.
   ENDAT.
 
-  WRITE: /5 gs_jual-sales, 20 gs_jual-nilai.
+  WRITE: /5 gs_sale-sales, 20 gs_sale-amount.
 
-  AT END OF wilayah.
+  AT END OF region.
     SUM.
-    WRITE: /5 'Subtotal', 20 gs_jual-nilai.
+    WRITE: /5 'Subtotal', 20 gs_sale-amount.
     SKIP.
   ENDAT.
   AT LAST.
     SUM.
     ULINE /1(32).
-    WRITE: / 'Total', 20 gs_jual-nilai.
+    WRITE: / 'Total', 20 gs_sale-amount.
   ENDAT.
 ENDLOOP.
 
-* Rekap per wilayah dengan COLLECT
-LOOP AT gt_jual INTO gs_jual.
-  CLEAR gs_jual-sales.
-  COLLECT gs_jual INTO gt_rekap.
+* Summary per region with COLLECT
+LOOP AT gt_sales INTO gs_sale.
+  CLEAR gs_sale-sales.
+  COLLECT gs_sale INTO gt_summary.
 ENDLOOP.
 SKIP.
-LOOP AT gt_rekap INTO gs_jual.
-  WRITE: / 'Rekap', gs_jual-wilayah, 20 gs_jual-nilai.
+LOOP AT gt_summary INTO gs_sale.
+  WRITE: / 'Summary', gs_sale-region, 20 gs_sale-amount.
 ENDLOOP.`,
     task: `<ul>
       <li>Hapus statement <tt>SORT</tt> dan jalankan. Mengapa subtotalnya menjadi salah?</li>
@@ -930,61 +930,61 @@ ENDLOOP.`,
         <li><tt>READ TABLE … WITH TABLE KEY</tt> memakai key tabel, jadi jauh lebih cepat daripada <tt>WITH KEY</tt> pada tabel standard yang besar.</li>
         <li><tt>APPEND</tt> ke tabel <tt>SORTED</tt> hanya boleh bila urutan tetap terjaga; ke tabel <tt>HASHED</tt> tidak boleh sama sekali.</li>
       </ul>`,
-    code: `REPORT z_belajar_jenis_tabel.
+    code: `REPORT z_learn_table_kinds.
 
-TYPES: BEGIN OF ty_kota,
-         kode     TYPE c LENGTH 3,
-         nama     TYPE string,
-         penduduk TYPE i,
-       END OF ty_kota.
+TYPES: BEGIN OF ty_city,
+         code       TYPE c LENGTH 3,
+         name       TYPE string,
+         population TYPE i,
+       END OF ty_city.
 
-DATA: gt_standard TYPE STANDARD TABLE OF ty_kota,
-      gt_sorted   TYPE SORTED TABLE OF ty_kota WITH UNIQUE KEY kode,
-      gt_hashed   TYPE HASHED TABLE OF ty_kota WITH UNIQUE KEY kode,
-      gs_kota     TYPE ty_kota.
+DATA: gt_standard TYPE STANDARD TABLE OF ty_city,
+      gt_sorted   TYPE SORTED TABLE OF ty_city WITH UNIQUE KEY code,
+      gt_hashed   TYPE HASHED TABLE OF ty_city WITH UNIQUE KEY code,
+      gs_city     TYPE ty_city.
 
-gs_kota-kode = 'SUB'. gs_kota-nama = 'Surabaya'. gs_kota-penduduk = 2900000.
-APPEND gs_kota TO gt_standard.
-INSERT gs_kota INTO TABLE gt_sorted.
-INSERT gs_kota INTO TABLE gt_hashed.
+gs_city-code = 'SUB'. gs_city-name = 'Surabaya'. gs_city-population = 2900000.
+APPEND gs_city TO gt_standard.
+INSERT gs_city INTO TABLE gt_sorted.
+INSERT gs_city INTO TABLE gt_hashed.
 
-gs_kota-kode = 'BDG'. gs_kota-nama = 'Bandung'. gs_kota-penduduk = 2500000.
-APPEND gs_kota TO gt_standard.
-INSERT gs_kota INTO TABLE gt_sorted.
-INSERT gs_kota INTO TABLE gt_hashed.
+gs_city-code = 'BDG'. gs_city-name = 'Bandung'. gs_city-population = 2500000.
+APPEND gs_city TO gt_standard.
+INSERT gs_city INTO TABLE gt_sorted.
+INSERT gs_city INTO TABLE gt_hashed.
 
-gs_kota-kode = 'JKT'. gs_kota-nama = 'Jakarta'. gs_kota-penduduk = 10500000.
-APPEND gs_kota TO gt_standard.
-INSERT gs_kota INTO TABLE gt_sorted.
-INSERT gs_kota INTO TABLE gt_hashed.
+gs_city-code = 'JKT'. gs_city-name = 'Jakarta'. gs_city-population = 10500000.
+APPEND gs_city TO gt_standard.
+INSERT gs_city INTO TABLE gt_sorted.
+INSERT gs_city INTO TABLE gt_hashed.
 
-WRITE / 'STANDARD (urutan APPEND):'.
-LOOP AT gt_standard INTO gs_kota.
-  WRITE: /3 sy-tabix, gs_kota-kode, gs_kota-nama.
+WRITE / 'STANDARD (APPEND order):'.
+LOOP AT gt_standard INTO gs_city.
+  WRITE: /3 sy-tabix, gs_city-code, gs_city-name.
 ENDLOOP.
 
-WRITE / 'SORTED (selalu terurut menurut key):'.
-LOOP AT gt_sorted INTO gs_kota.
-  WRITE: /3 sy-tabix, gs_kota-kode, gs_kota-nama.
+WRITE / 'SORTED (always sorted by key):'.
+LOOP AT gt_sorted INTO gs_city.
+  WRITE: /3 sy-tabix, gs_city-code, gs_city-name.
 ENDLOOP.
 
-* Key yang sama ditolak
-gs_kota-kode = 'JKT'. gs_kota-nama = 'Jakarta (duplikat)'.
-INSERT gs_kota INTO TABLE gt_sorted.
-WRITE: / 'INSERT key kembar ke SORTED: sy-subrc =', sy-subrc.
-INSERT gs_kota INTO TABLE gt_hashed.
-WRITE: / 'INSERT key kembar ke HASHED: sy-subrc =', sy-subrc.
+* A duplicate key is rejected
+gs_city-code = 'JKT'. gs_city-name = 'Jakarta (duplicate)'.
+INSERT gs_city INTO TABLE gt_sorted.
+WRITE: / 'INSERT duplicate key into SORTED: sy-subrc =', sy-subrc.
+INSERT gs_city INTO TABLE gt_hashed.
+WRITE: / 'INSERT duplicate key into HASHED: sy-subrc =', sy-subrc.
 
-* Pencarian lewat key tabel
-READ TABLE gt_hashed INTO gs_kota WITH TABLE KEY kode = 'BDG'.
+* Lookup through the table key
+READ TABLE gt_hashed INTO gs_city WITH TABLE KEY code = 'BDG'.
 IF sy-subrc = 0.
-  WRITE: / 'Ditemukan di HASHED:', gs_kota-nama, gs_kota-penduduk.
+  WRITE: / 'Found in HASHED:', gs_city-name, gs_city-population.
 ENDIF.
-WRITE: / 'Jumlah baris:', lines( gt_standard ), lines( gt_sorted ), lines( gt_hashed ).`,
+WRITE: / 'Number of rows:', lines( gt_standard ), lines( gt_sorted ), lines( gt_hashed ).`,
     task: `<ul>
-      <li>Tulis <tt>APPEND gs_kota TO gt_hashed.</tt> dan baca pesan error-nya.</li>
-      <li>Isi <tt>gs_kota-kode = 'AAA'</tt> lalu <tt>APPEND gs_kota TO gt_sorted.</tt> — program berhenti dengan runtime error. Mengapa <tt>INSERT … INTO TABLE</tt> aman?</li>
-      <li>Ubah key tabel sorted menjadi <tt>NON-UNIQUE KEY kode</tt> dan ulangi penyisipan key kembar.</li>
+      <li>Tulis <tt>APPEND gs_city TO gt_hashed.</tt> dan baca pesan error-nya.</li>
+      <li>Isi <tt>gs_city-code = 'AAA'</tt> lalu <tt>APPEND gs_city TO gt_sorted.</tt> — program berhenti dengan runtime error. Mengapa <tt>INSERT … INTO TABLE</tt> aman?</li>
+      <li>Ubah key tabel sorted menjadi <tt>NON-UNIQUE KEY code</tt> dan ulangi penyisipan key kembar.</li>
     </ul>`
   },
 
@@ -1008,7 +1008,7 @@ WRITE: / 'Jumlah baris:', lines( gt_standard ), lines( gt_sorted ), lines( gt_ha
         <li><b>Jebakan klasik:</b> kalau tabel pertama kosong, <tt>WHERE</tt> diabaikan dan <b>seluruh</b> tabel kedua terambil. Selalu bungkus dengan <tt>IF gt_pertama IS NOT INITIAL.</tt></li>
         <li>Baris hasil yang kembar otomatis dibuang.</li>
       </ul>`,
-    code: `REPORT z_belajar_join.
+    code: `REPORT z_learn_join.
 
 TYPES: BEGIN OF ty_flight,
          carrid   TYPE sflight-carrid,
@@ -1037,7 +1037,7 @@ DATA: gt_flight TYPE STANDARD TABLE OF ty_flight,
       gt_cust   TYPE STANDARD TABLE OF ty_cust,
       gs_cust   TYPE ty_cust.
 
-* 1) INNER JOIN: penerbangan + nama maskapai
+* 1) INNER JOIN: flights + airline name
 SELECT f~carrid c~carrname f~connid f~fldate f~price f~currency
   FROM sflight AS f
   INNER JOIN scarr AS c ON f~carrid = c~carrid
@@ -1045,16 +1045,16 @@ SELECT f~carrid c~carrname f~connid f~fldate f~price f~currency
   WHERE f~currency = 'IDR'
   ORDER BY f~price DESCENDING.
 
-WRITE: / 'INNER JOIN SFLIGHT + SCARR:', sy-dbcnt, 'baris'.
+WRITE: / 'INNER JOIN SFLIGHT + SCARR:', sy-dbcnt, 'rows'.
 LOOP AT gt_flight INTO gs_flight.
   WRITE: / gs_flight-carrname, gs_flight-connid, gs_flight-fldate, gs_flight-price, gs_flight-currency.
 ENDLOOP.
 
-* 2) FOR ALL ENTRIES: sales order + nama customer
+* 2) FOR ALL ENTRIES: sales orders + customer name
 ULINE.
 SELECT vbeln kunnr netwr FROM vbak INTO TABLE gt_order.
 
-IF gt_order IS NOT INITIAL.          " wajib: lindungi dari tabel driver kosong
+IF gt_order IS NOT INITIAL.          " required: guard against an empty driver table
   SELECT kunnr name1
     FROM kna1
     INTO TABLE gt_cust
@@ -1062,7 +1062,7 @@ IF gt_order IS NOT INITIAL.          " wajib: lindungi dari tabel driver kosong
     WHERE kunnr = gt_order-kunnr.
 ENDIF.
 
-WRITE: / 'FOR ALL ENTRIES:', sy-dbcnt, 'customer terambil'.
+WRITE: / 'FOR ALL ENTRIES:', sy-dbcnt, 'customers read'.
 LOOP AT gt_order INTO gs_order.
   CLEAR gs_cust.
   READ TABLE gt_cust INTO gs_cust WITH KEY kunnr = gs_order-kunnr.
@@ -1096,60 +1096,60 @@ ENDLOOP.`,
       </table>
       <p><tt>COMMIT WORK</tt> menyimpan perubahan secara permanen, <tt>ROLLBACK WORK</tt> membatalkan semua perubahan sejak commit terakhir.
          <tt>UPDATE</tt> atau <tt>DELETE</tt> tanpa <tt>WHERE</tt> mengenai <b>seluruh</b> tabel. Di studio ini perubahan hanya berlaku selama program berjalan; data contoh selalu kembali utuh.</p>`,
-    code: `REPORT z_belajar_sql_lanjut.
+    code: `REPORT z_learn_sql_aggregates.
 
-TYPES: BEGIN OF ty_rekap,
+TYPES: BEGIN OF ty_summary,
          carrid TYPE sflight-carrid,
-         jumlah TYPE i,
-         kursi  TYPE i,
-         termahal TYPE sflight-price,
-       END OF ty_rekap.
+         cnt    TYPE i,
+         seats  TYPE i,
+         max_price TYPE sflight-price,
+       END OF ty_summary.
 
-DATA: gt_rekap TYPE STANDARD TABLE OF ty_rekap,
-      gs_rekap TYPE ty_rekap,
-      gs_scarr TYPE scarr,
-      gv_jml   TYPE i,
-      gv_max   TYPE sflight-price.
+DATA: gt_summary TYPE STANDARD TABLE OF ty_summary,
+      gs_summary TYPE ty_summary,
+      gs_scarr   TYPE scarr,
+      gv_count   TYPE i,
+      gv_max     TYPE sflight-price.
 
-* 1) Satu nilai dari seluruh tabel
-SELECT COUNT( * ) FROM sflight INTO gv_jml.
+* 1) One value from the whole table
+SELECT COUNT( * ) FROM sflight INTO gv_count.
 SELECT MAX( price ) FROM sflight INTO gv_max WHERE currency = 'IDR'.
-WRITE: / 'Jumlah penerbangan:', gv_jml, '| tiket IDR termahal:', gv_max.
+WRITE: / 'Number of flights:', gv_count, '| most expensive IDR ticket:', gv_max.
 
-* 2) Rekap per maskapai
-SELECT carrid COUNT( * ) AS jumlah SUM( seatsocc ) AS kursi MAX( price ) AS termahal
+* 2) Summary per airline
+SELECT carrid COUNT( * ) AS cnt SUM( seatsocc ) AS seats MAX( price ) AS max_price
   FROM sflight
-  INTO TABLE gt_rekap
+  INTO TABLE gt_summary
   GROUP BY carrid
   HAVING SUM( seatsocc ) > 250
-  ORDER BY kursi DESCENDING.
+  ORDER BY seats DESCENDING.
 
 ULINE.
-LOOP AT gt_rekap INTO gs_rekap.
-  WRITE: / gs_rekap-carrid, 6 gs_rekap-jumlah, 12 gs_rekap-kursi, 22 gs_rekap-termahal.
+LOOP AT gt_summary INTO gs_summary.
+  WRITE: / gs_summary-carrid, 6 gs_summary-cnt, 12 gs_summary-seats, 22 gs_summary-max_price.
 ENDLOOP.
 
-* 3) Mengubah data
+* 3) Changing data
 ULINE.
 gs_scarr-carrid   = 'ZZ'.
 gs_scarr-carrname = 'Zebra Air'.
 gs_scarr-currcode = 'IDR'.
 INSERT scarr FROM gs_scarr.
-WRITE: / 'INSERT pertama : sy-subrc =', sy-subrc.
+WRITE: / 'First INSERT   : sy-subrc =', sy-subrc.
 INSERT scarr FROM gs_scarr.
-WRITE: / 'INSERT kedua   : sy-subrc =', sy-subrc, '(key sudah ada)'.
+WRITE: / 'Second INSERT  : sy-subrc =', sy-subrc, '(key already exists)'.
 
 UPDATE scarr SET carrname = 'Zebra Airways' WHERE carrid = 'ZZ'.
-WRITE: / 'UPDATE         :', sy-dbcnt, 'baris berubah'.
+WRITE: / 'UPDATE         :', sy-dbcnt, 'rows changed'.
 COMMIT WORK.
 
 DELETE FROM scarr WHERE currcode = 'USD'.
-WRITE: / 'DELETE         :', sy-dbcnt, 'baris terhapus'.
-ROLLBACK WORK.                          " penghapusan dibatalkan
+WRITE: / 'DELETE         :', sy-dbcnt, 'rows deleted'.
+ROLLBACK WORK.                          " the deletion is undone
 
-SELECT COUNT( * ) FROM scarr INTO gv_jml.
+SELECT COUNT( * ) FROM scarr INTO gv_count.
 SELECT SINGLE * FROM scarr INTO gs_scarr WHERE carrid = 'ZZ'.
-WRITE: / 'Setelah ROLLBACK:', gv_jml, 'maskapai, termasuk', gs_scarr-carrname.`,
+WRITE: / 'After ROLLBACK:', gv_count, 'airlines, including', gs_scarr-carrname.`,
     task: `<ul>
       <li>Hitung rata-rata harga tiket per mata uang (<tt>AVG( price )</tt>, <tt>GROUP BY currency</tt>).</li>
       <li>Tambahkan kolom <tt>connid</tt> ke daftar SELECT tanpa menaruhnya di <tt>GROUP BY</tt>. Baca pesan error-nya.</li>
@@ -1174,7 +1174,7 @@ WRITE: / 'Setelah ROLLBACK:', gv_jml, 'maskapai, termasuk', gs_scarr-carrname.`,
       <p><tt>RETURN</tt> keluar dari FORM saat itu juga — pola "periksa, laporkan, keluar" membuat kode tidak bersarang terlalu dalam.
          Di studio ini semua pesan dicetak ke Output; seperti di SAP, pesan tipe <tt>E</tt>, <tt>A</tt>, dan <tt>X</tt> <b>menghentikan program</b>.
          <tt>TYPE 'S' DISPLAY LIKE 'E'</tt> menampilkan pesan berwarna error tanpa menghentikan program.</p>`,
-    code: `REPORT z_belajar_pesan.
+    code: `REPORT z_learn_messages.
 
 PARAMETERS p_matnr TYPE mara-matnr DEFAULT '1000-100'.
 
@@ -1182,17 +1182,17 @@ DATA: gs_mara TYPE mara,
       gs_makt TYPE makt.
 
 START-OF-SELECTION.
-  PERFORM baca_material USING p_matnr.
+  PERFORM read_material USING p_matnr.
   ULINE.
-  PERFORM baca_material USING '9999-999'.
+  PERFORM read_material USING '9999-999'.
 
 *&---------------------------------------------------------------------*
-FORM baca_material USING pv_matnr TYPE mara-matnr.
+FORM read_material USING pv_matnr TYPE mara-matnr.
 
   SELECT SINGLE * FROM mara INTO gs_mara WHERE matnr = pv_matnr.
   IF sy-subrc <> 0.
-    MESSAGE |Material { pv_matnr } tidak ditemukan| TYPE 'W'.
-    RETURN.                           " keluar dari FORM, sisanya dilewati
+    MESSAGE |Material { pv_matnr } not found| TYPE 'W'.
+    RETURN.                           " leave the FORM, the rest is skipped
   ENDIF.
 
   SELECT SINGLE * FROM makt INTO gs_makt
@@ -1200,13 +1200,13 @@ FORM baca_material USING pv_matnr TYPE mara-matnr.
       AND spras = 'EN'.
   IF sy-subrc <> 0.
     CLEAR gs_makt.
-    gs_makt-maktx = '(tanpa deskripsi)'.
+    gs_makt-maktx = '(no description)'.
   ENDIF.
 
   WRITE: / 'Material :', gs_mara-matnr.
-  WRITE: / 'Deskripsi:', gs_makt-maktx.
-  WRITE: / 'Tipe     :', gs_mara-mtart, '| Satuan:', gs_mara-meins.
-  MESSAGE 'Data material berhasil dibaca' TYPE 'S'.
+  WRITE: / 'Text     :', gs_makt-maktx.
+  WRITE: / 'Type     :', gs_mara-mtart, '| Unit:', gs_mara-meins.
+  MESSAGE 'Material data read successfully' TYPE 'S'.
 
 ENDFORM.`,
     task: `<ul>
@@ -1235,16 +1235,16 @@ ENDFORM.`,
         <li>Jangan menulis titik di antara bagian-bagian: seluruh <tt>CALL FUNCTION</tt> adalah <b>satu</b> statement.</li>
       </ul>
       <p>Daftar FM yang disimulasikan studio ini ada di <b>Docs → Function Module</b>.</p>`,
-    code: `REPORT z_belajar_fm.
+    code: `REPORT z_learn_fm.
 
-DATA: lv_kunnr TYPE kunnr VALUE '1000',
-      lv_alpha TYPE kunnr,
-      lv_tanpa TYPE kunnr,
-      lv_akhir TYPE d,
-      lv_hari  TYPE c LENGTH 1,
-      lv_besok TYPE d.
+DATA: lv_kunnr     TYPE kunnr VALUE '1000',
+      lv_alpha     TYPE kunnr,
+      lv_external  TYPE kunnr,
+      lv_month_end TYPE d,
+      lv_day       TYPE c LENGTH 1,
+      lv_tomorrow  TYPE d.
 
-* 1) Conversion exit ALPHA: melengkapi nol di depan nomor
+* 1) Conversion exit ALPHA: add leading zeros to a number
 CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
   EXPORTING
     input  = lv_kunnr
@@ -1256,47 +1256,47 @@ CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
   EXPORTING
     input  = lv_alpha
   IMPORTING
-    output = lv_tanpa.
-WRITE: / 'ALPHA output :', lv_alpha, '->', lv_tanpa.
+    output = lv_external.
+WRITE: / 'ALPHA output :', lv_alpha, '->', lv_external.
 
-* 2) Fungsi tanggal dengan EXCEPTIONS
+* 2) Date functions with EXCEPTIONS
 CALL FUNCTION 'RP_LAST_DAY_OF_MONTHS'
   EXPORTING
     day_in            = '20240210'
   IMPORTING
-    last_day_of_month = lv_akhir
+    last_day_of_month = lv_month_end
   EXCEPTIONS
     day_in_no_date    = 1
     OTHERS            = 2.
 IF sy-subrc = 0.
-  WRITE: / 'Akhir Feb 2024:', lv_akhir.
+  WRITE: / 'End of Feb 2024:', lv_month_end.
 ENDIF.
 
-* Tanggal tidak valid -> exception dipetakan ke sy-subrc = 1
+* Invalid date -> the exception is mapped to sy-subrc = 1
 CALL FUNCTION 'RP_LAST_DAY_OF_MONTHS'
   EXPORTING
     day_in            = '20241399'
   IMPORTING
-    last_day_of_month = lv_akhir
+    last_day_of_month = lv_month_end
   EXCEPTIONS
     day_in_no_date    = 1
     OTHERS            = 2.
 CASE sy-subrc.
   WHEN 0.
-    WRITE: / 'Akhir bulan  :', lv_akhir.
+    WRITE: / 'End of month :', lv_month_end.
   WHEN 1.
-    WRITE / 'Tanggal 20241399 tidak valid (exception DAY_IN_NO_DATE, sy-subrc = 1).'.
+    WRITE / 'Date 20241399 is not valid (exception DAY_IN_NO_DATE, sy-subrc = 1).'.
   WHEN OTHERS.
-    WRITE / 'Error lain.'.
+    WRITE / 'Another error.'.
 ENDCASE.
 
-* 3) Hari dalam minggu dan perhitungan tanggal
+* 3) Day of the week and date calculation
 CALL FUNCTION 'DATE_COMPUTE_DAY'
   EXPORTING
     date = '20250817'
   IMPORTING
-    day  = lv_hari.
-WRITE: / '17-08-2025 adalah hari ke-', lv_hari, '(1 = Senin ... 7 = Minggu)'.
+    day  = lv_day.
+WRITE: / '17-08-2025 is day number', lv_day, '(1 = Monday ... 7 = Sunday)'.
 
 CALL FUNCTION 'RP_CALC_DATE_IN_INTERVAL'
   EXPORTING
@@ -1306,8 +1306,8 @@ CALL FUNCTION 'RP_CALC_DATE_IN_INTERVAL'
     years     = 0
     signum    = '+'
   IMPORTING
-    calc_date = lv_besok.
-WRITE: / 'Sehari setelah 31-01-2025:', lv_besok.`,
+    calc_date = lv_tomorrow.
+WRITE: / 'One day after 31-01-2025:', lv_tomorrow.`,
     task: `<ul>
       <li>Hapus bagian <tt>EXCEPTIONS</tt> pada pemanggilan dengan tanggal tidak valid, lalu jalankan. Apa bedanya?</li>
       <li>Panggil FM yang tidak ada (<tt>CALL FUNCTION 'Z_COBA'.</tt>) dan baca peringatannya.</li>
@@ -1328,85 +1328,85 @@ WRITE: / 'Sehari setelah 31-01-2025:', lv_besok.`,
       </ul>
       <p>Perhatikan arahnya terbalik: parameter <tt>IMPORTING</tt> milik FM diisi lewat <tt>EXPORTING</tt> di sisi pemanggil, dan sebaliknya.
          Variabel yang dideklarasikan di dalam FM bersifat lokal.</p>`,
-    code: `REPORT z_belajar_fm_sendiri.
+    code: `REPORT z_learn_own_fm.
 
-DATA: gv_hasil TYPE p DECIMALS 2,
-      gt_log   TYPE STANDARD TABLE OF string,
-      gv_baris TYPE string.
+DATA: gv_result TYPE p DECIMALS 2,
+      gt_log    TYPE STANDARD TABLE OF string,
+      gv_line   TYPE string.
 
 START-OF-SELECTION.
-  CALL FUNCTION 'Z_HITUNG_DISKON'
+  CALL FUNCTION 'Z_CALCULATE_DISCOUNT'
     EXPORTING
-      iv_harga       = 250000
-      iv_persen      = 15
+      iv_price       = 250000
+      iv_percent     = 15
     IMPORTING
-      ev_bayar       = gv_hasil
+      ev_amount_due       = gv_result
     TABLES
       t_log          = gt_log
     EXCEPTIONS
-      persen_invalid = 1
-      OTHERS         = 2.
-  WRITE: / 'sy-subrc =', sy-subrc, '| harus dibayar:', gv_hasil.
+      invalid_percent = 1
+      OTHERS          = 2.
+  WRITE: / 'sy-subrc =', sy-subrc, '| amount due:', gv_result.
 
-* Parameter iv_persen tidak diisi -> nilai DEFAULT dipakai
-  CALL FUNCTION 'Z_HITUNG_DISKON'
+* Parameter iv_persen is not passed -> the DEFAULT value is used
+  CALL FUNCTION 'Z_CALCULATE_DISCOUNT'
     EXPORTING
-      iv_harga       = 100000
+      iv_price       = 100000
     IMPORTING
-      ev_bayar       = gv_hasil
+      ev_amount_due       = gv_result
     TABLES
       t_log          = gt_log
     EXCEPTIONS
-      persen_invalid = 1
-      OTHERS         = 2.
-  WRITE: / 'sy-subrc =', sy-subrc, '| harus dibayar:', gv_hasil.
+      invalid_percent = 1
+      OTHERS          = 2.
+  WRITE: / 'sy-subrc =', sy-subrc, '| amount due:', gv_result.
 
-* Persen di luar batas -> FM menaikkan exception
-  CALL FUNCTION 'Z_HITUNG_DISKON'
+* Percentage out of range -> the FM raises an exception
+  CALL FUNCTION 'Z_CALCULATE_DISCOUNT'
     EXPORTING
-      iv_harga       = 100000
-      iv_persen      = 150
+      iv_price       = 100000
+      iv_percent     = 150
     IMPORTING
-      ev_bayar       = gv_hasil
+      ev_amount_due       = gv_result
     EXCEPTIONS
-      persen_invalid = 1
-      OTHERS         = 2.
+      invalid_percent = 1
+      OTHERS          = 2.
   IF sy-subrc = 1.
-    WRITE / 'sy-subrc = 1: persen diskon tidak valid, perhitungan dibatalkan.'.
+    WRITE / 'sy-subrc = 1: the discount percentage is not valid, calculation cancelled.'.
   ENDIF.
 
   ULINE.
-  LOOP AT gt_log INTO gv_baris.
-    WRITE: / 'Log:', gv_baris.
+  LOOP AT gt_log INTO gv_line.
+    WRITE: / 'Log:', gv_line.
   ENDLOOP.
 
-FUNCTION z_hitung_diskon.
+FUNCTION z_calculate_discount.
 *"----------------------------------------------------------------------
 *"*"Local Interface:
 *"  IMPORTING
-*"     VALUE(IV_HARGA) TYPE  I
-*"     VALUE(IV_PERSEN) TYPE  I DEFAULT 10
+*"     VALUE(IV_PRICE) TYPE  I
+*"     VALUE(IV_PERCENT) TYPE  I DEFAULT 10
 *"  EXPORTING
-*"     VALUE(EV_BAYAR) TYPE  P
+*"     VALUE(EV_AMOUNT_DUE) TYPE  P
 *"  TABLES
 *"      T_LOG OPTIONAL
 *"  EXCEPTIONS
-*"      PERSEN_INVALID
+*"      INVALID_PERCENT
 *"----------------------------------------------------------------------
-  DATA lv_diskon TYPE i.
+  DATA lv_discount TYPE i.
 
-  IF iv_persen < 0 OR iv_persen > 100.
-    RAISE persen_invalid.
+  IF iv_percent < 0 OR iv_percent > 100.
+    RAISE invalid_percent.
   ENDIF.
 
-  lv_diskon = iv_harga * iv_persen / 100.
-  ev_bayar  = iv_harga - lv_diskon.
-  APPEND |Harga { iv_harga }, diskon { iv_persen }% = { lv_diskon }| TO t_log.
+  lv_discount   = iv_price * iv_percent / 100.
+  ev_amount_due = iv_price - lv_discount.
+  APPEND |Price { iv_price }, discount { iv_percent }% = { lv_discount }| TO t_log.
 ENDFUNCTION.`,
     task: `<ul>
       <li>Hapus <tt>EXCEPTIONS</tt> pada pemanggilan ketiga dan jalankan. Apa yang terjadi bila exception tidak ditangani?</li>
-      <li>Panggil dengan nama parameter yang salah (<tt>iv_hrg = 1000</tt>) dan baca pesan error-nya.</li>
-      <li>Tambahkan parameter <tt>EXPORTING ev_diskon</tt> yang mengembalikan nilai diskonnya.</li>
+      <li>Panggil dengan nama parameter yang salah (<tt>iv_prc = 1000</tt>) dan baca pesan error-nya.</li>
+      <li>Tambahkan parameter <tt>EXPORTING ev_discount</tt> yang mengembalikan nilai diskonnya.</li>
     </ul>`
   },
   {
@@ -1432,7 +1432,7 @@ ENDFUNCTION.`,
         <tr><td><tt>no_out</tt></td><td><tt>'X'</tt> = kolom disembunyikan</td></tr>
       </table>
       <p>Pola per kolom selalu sama: <tt>CLEAR</tt> work area, isi, <tt>APPEND gs_fieldcat TO gt_fieldcat</tt>. Grid-nya muncul di panel Output.</p>`,
-    code: `REPORT z_belajar_alv.
+    code: `REPORT z_learn_alv.
 
 TYPES: BEGIN OF ty_mara,
          matnr TYPE mara-matnr,
@@ -1502,7 +1502,7 @@ FORM display_alv.
   CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
     EXPORTING
       i_callback_program = sy-repid
-      i_grid_title       = 'Daftar Material'
+      i_grid_title       = 'Material List'
       it_fieldcat        = gt_fieldcat
     TABLES
       t_outtab           = gt_data
@@ -1511,7 +1511,7 @@ FORM display_alv.
       OTHERS             = 2.
 
   IF sy-subrc <> 0.
-    MESSAGE 'ALV gagal ditampilkan' TYPE 'E'.
+    MESSAGE 'The ALV could not be displayed' TYPE 'E'.
   ENDIF.
 
 ENDFORM.`,
@@ -1536,7 +1536,7 @@ ENDFORM.`,
         <li><tt>MODIFY gt_fieldcat FROM gs_fieldcat.</tt> di dalam <tt>LOOP</tt> menulis balik baris yang sedang diproses.</li>
       </ul>
       <p>Alternatif tercepat bila tidak perlu penyesuaian: isi <tt>i_structure_name = 'SFLIGHT'</tt> saja, tanpa field catalog.</p>`,
-    code: `REPORT z_belajar_alv_merge.
+    code: `REPORT z_learn_alv_merge.
 
 DATA: gt_flight   TYPE STANDARD TABLE OF sflight,
       gt_fieldcat TYPE slis_t_fieldcat_alv,
@@ -1548,7 +1548,7 @@ DATA: gt_flight   TYPE STANDARD TABLE OF sflight,
 START-OF-SELECTION.
   SELECT * FROM sflight INTO TABLE gt_flight.
 
-* 1) Field catalog otomatis dari struktur DDIC
+* 1) Automatic field catalog from a DDIC structure
   CALL FUNCTION 'REUSE_ALV_FIELDCATALOG_MERGE'
     EXPORTING
       i_program_name         = sy-repid
@@ -1560,14 +1560,14 @@ START-OF-SELECTION.
       program_error          = 2
       OTHERS                 = 3.
   IF sy-subrc <> 0.
-    MESSAGE 'Field catalog gagal dibuat' TYPE 'E'.
+    MESSAGE 'The field catalog could not be built' TYPE 'E'.
   ENDIF.
 
-* 2) Sesuaikan beberapa kolom
+* 2) Adjust a few columns
   LOOP AT gt_fieldcat INTO gs_fieldcat.
     CASE gs_fieldcat-fieldname.
       WHEN 'PRICE'.
-        gs_fieldcat-seltext_m = 'Harga Tiket'.
+        gs_fieldcat-seltext_m = 'Ticket Price'.
       WHEN 'SEATSOCC' OR 'PAYMENTSUM'.
         gs_fieldcat-do_sum = 'X'.
       WHEN 'SEATSMAX_B' OR 'SEATSOCC_B' OR 'SEATSMAX_F' OR 'SEATSOCC_F'.
@@ -1576,7 +1576,7 @@ START-OF-SELECTION.
     MODIFY gt_fieldcat FROM gs_fieldcat.
   ENDLOOP.
 
-* 3) Layout dan urutan awal
+* 3) Layout and initial sort order
   gs_layout-zebra             = 'X'.
   gs_layout-colwidth_optimize = 'X'.
 
@@ -1587,7 +1587,7 @@ START-OF-SELECTION.
   CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
     EXPORTING
       i_callback_program = sy-repid
-      i_grid_title       = 'Jadwal Penerbangan (termahal dulu)'
+      i_grid_title       = 'Flight Schedule (most expensive first)'
       is_layout          = gs_layout
       it_fieldcat        = gt_fieldcat
       it_sort            = gt_sort
@@ -1616,7 +1616,7 @@ START-OF-SELECTION.
         <li><tt>factory</tt> bisa menaikkan exception <tt>cx_salv_msg</tt>, karena itu dibungkus <tt>TRY … CATCH … ENDTRY</tt>.</li>
       </ul>
       <p>Batasannya: SALV tidak bisa di-edit. Untuk grid yang bisa diisi pengguna dipakai <tt>CL_GUI_ALV_GRID</tt>.</p>`,
-    code: `REPORT z_belajar_salv.
+    code: `REPORT z_learn_salv.
 
 DATA: gt_spfli TYPE STANDARD TABLE OF spfli,
       go_alv   TYPE REF TO cl_salv_table,
@@ -1632,10 +1632,10 @@ START-OF-SELECTION.
         CHANGING
           t_table      = gt_spfli ).
 
-      go_alv->get_functions( )->set_all( abap_true ).           " semua tombol toolbar
-      go_alv->get_columns( )->set_optimize( abap_true ).        " lebar kolom otomatis
+      go_alv->get_functions( )->set_all( abap_true ).           " all toolbar buttons
+      go_alv->get_columns( )->set_optimize( abap_true ).        " automatic column width
       go_alv->get_display_settings( )->set_striped_pattern( abap_true ).
-      go_alv->get_display_settings( )->set_list_header( 'Rute Penerbangan (SPFLI)' ).
+      go_alv->get_display_settings( )->set_list_header( 'Flight Connections (SPFLI)' ).
 
       go_alv->display( ).
 
@@ -1665,7 +1665,7 @@ START-OF-SELECTION.
         <li>Header diisi lewat tabel bertipe <tt>slis_t_listheader</tt> dan <tt>REUSE_ALV_COMMENTARY_WRITE</tt>: <tt>typ = 'H'</tt> judul, <tt>'S'</tt> baris kunci–nilai, <tt>'A'</tt> catatan.</li>
       </ul>
       <p>Jalankan contoh ini, lalu <b>klik sel bergaris bawah</b> atau <b>klik dua kali sebuah baris</b> di grid. Output FORM muncul di bawah grid.</p>`,
-    code: `REPORT z_belajar_alv_interaktif.
+    code: `REPORT z_learn_alv_interactive.
 
 DATA: gt_scarr  TYPE STANDARD TABLE OF scarr,
       gs_scarr  TYPE scarr,
@@ -1673,25 +1673,25 @@ DATA: gt_scarr  TYPE STANDARD TABLE OF scarr,
       gs_fcat   TYPE slis_fieldcat_alv,
       gt_header TYPE slis_t_listheader,
       gs_header TYPE slis_listheader,
-      gv_jumlah TYPE i.
+      gv_count  TYPE i.
 
 START-OF-SELECTION.
   SELECT * FROM scarr INTO TABLE gt_scarr.
 
   gs_fcat-fieldname = 'CARRID'.
-  gs_fcat-seltext_m = 'Maskapai'.
+  gs_fcat-seltext_m = 'Airline'.
   gs_fcat-key       = 'X'.
-  gs_fcat-hotspot   = 'X'.               " sel kolom ini bisa diklik
+  gs_fcat-hotspot   = 'X'.               " the cells of this column can be clicked
   APPEND gs_fcat TO gt_fcat.
 
   CLEAR gs_fcat.
   gs_fcat-fieldname = 'CARRNAME'.
-  gs_fcat-seltext_m = 'Nama Maskapai'.
+  gs_fcat-seltext_m = 'Airline Name'.
   APPEND gs_fcat TO gt_fcat.
 
   CLEAR gs_fcat.
   gs_fcat-fieldname = 'CURRCODE'.
-  gs_fcat-seltext_m = 'Mata Uang'.
+  gs_fcat-seltext_m = 'Currency'.
   APPEND gs_fcat TO gt_fcat.
 
   CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
@@ -1707,25 +1707,25 @@ START-OF-SELECTION.
       OTHERS                  = 2.
 
 *&---------------------------------------------------------------------*
-*& Header di atas grid
+*& Header above the grid
 *&---------------------------------------------------------------------*
 FORM top_of_page.
   CLEAR gt_header.
 
   CLEAR gs_header.
   gs_header-typ  = 'H'.
-  gs_header-info = 'Daftar Maskapai'.
+  gs_header-info = 'Airline List'.
   APPEND gs_header TO gt_header.
 
   CLEAR gs_header.
   gs_header-typ  = 'S'.
-  gs_header-key  = 'Jumlah'.
+  gs_header-key  = 'Count'.
   gs_header-info = lines( gt_scarr ).
   APPEND gs_header TO gt_header.
 
   CLEAR gs_header.
   gs_header-typ  = 'A'.
-  gs_header-info = 'Klik kode maskapai untuk melihat penerbangannya.'.
+  gs_header-info = 'Click an airline code to see its flights.'.
   APPEND gs_header TO gt_header.
 
   CALL FUNCTION 'REUSE_ALV_COMMENTARY_WRITE'
@@ -1734,19 +1734,19 @@ FORM top_of_page.
 ENDFORM.
 
 *&---------------------------------------------------------------------*
-*& Dipanggil ALV setiap kali pengguna mengklik
+*& Called by ALV every time the user clicks
 *&---------------------------------------------------------------------*
 FORM user_command USING r_ucomm     LIKE sy-ucomm
                         rs_selfield TYPE slis_selfield.
   CASE r_ucomm.
-    WHEN '&IC1'.                         " klik dua kali / hotspot
+    WHEN '&IC1'.                         " double-click / hotspot
       READ TABLE gt_scarr INTO gs_scarr INDEX rs_selfield-tabindex.
       IF sy-subrc <> 0.
         RETURN.
       ENDIF.
-      SELECT COUNT( * ) FROM sflight INTO gv_jumlah WHERE carrid = gs_scarr-carrid.
-      WRITE: / 'Baris', rs_selfield-tabindex, 'kolom', rs_selfield-fieldname, ':',
-               gs_scarr-carrname, 'punya', gv_jumlah, 'penerbangan.'.
+      SELECT COUNT( * ) FROM sflight INTO gv_count WHERE carrid = gs_scarr-carrid.
+      WRITE: / 'Row', rs_selfield-tabindex, 'column', rs_selfield-fieldname, ':',
+               gs_scarr-carrname, 'has', gv_count, 'flights.'.
   ENDCASE.
 ENDFORM.`,
     task: `<ul>
@@ -1773,59 +1773,59 @@ ENDFORM.`,
         <li><tt>DEFINE nama. … END-OF-DEFINITION.</tt> adalah penggantian teks: <tt>&amp;1</tt>, <tt>&amp;2</tt> diganti argumen saat macro dipakai. Tidak bisa di-debug baris demi baris.</li>
       </ul>
       <p>Padanan modernnya: work area eksplisit (<tt>INTO</tt>/<tt>ASSIGNING</tt>), <tt>SELECT … INTO TABLE</tt>, dan FORM atau method sebagai ganti macro.</p>`,
-    code: `REPORT z_belajar_kode_lama.
+    code: `REPORT z_learn_legacy_code.
 
 TABLES: scarr.
 
-* Tabel dengan header line
-DATA: BEGIN OF it_maskapai OCCURS 0,
+* A table with a header line
+DATA: BEGIN OF it_airlines OCCURS 0,
         carrid   LIKE scarr-carrid,
         carrname LIKE scarr-carrname,
-        jumlah   TYPE i,
-      END OF it_maskapai.
+        cnt      TYPE i,
+      END OF it_airlines.
 
-DATA v_baris TYPE i.
+DATA v_row TYPE i.
 
-* Macro: &1 dan &2 diganti argumennya
-DEFINE tulis_baris.
+* Macro: &1 and &2 are replaced by its arguments
+DEFINE write_row.
   WRITE: / &1, 6 &2.
 END-OF-DEFINITION.
 
 START-OF-SELECTION.
-* SELECT ... ENDSELECT mengisi work area SCARR baris demi baris
+* SELECT ... ENDSELECT fills the work area SCARR row by row
   SELECT * FROM scarr WHERE currcode <> 'USD'.
-    CLEAR it_maskapai.                         " header line
-    MOVE-CORRESPONDING scarr TO it_maskapai.   " ke header line
-    APPEND it_maskapai.                        " header line -> tabel
+    CLEAR it_airlines.                         " header line
+    MOVE-CORRESPONDING scarr TO it_airlines.   " into the header line
+    APPEND it_airlines.                        " header line -> table
   ENDSELECT.
 
-  DESCRIBE TABLE it_maskapai LINES v_baris.
-  WRITE: / 'Jumlah baris:', v_baris.
+  DESCRIBE TABLE it_airlines LINES v_row.
+  WRITE: / 'Number of rows:', v_row.
 
-  LOOP AT it_maskapai.                         " tiap baris -> header line
-    SELECT COUNT( * ) FROM sflight INTO it_maskapai-jumlah
-      WHERE carrid = it_maskapai-carrid.
-    MODIFY it_maskapai.                        " header line -> baris saat ini
+  LOOP AT it_airlines.                         " each row -> header line
+    SELECT COUNT( * ) FROM sflight INTO it_airlines-cnt
+      WHERE carrid = it_airlines-carrid.
+    MODIFY it_airlines.                        " header line -> current row
   ENDLOOP.
 
-  SORT it_maskapai BY jumlah DESCENDING.
-  LOOP AT it_maskapai.
-    tulis_baris it_maskapai-carrid it_maskapai-carrname.
-    WRITE 30 it_maskapai-jumlah.
+  SORT it_airlines BY cnt DESCENDING.
+  LOOP AT it_airlines.
+    write_row it_airlines-carrid it_airlines-carrname.
+    WRITE 30 it_airlines-cnt.
   ENDLOOP.
 
-  READ TABLE it_maskapai WITH KEY carrid = 'GA'.
+  READ TABLE it_airlines WITH KEY carrid = 'GA'.
   IF sy-subrc = 0.
-    WRITE: / 'Header line sekarang berisi:', it_maskapai-carrname.
+    WRITE: / 'The header line now contains:', it_airlines-carrname.
   ENDIF.
 
-  CLEAR it_maskapai.                           " hanya header line
-  IF it_maskapai IS INITIAL AND it_maskapai[] IS NOT INITIAL.
-    WRITE / 'CLEAR it_maskapai mengosongkan header line; isi tabel masih ada.'.
+  CLEAR it_airlines.                           " the header line only
+  IF it_airlines IS INITIAL AND it_airlines[] IS NOT INITIAL.
+    WRITE / 'CLEAR it_airlines empties the header line; the table content is still there.'.
   ENDIF.
 
-  REFRESH it_maskapai.                         " isi tabelnya
-  WRITE: / 'Setelah REFRESH:', lines( it_maskapai ), 'baris'.`,
+  REFRESH it_airlines.                         " the table content
+  WRITE: / 'After REFRESH:', lines( it_airlines ), 'rows'.`,
     task: `<ul>
       <li>Tulis ulang program ini dengan gaya modern: tipe baris, tabel standard, work area terpisah, satu <tt>SELECT … INTO TABLE</tt>.</li>
       <li>Program ini melakukan <tt>SELECT</tt> di dalam <tt>LOOP</tt>. Ganti dengan satu <tt>SELECT … GROUP BY carrid</tt>.</li>
@@ -1845,7 +1845,7 @@ START-OF-SELECTION.
         <li><tt>display_data</tt> — field catalog + ALV.</li>
       </ul>
       <p>Perhatikan kolom <tt>status</tt>: kolom itu tidak ada di database, melainkan dihitung di program — ciri khas laporan.</p>`,
-    code: `REPORT z_belajar_laporan.
+    code: `REPORT z_learn_report.
 
 TYPES: BEGIN OF ty_output,
          vbeln  TYPE vbak-vbeln,
@@ -1866,12 +1866,12 @@ DATA: gt_output   TYPE STANDARD TABLE OF ty_output,
 FIELD-SYMBOLS <fs_out> TYPE ty_output.
 
 PARAMETERS: p_vkorg TYPE vbak-vkorg DEFAULT '1000',
-            p_besar TYPE i DEFAULT 10000000.
+            p_large TYPE i DEFAULT 10000000.
 
 START-OF-SELECTION.
   PERFORM get_data.
   IF gt_output IS INITIAL.
-    MESSAGE 'Tidak ada sales order untuk kriteria tersebut' TYPE 'S'.
+    MESSAGE 'No sales orders for these criteria' TYPE 'S'.
     RETURN.
   ENDIF.
   PERFORM process_data.
@@ -1890,10 +1890,10 @@ ENDFORM.
 *&---------------------------------------------------------------------*
 FORM process_data.
   LOOP AT gt_output ASSIGNING <fs_out>.
-    IF <fs_out>-netwr >= p_besar.
-      <fs_out>-status = 'BESAR'.
+    IF <fs_out>-netwr >= p_large.
+      <fs_out>-status = 'LARGE'.
     ELSE.
-      <fs_out>-status = 'REGULER'.
+      <fs_out>-status = 'REGULAR'.
     ENDIF.
   ENDLOOP.
 ENDFORM.
@@ -1901,12 +1901,12 @@ ENDFORM.
 *&---------------------------------------------------------------------*
 FORM display_data.
   PERFORM add_field USING 'VBELN'  'Sales Order'  'X' ' '.
-  PERFORM add_field USING 'ERDAT'  'Tanggal'      ' ' ' '.
+  PERFORM add_field USING 'ERDAT'  'Date'         ' ' ' '.
   PERFORM add_field USING 'KUNNR'  'Customer'     ' ' ' '.
-  PERFORM add_field USING 'NAME1'  'Nama'         ' ' ' '.
-  PERFORM add_field USING 'ORT01'  'Kota'         ' ' ' '.
-  PERFORM add_field USING 'NETWR'  'Nilai Bersih' ' ' 'X'.
-  PERFORM add_field USING 'WAERK'  'Mata Uang'    ' ' ' '.
+  PERFORM add_field USING 'NAME1'  'Name'         ' ' ' '.
+  PERFORM add_field USING 'ORT01'  'City'         ' ' ' '.
+  PERFORM add_field USING 'NETWR'  'Net Value'    ' ' 'X'.
+  PERFORM add_field USING 'WAERK'  'Currency'     ' ' ' '.
   PERFORM add_field USING 'STATUS' 'Status'       ' ' ' '.
 
   gs_layout-zebra = 'X'.
@@ -1914,7 +1914,7 @@ FORM display_data.
   CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
     EXPORTING
       i_callback_program = sy-repid
-      i_grid_title       = 'Laporan Sales Order'
+      i_grid_title       = 'Sales Order Report'
       is_layout          = gs_layout
       it_fieldcat        = gt_fieldcat
     TABLES
@@ -1937,7 +1937,7 @@ FORM add_field USING pv_field TYPE c
   APPEND gs_fieldcat TO gt_fieldcat.
 ENDFORM.`,
     task: `<ul>
-      <li>Buka <b>Parameters (F8)</b> dan ubah <tt>P_BESAR</tt> menjadi 20000000. Order mana yang berubah status?</li>
+      <li>Buka <b>Parameters (F8)</b> dan ubah <tt>P_LARGE</tt> menjadi 20000000. Order mana yang berubah status?</li>
       <li>Tambahkan kolom jumlah item per order (hitung dari tabel VBAP dengan <tt>SELECT COUNT( * )</tt> — lalu pikirkan cara menghindari SELECT di dalam LOOP).</li>
       <li>Ganti tampilannya menjadi <tt>CL_SALV_TABLE</tt>.</li>
     </ul>`
@@ -1964,69 +1964,69 @@ ENDFORM.`,
         <li>Memanggil method: <tt>lo_x-&gt;method( nilai ).</tt> Parameter <tt>RETURNING</tt> membuat method bisa dipakai seperti fungsi.</li>
       </ul>
       <p>Kebiasaan penamaan: <tt>lcl_</tt> class lokal, <tt>lo_</tt> referensi objek, <tt>mv_</tt> atribut, <tt>iv_</tt> importing, <tt>rv_</tt> returning.</p>`,
-    code: `REPORT z_belajar_class.
+    code: `REPORT z_learn_class.
 
-CLASS lcl_rekening DEFINITION.
+CLASS lcl_account DEFINITION.
   PUBLIC SECTION.
-    METHODS: set_pemilik IMPORTING iv_nama TYPE string,
-             setor       IMPORTING iv_jumlah TYPE i,
-             tarik       IMPORTING iv_jumlah TYPE i,
-             get_saldo   RETURNING VALUE(rv_saldo) TYPE i,
-             cetak.
+    METHODS: set_owner   IMPORTING iv_name TYPE string,
+             deposit     IMPORTING iv_amount TYPE i,
+             withdraw    IMPORTING iv_amount TYPE i,
+             get_balance RETURNING VALUE(rv_balance) TYPE i,
+             print.
   PRIVATE SECTION.
-    DATA: mv_pemilik TYPE string,
-          mv_saldo   TYPE i.
+    DATA: mv_owner   TYPE string,
+          mv_balance TYPE i.
 ENDCLASS.
 
-CLASS lcl_rekening IMPLEMENTATION.
-  METHOD set_pemilik.
-    mv_pemilik = iv_nama.
+CLASS lcl_account IMPLEMENTATION.
+  METHOD set_owner.
+    mv_owner = iv_name.
   ENDMETHOD.
 
-  METHOD setor.
-    mv_saldo = mv_saldo + iv_jumlah.
+  METHOD deposit.
+    mv_balance = mv_balance + iv_amount.
   ENDMETHOD.
 
-  METHOD tarik.
-    IF iv_jumlah > mv_saldo.
-      WRITE: / mv_pemilik, ': saldo tidak cukup untuk menarik', iv_jumlah.
+  METHOD withdraw.
+    IF iv_amount > mv_balance.
+      WRITE: / mv_owner, ': balance is not sufficient to withdraw', iv_amount.
       RETURN.
     ENDIF.
-    mv_saldo = mv_saldo - iv_jumlah.
+    mv_balance = mv_balance - iv_amount.
   ENDMETHOD.
 
-  METHOD get_saldo.
-    rv_saldo = mv_saldo.
+  METHOD get_balance.
+    rv_balance = mv_balance.
   ENDMETHOD.
 
-  METHOD cetak.
-    WRITE: / 'Rekening', mv_pemilik, '| saldo', mv_saldo.
+  METHOD print.
+    WRITE: / 'Account', mv_owner, '| balance', mv_balance.
   ENDMETHOD.
 ENDCLASS.
 
 START-OF-SELECTION.
-  DATA: lo_andi TYPE REF TO lcl_rekening,
-        lo_sari TYPE REF TO lcl_rekening.
+  DATA: lo_andi TYPE REF TO lcl_account,
+        lo_sari TYPE REF TO lcl_account.
 
-  CREATE OBJECT lo_andi.                 " cara klasik
-  lo_sari = NEW lcl_rekening( ).         " cara modern
+  CREATE OBJECT lo_andi.                 " the classic way
+  lo_sari = NEW lcl_account( ).          " the modern way
 
-  lo_andi->set_pemilik( 'Andi' ).
-  lo_andi->setor( 500000 ).
-  lo_andi->tarik( iv_jumlah = 200000 ).
+  lo_andi->set_owner( 'Andi' ).
+  lo_andi->deposit( 500000 ).
+  lo_andi->withdraw( iv_amount = 200000 ).
 
-  lo_sari->set_pemilik( 'Sari' ).
-  lo_sari->setor( 100000 ).
-  lo_sari->tarik( 750000 ).              " ditolak
+  lo_sari->set_owner( 'Sari' ).
+  lo_sari->deposit( 100000 ).
+  lo_sari->withdraw( 750000 ).              " rejected
 
-  lo_andi->cetak( ).
-  lo_sari->cetak( ).
+  lo_andi->print( ).
+  lo_sari->print( ).
 
-  DATA(lv_saldo) = lo_andi->get_saldo( ).
-  WRITE: / 'Saldo Andi lewat get_saldo( ):', lv_saldo.`,
+  DATA(lv_balance) = lo_andi->get_balance( ).
+  WRITE: / 'Balance of Andi via get_balance( ):', lv_balance.`,
     task: `<ul>
-      <li>Di program utama tulis <tt>lo_andi-&gt;mv_saldo = 999.</tt> dan jalankan. Mengapa ditolak?</li>
-      <li>Tambahkan method <tt>transfer</tt> yang memindahkan saldo ke rekening lain (<tt>IMPORTING io_tujuan TYPE REF TO lcl_rekening iv_jumlah TYPE i</tt>).</li>
+      <li>Di program utama tulis <tt>lo_andi-&gt;mv_balance = 999.</tt> dan jalankan. Mengapa ditolak?</li>
+      <li>Tambahkan method <tt>transfer</tt> yang memindahkan saldo ke rekening lain (<tt>IMPORTING io_target TYPE REF TO lcl_account iv_amount TYPE i</tt>).</li>
       <li>Panggil method lewat referensi yang belum dibuat objeknya (hapus <tt>CREATE OBJECT lo_andi.</tt>) dan baca error-nya.</li>
     </ul>`
   },
@@ -2037,66 +2037,66 @@ START-OF-SELECTION.
     body: `
       <ul>
         <li><tt>constructor</tt> adalah method khusus yang otomatis dijalankan saat objek dibuat. Parameternya diisi di <tt>NEW lcl_x( … )</tt> atau <tt>CREATE OBJECT … EXPORTING …</tt>. Dengan constructor, objek tidak pernah berada dalam keadaan "setengah jadi".</li>
-        <li><b>Static</b> = milik class, bukan milik objek: <tt>CLASS-DATA</tt> dipakai bersama oleh semua objek, <tt>CLASS-METHODS</tt> dipanggil tanpa objek. Aksesnya memakai <tt>=&gt;</tt>: <tt>lcl_x=&gt;gv_jumlah</tt>.</li>
+        <li><b>Static</b> = milik class, bukan milik objek: <tt>CLASS-DATA</tt> dipakai bersama oleh semua objek, <tt>CLASS-METHODS</tt> dipanggil tanpa objek. Aksesnya memakai <tt>=&gt;</tt>: <tt>lcl_x=&gt;gv_count</tt>.</li>
         <li><tt>CONSTANTS</tt> di dalam class juga static.</li>
         <li><tt>READ-ONLY</tt> membuat atribut publik bisa dibaca dari luar tetapi hanya bisa diubah dari dalam class.</li>
         <li>Tiga tingkat visibility: <tt>PUBLIC</tt> (semua), <tt>PROTECTED</tt> (class dan turunannya), <tt>PRIVATE</tt> (class itu saja).</li>
       </ul>`,
-    code: `REPORT z_belajar_constructor.
+    code: `REPORT z_learn_constructor.
 
-CLASS lcl_karyawan DEFINITION.
+CLASS lcl_employee DEFINITION.
   PUBLIC SECTION.
-    CONSTANTS gc_perusahaan TYPE string VALUE 'PT Maju Bersama'.
-    CLASS-DATA gv_jumlah TYPE i.                    " dipakai bersama semua objek
-    DATA mv_nama TYPE string READ-ONLY.             " terbaca dari luar, tidak bisa diubah
+    CONSTANTS gc_company TYPE string VALUE 'PT Maju Bersama'.
+    CLASS-DATA gv_count TYPE i.                     " shared by all objects
+    DATA mv_name TYPE string READ-ONLY.             " readable from outside, cannot be changed
 
-    METHODS: constructor IMPORTING iv_nama TYPE string
-                                   iv_gaji TYPE i,
-             naik_gaji   IMPORTING iv_persen TYPE i,
+    METHODS: constructor IMPORTING iv_name TYPE string
+                                   iv_salary TYPE i,
+             raise_salary   IMPORTING iv_percent TYPE i,
              info.
-    CLASS-METHODS total_karyawan RETURNING VALUE(rv_jumlah) TYPE i.
+    CLASS-METHODS total_employees RETURNING VALUE(rv_count) TYPE i.
 
   PRIVATE SECTION.
-    DATA mv_gaji TYPE i.
+    DATA mv_salary TYPE i.
 ENDCLASS.
 
-CLASS lcl_karyawan IMPLEMENTATION.
+CLASS lcl_employee IMPLEMENTATION.
   METHOD constructor.
-    mv_nama   = iv_nama.
-    mv_gaji   = iv_gaji.
-    gv_jumlah = gv_jumlah + 1.
+    mv_name   = iv_name.
+    mv_salary = iv_salary.
+    gv_count  = gv_count + 1.
   ENDMETHOD.
 
-  METHOD naik_gaji.
-    mv_gaji = mv_gaji + mv_gaji * iv_persen / 100.
+  METHOD raise_salary.
+    mv_salary = mv_salary + mv_salary * iv_percent / 100.
   ENDMETHOD.
 
   METHOD info.
-    WRITE: / mv_nama, '| gaji', mv_gaji.
+    WRITE: / mv_name, '| salary', mv_salary.
   ENDMETHOD.
 
-  METHOD total_karyawan.
-    rv_jumlah = gv_jumlah.
+  METHOD total_employees.
+    rv_count = gv_count.
   ENDMETHOD.
 ENDCLASS.
 
 START-OF-SELECTION.
-  WRITE: / 'Perusahaan:', lcl_karyawan=>gc_perusahaan.
-  WRITE: / 'Karyawan sebelum ada objek:', lcl_karyawan=>total_karyawan( ).
+  WRITE: / 'Company:', lcl_employee=>gc_company.
+  WRITE: / 'Employees before any object exists:', lcl_employee=>total_employees( ).
 
-  DATA(lo_rina) = NEW lcl_karyawan( iv_nama = 'Rina' iv_gaji = 8000000 ).
-  DATA(lo_joko) = NEW lcl_karyawan( iv_nama = 'Joko' iv_gaji = 6500000 ).
+  DATA(lo_rina) = NEW lcl_employee( iv_name = 'Rina' iv_salary = 8000000 ).
+  DATA(lo_joko) = NEW lcl_employee( iv_name = 'Joko' iv_salary = 6500000 ).
 
-  lo_rina->naik_gaji( 10 ).
+  lo_rina->raise_salary( 10 ).
   lo_rina->info( ).
   lo_joko->info( ).
 
-  WRITE: / 'Nama (READ-ONLY):', lo_rina->mv_nama.
-  WRITE: / 'Total karyawan  :', lcl_karyawan=>gv_jumlah.`,
+  WRITE: / 'Name (READ-ONLY):', lo_rina->mv_name.
+  WRITE: / 'Total employees :', lcl_employee=>gv_count.`,
     task: `<ul>
-      <li>Coba <tt>lo_rina-&gt;mv_nama = 'Lain'.</tt> dari program utama.</li>
-      <li>Buat objek tanpa parameter: <tt>NEW lcl_karyawan( )</tt>. Apa pesannya?</li>
-      <li>Tambahkan static method <tt>reset</tt> yang mengembalikan <tt>gv_jumlah</tt> ke 0.</li>
+      <li>Coba <tt>lo_rina-&gt;mv_name = 'Lain'.</tt> dari program utama.</li>
+      <li>Buat objek tanpa parameter: <tt>NEW lcl_employee( )</tt>. Apa pesannya?</li>
+      <li>Tambahkan static method <tt>reset</tt> yang mengembalikan <tt>gv_count</tt> ke 0.</li>
     </ul>`
   },
   {
@@ -2110,73 +2110,73 @@ START-OF-SELECTION.
         <li>Atribut <tt>PROTECTED</tt> terlihat oleh class turunan tetapi tidak dari luar.</li>
         <li>Variabel bertipe induk boleh menunjuk ke objek anak. Method yang dijalankan ditentukan oleh <b>objek sebenarnya</b>, bukan tipe variabelnya — inilah <b>polymorphism</b>.</li>
       </ul>
-      <p>Perhatikan <tt>perkenalan</tt>: method itu hanya ada di induk, tetapi <tt>bersuara( )</tt> yang dipanggilnya adalah versi masing-masing turunan.</p>`,
-    code: `REPORT z_belajar_inheritance.
+      <p>Perhatikan <tt>introduce</tt>: method itu hanya ada di induk, tetapi <tt>make_sound( )</tt> yang dipanggilnya adalah versi masing-masing turunan.</p>`,
+    code: `REPORT z_learn_inheritance.
 
-CLASS lcl_hewan DEFINITION.
+CLASS lcl_animal DEFINITION.
   PUBLIC SECTION.
-    METHODS: constructor IMPORTING iv_nama TYPE string,
-             bersuara,
-             perkenalan.
+    METHODS: constructor IMPORTING iv_name TYPE string,
+             make_sound,
+             introduce.
   PROTECTED SECTION.
-    DATA mv_nama TYPE string.
+    DATA mv_name TYPE string.
 ENDCLASS.
 
-CLASS lcl_hewan IMPLEMENTATION.
+CLASS lcl_animal IMPLEMENTATION.
   METHOD constructor.
-    mv_nama = iv_nama.
+    mv_name = iv_name.
   ENDMETHOD.
 
-  METHOD bersuara.
-    WRITE: / mv_nama, 'mengeluarkan suara.'.
+  METHOD make_sound.
+    WRITE: / mv_name, 'makes a sound.'.
   ENDMETHOD.
 
-  METHOD perkenalan.
-    WRITE: / 'Halo, saya', mv_nama.
-    bersuara( ).                        " versi turunan yang dipanggil
+  METHOD introduce.
+    WRITE: / 'Hello, I am', mv_name.
+    make_sound( ).                        " the subclass version is called
   ENDMETHOD.
 ENDCLASS.
 
-CLASS lcl_kucing DEFINITION INHERITING FROM lcl_hewan.
+CLASS lcl_cat DEFINITION INHERITING FROM lcl_animal.
   PUBLIC SECTION.
-    METHODS bersuara REDEFINITION.
+    METHODS make_sound REDEFINITION.
 ENDCLASS.
 
-CLASS lcl_kucing IMPLEMENTATION.
-  METHOD bersuara.
-    WRITE: / mv_nama, 'berkata: Meong!'.
+CLASS lcl_cat IMPLEMENTATION.
+  METHOD make_sound.
+    WRITE: / mv_name, 'says: Meow!'.
   ENDMETHOD.
 ENDCLASS.
 
-CLASS lcl_anjing DEFINITION INHERITING FROM lcl_hewan.
+CLASS lcl_dog DEFINITION INHERITING FROM lcl_animal.
   PUBLIC SECTION.
-    METHODS bersuara REDEFINITION.
+    METHODS make_sound REDEFINITION.
 ENDCLASS.
 
-CLASS lcl_anjing IMPLEMENTATION.
-  METHOD bersuara.
-    super->bersuara( ).                 " jalankan versi induk dulu
-    WRITE: / mv_nama, 'berkata: Guk guk!'.
+CLASS lcl_dog IMPLEMENTATION.
+  METHOD make_sound.
+    super->make_sound( ).                 " run the superclass version first
+    WRITE: / mv_name, 'says: Woof woof!'.
   ENDMETHOD.
 ENDCLASS.
 
 START-OF-SELECTION.
-  DATA lo_hewan TYPE REF TO lcl_hewan.   " tipe induk
+  DATA lo_animal TYPE REF TO lcl_animal.   " superclass type
 
-  lo_hewan = NEW lcl_hewan( 'Hewan umum' ).
-  lo_hewan->perkenalan( ).
+  lo_animal = NEW lcl_animal( 'Generic animal' ).
+  lo_animal->introduce( ).
   ULINE.
 
-  lo_hewan = NEW lcl_kucing( 'Tom' ).    " menunjuk ke objek turunan
-  lo_hewan->perkenalan( ).
+  lo_animal = NEW lcl_cat( 'Tom' ).    " points to a subclass object
+  lo_animal->introduce( ).
   ULINE.
 
-  lo_hewan = NEW lcl_anjing( 'Bruno' ).
-  lo_hewan->perkenalan( ).`,
+  lo_animal = NEW lcl_dog( 'Bruno' ).
+  lo_animal->introduce( ).`,
     task: `<ul>
-      <li>Tambahkan class <tt>lcl_burung</tt> dengan suaranya sendiri.</li>
-      <li>Ubah <tt>mv_nama</tt> menjadi <tt>PRIVATE</tt>. Apa yang terjadi di class turunan?</li>
-      <li>Beri <tt>lcl_kucing</tt> constructor sendiri yang menerima nama dan warna, lalu memanggil <tt>super-&gt;constructor( iv_nama )</tt>.</li>
+      <li>Tambahkan class <tt>lcl_bird</tt> dengan suaranya sendiri.</li>
+      <li>Ubah <tt>mv_name</tt> menjadi <tt>PRIVATE</tt>. Apa yang terjadi di class turunan?</li>
+      <li>Beri <tt>lcl_cat</tt> constructor sendiri yang menerima nama dan warna, lalu memanggil <tt>super-&gt;constructor( iv_name )</tt>.</li>
     </ul>`
   },
   {
@@ -2186,77 +2186,77 @@ START-OF-SELECTION.
     body: `
       <p><b>Interface</b> adalah kontrak: daftar method tanpa isi. Class yang menulis <tt>INTERFACES lif_x.</tt> berjanji menyediakan semua method itu.</p>
       <ul>
-        <li>Di implementasi, nama method-nya <tt>lif_x~nama</tt> (tanda <tt>~</tt> = "milik interface").</li>
+        <li>Di implementasi, nama method-nya <tt>lif_x~name</tt> (tanda <tt>~</tt> = "milik interface").</li>
         <li>Variabel bertipe <tt>REF TO lif_x</tt> bisa menunjuk ke objek dari class <b>mana pun</b> yang mengimplementasikan interface itu.</li>
         <li>Dengan begitu, satu <tt>LOOP</tt> bisa memproses persegi, lingkaran, dan bentuk lain tanpa <tt>IF</tt>/<tt>CASE</tt> per jenis. Menambah bentuk baru tidak mengubah kode loop sama sekali.</li>
       </ul>
       <p>Bedanya dengan inheritance: turunan mewarisi <b>isi</b> dari satu induk; interface hanya mewajibkan <b>bentuk</b>, dan satu class boleh mengimplementasikan banyak interface.</p>`,
-    code: `REPORT z_belajar_interface.
+    code: `REPORT z_learn_interface.
 
-INTERFACE lif_bangun.
-  METHODS: nama RETURNING VALUE(rv_nama) TYPE string,
-           luas RETURNING VALUE(rv_luas) TYPE f.
+INTERFACE lif_shape.
+  METHODS: name RETURNING VALUE(rv_name) TYPE string,
+           area RETURNING VALUE(rv_area) TYPE f.
 ENDINTERFACE.
 
-CLASS lcl_persegi DEFINITION.
+CLASS lcl_square DEFINITION.
   PUBLIC SECTION.
-    INTERFACES lif_bangun.
-    METHODS constructor IMPORTING iv_sisi TYPE i.
+    INTERFACES lif_shape.
+    METHODS constructor IMPORTING iv_side TYPE i.
   PRIVATE SECTION.
-    DATA mv_sisi TYPE i.
+    DATA mv_side TYPE i.
 ENDCLASS.
 
-CLASS lcl_persegi IMPLEMENTATION.
+CLASS lcl_square IMPLEMENTATION.
   METHOD constructor.
-    mv_sisi = iv_sisi.
+    mv_side = iv_side.
   ENDMETHOD.
-  METHOD lif_bangun~nama.
-    rv_nama = 'Persegi'.
+  METHOD lif_shape~name.
+    rv_name = 'Square'.
   ENDMETHOD.
-  METHOD lif_bangun~luas.
-    rv_luas = mv_sisi * mv_sisi.
+  METHOD lif_shape~area.
+    rv_area = mv_side * mv_side.
   ENDMETHOD.
 ENDCLASS.
 
-CLASS lcl_lingkaran DEFINITION.
+CLASS lcl_circle DEFINITION.
   PUBLIC SECTION.
-    INTERFACES lif_bangun.
-    METHODS constructor IMPORTING iv_jari TYPE i.
+    INTERFACES lif_shape.
+    METHODS constructor IMPORTING iv_radius TYPE i.
   PRIVATE SECTION.
-    DATA mv_jari TYPE i.
+    DATA mv_radius TYPE i.
 ENDCLASS.
 
-CLASS lcl_lingkaran IMPLEMENTATION.
+CLASS lcl_circle IMPLEMENTATION.
   METHOD constructor.
-    mv_jari = iv_jari.
+    mv_radius = iv_radius.
   ENDMETHOD.
-  METHOD lif_bangun~nama.
-    rv_nama = 'Lingkaran'.
+  METHOD lif_shape~name.
+    rv_name = 'Circle'.
   ENDMETHOD.
-  METHOD lif_bangun~luas.
-    rv_luas = '3.14' * mv_jari * mv_jari.
+  METHOD lif_shape~area.
+    rv_area = '3.14' * mv_radius * mv_radius.
   ENDMETHOD.
 ENDCLASS.
 
 START-OF-SELECTION.
-  DATA: gt_bangun TYPE STANDARD TABLE OF REF TO lif_bangun,
-        go_bangun TYPE REF TO lif_bangun,
+  DATA: gt_shapes TYPE STANDARD TABLE OF REF TO lif_shape,
+        go_shape  TYPE REF TO lif_shape,
         gv_total  TYPE f.
 
-  APPEND NEW lcl_persegi( 4 )    TO gt_bangun.
-  APPEND NEW lcl_lingkaran( 5 )  TO gt_bangun.
-  APPEND NEW lcl_persegi( 10 )   TO gt_bangun.
+  APPEND NEW lcl_square( 4 )     TO gt_shapes.
+  APPEND NEW lcl_circle( 5 )     TO gt_shapes.
+  APPEND NEW lcl_square( 10 )    TO gt_shapes.
 
-* Satu loop untuk semua jenis bangun
-  LOOP AT gt_bangun INTO go_bangun.
-    WRITE: / go_bangun->nama( ), '| luas =', go_bangun->luas( ).
-    gv_total = gv_total + go_bangun->luas( ).
+* One loop for every kind of shape
+  LOOP AT gt_shapes INTO go_shape.
+    WRITE: / go_shape->name( ), '| area =', go_shape->area( ).
+    gv_total = gv_total + go_shape->area( ).
   ENDLOOP.
   ULINE.
-  WRITE: / 'Total luas:', gv_total.`,
+  WRITE: / 'Total area:', gv_total.`,
     task: `<ul>
-      <li>Tambahkan class <tt>lcl_segitiga</tt> (alas, tinggi). Perhatikan: kode <tt>LOOP</tt> tidak perlu diubah.</li>
-      <li>Tambahkan method <tt>keliling</tt> ke interface. Apa yang terjadi bila salah satu class belum mengimplementasikannya?</li>
+      <li>Tambahkan class <tt>lcl_triangle</tt> (alas, tinggi). Perhatikan: kode <tt>LOOP</tt> tidak perlu diubah.</li>
+      <li>Tambahkan method <tt>perimeter</tt> ke interface. Apa yang terjadi bila salah satu class belum mengimplementasikannya?</li>
     </ul>`
   },
   {
@@ -2274,85 +2274,85 @@ START-OF-SELECTION.
         <li>Method yang bisa menaikkan exception wajib mencantumkannya di <tt>RAISING</tt>, sehingga pemanggil tahu harus menanganinya.</li>
       </ul>
       <p>Exception yang tidak ditangkap menghentikan program dengan short dump.</p>`,
-    code: `REPORT z_belajar_exception.
+    code: `REPORT z_learn_exception.
 
-* Exception buatan sendiri
-CLASS lcx_saldo_kurang DEFINITION INHERITING FROM cx_static_check.
+* A self-defined exception
+CLASS lcx_insufficient_balance DEFINITION INHERITING FROM cx_static_check.
   PUBLIC SECTION.
-    DATA mv_kurang TYPE i READ-ONLY.
-    METHODS constructor IMPORTING iv_kurang TYPE i.
+    DATA mv_shortfall TYPE i READ-ONLY.
+    METHODS constructor IMPORTING iv_shortfall TYPE i.
 ENDCLASS.
 
-CLASS lcx_saldo_kurang IMPLEMENTATION.
+CLASS lcx_insufficient_balance IMPLEMENTATION.
   METHOD constructor.
     super->constructor( ).
-    mv_kurang = iv_kurang.
+    mv_shortfall = iv_shortfall.
   ENDMETHOD.
 ENDCLASS.
 
-CLASS lcl_rekening DEFINITION.
+CLASS lcl_account DEFINITION.
   PUBLIC SECTION.
-    METHODS: setor IMPORTING iv_jumlah TYPE i,
-             tarik IMPORTING iv_jumlah TYPE i
-                   RAISING   lcx_saldo_kurang.
+    METHODS: deposit IMPORTING iv_amount TYPE i,
+             withdraw IMPORTING iv_amount TYPE i
+                   RAISING   lcx_insufficient_balance.
   PRIVATE SECTION.
-    DATA mv_saldo TYPE i.
+    DATA mv_balance TYPE i.
 ENDCLASS.
 
-CLASS lcl_rekening IMPLEMENTATION.
-  METHOD setor.
-    mv_saldo = mv_saldo + iv_jumlah.
+CLASS lcl_account IMPLEMENTATION.
+  METHOD deposit.
+    mv_balance = mv_balance + iv_amount.
   ENDMETHOD.
 
-  METHOD tarik.
-    IF iv_jumlah > mv_saldo.
-      RAISE EXCEPTION TYPE lcx_saldo_kurang
+  METHOD withdraw.
+    IF iv_amount > mv_balance.
+      RAISE EXCEPTION TYPE lcx_insufficient_balance
         EXPORTING
-          iv_kurang = iv_jumlah - mv_saldo.
+          iv_shortfall = iv_amount - mv_balance.
     ENDIF.
-    mv_saldo = mv_saldo - iv_jumlah.
-    WRITE: / 'Penarikan', iv_jumlah, 'berhasil. Sisa saldo', mv_saldo.
+    mv_balance = mv_balance - iv_amount.
+    WRITE: / 'Withdrawal of', iv_amount, 'succeeded. Remaining balance', mv_balance.
   ENDMETHOD.
 ENDCLASS.
 
 START-OF-SELECTION.
-  DATA: lv_a     TYPE i VALUE 10,
-        lv_b     TYPE i VALUE 0,
-        lv_hasil TYPE i.
+  DATA: lv_a      TYPE i VALUE 10,
+        lv_b      TYPE i VALUE 0,
+        lv_result TYPE i.
 
-* 1) Exception sistem
+* 1) System exception
   TRY.
-      lv_hasil = lv_a / lv_b.
-      WRITE / 'Baris ini tidak pernah dijalankan.'.
-    CATCH cx_sy_zerodivide INTO DATA(lx_nol).
-      WRITE: / 'Tertangkap:', lx_nol->get_text( ).
+      lv_result = lv_a / lv_b.
+      WRITE / 'This line is never executed.'.
+    CATCH cx_sy_zerodivide INTO DATA(lx_zero).
+      WRITE: / 'Caught:', lx_zero->get_text( ).
   ENDTRY.
-  WRITE / 'Program tetap berjalan setelah ENDTRY.'.
+  WRITE / 'The program continues after ENDTRY.'.
   ULINE.
 
-* 2) Exception buatan sendiri
-  DATA(lo_rek) = NEW lcl_rekening( ).
-  lo_rek->setor( 500000 ).
+* 2) Self-defined exception
+  DATA(lo_account) = NEW lcl_account( ).
+  lo_account->deposit( 500000 ).
 
   TRY.
-      lo_rek->tarik( 200000 ).
-      lo_rek->tarik( 700000 ).           " melempar exception
-      lo_rek->tarik( 100000 ).           " dilewati
-    CATCH lcx_saldo_kurang INTO DATA(lx_saldo).
-      WRITE: / 'Penarikan ditolak, saldo kurang', lx_saldo->mv_kurang.
+      lo_account->withdraw( 200000 ).
+      lo_account->withdraw( 700000 ).    " raises the exception
+      lo_account->withdraw( 100000 ).    " skipped
+    CATCH lcx_insufficient_balance INTO DATA(lx_balance).
+      WRITE: / 'Withdrawal refused, the balance is short by', lx_balance->mv_shortfall.
   ENDTRY.
   ULINE.
 
-* 3) CATCH cx_root menangkap apa pun
-  DATA lo_kosong TYPE REF TO lcl_rekening.
+* 3) CATCH cx_root catches anything
+  DATA lo_empty TYPE REF TO lcl_account.
   TRY.
-      lo_kosong->setor( 1 ).             " objek belum dibuat
-    CATCH cx_root INTO DATA(lx_apapun).
-      WRITE: / 'Error lain:', lx_apapun->get_text( ).
+      lo_empty->deposit( 1 ).             " the object has not been created
+    CATCH cx_root INTO DATA(lx_any).
+      WRITE: / 'Another error:', lx_any->get_text( ).
   ENDTRY.`,
     task: `<ul>
       <li>Hapus blok <tt>TRY … ENDTRY</tt> di bagian 1 dan jalankan. Program berhenti di mana?</li>
-      <li>Tambahkan exception kedua <tt>lcx_jumlah_tidak_valid</tt> yang dinaikkan bila jumlah tarik ≤ 0, dan tangkap dengan <tt>CATCH</tt> terpisah.</li>
+      <li>Tambahkan exception kedua <tt>lcx_invalid_amount</tt> yang dinaikkan bila jumlah tarik ≤ 0, dan tangkap dengan <tt>CATCH</tt> terpisah.</li>
     </ul>`
   },
   {
@@ -2372,45 +2372,45 @@ START-OF-SELECTION.
         <tr><td><tt>INTO TABLE gt</tt></td><td><tt>INTO TABLE @DATA(lt)</tt> (dengan <tt>@</tt> di depan variabel program)</td></tr>
       </table>
       <p>Tipe variabel inline diturunkan dari nilai di sisi kanan. <tt>#</tt> pada <tt>VALUE #( … )</tt> berarti "pakai tipe dari konteks".</p>`,
-    code: `REPORT z_belajar_modern.
+    code: `REPORT z_learn_modern.
 
-TYPES: BEGIN OF ty_buah,
-         nama  TYPE string,
-         harga TYPE i,
-         stok  TYPE i,
-       END OF ty_buah,
-       tt_buah TYPE STANDARD TABLE OF ty_buah WITH EMPTY KEY.
+TYPES: BEGIN OF ty_fruit,
+         name  TYPE string,
+         price TYPE i,
+         stock TYPE i,
+       END OF ty_fruit,
+       tt_fruit TYPE STANDARD TABLE OF ty_fruit WITH EMPTY KEY.
 
-* Deklarasi inline dan konstruktor VALUE
-DATA(lv_toko) = 'Toko Segar'.
-DATA(lt_buah) = VALUE tt_buah(
-  ( nama = 'Apel'   harga = 5000 stok = 20 )
-  ( nama = 'Mangga' harga = 8000 stok = 12 ) ).
+* Inline declaration and the VALUE constructor
+DATA(lv_shop) = 'Fresh Market'.
+DATA(lt_fruits) = VALUE tt_fruit(
+  ( name = 'Apple'  price = 5000 stock = 20 )
+  ( name = 'Mango'  price = 8000 stock = 12 ) ).
 
-APPEND VALUE #( nama = 'Jeruk' harga = 4000 stok = 0 ) TO lt_buah.
+APPEND VALUE #( name = 'Orange' price = 4000 stock = 0 ) TO lt_fruits.
 
-* LOOP dengan work area inline + string template
-LOOP AT lt_buah INTO DATA(ls_buah) WHERE stok > 0.
-  DATA(lv_nilai) = ls_buah-harga * ls_buah-stok.
-  WRITE / |{ ls_buah-nama }: { ls_buah-stok } buah, nilai Rp { lv_nilai }|.
+* LOOP with an inline work area + string template
+LOOP AT lt_fruits INTO DATA(ls_fruit) WHERE stock > 0.
+  DATA(lv_value) = ls_fruit-price * ls_fruit-stock.
+  WRITE / |{ ls_fruit-name }: { ls_fruit-stock } pieces, value Rp { lv_value }|.
 ENDLOOP.
 
-* Field-symbol inline: ubah langsung di tabel
-LOOP AT lt_buah ASSIGNING FIELD-SYMBOL(<ls_buah>).
-  <ls_buah>-harga = <ls_buah>-harga + 500.
+* Inline field symbol: change directly in the table
+LOOP AT lt_fruits ASSIGNING FIELD-SYMBOL(<ls_fruit>).
+  <ls_fruit>-price = <ls_fruit>-price + 500.
 ENDLOOP.
 
-READ TABLE lt_buah INTO DATA(ls_cari) WITH KEY nama = 'Mangga'.
+READ TABLE lt_fruits INTO DATA(ls_found) WITH KEY name = 'Mango'.
 IF sy-subrc = 0.
-  WRITE / |Harga baru { ls_cari-nama }: Rp { ls_cari-harga }|.
+  WRITE / |New price of { ls_found-name }: Rp { ls_found-price }|.
 ENDIF.
 
-* Operator && dan fungsi bawaan
-DATA(lv_jumlah) = lines( lt_buah ).
-DATA(lv_pesan)  = lv_toko && ' menjual ' && lv_jumlah && ' jenis buah.'.
-WRITE / lv_pesan.
+* The && operator and built-in functions
+DATA(lv_count)   = lines( lt_fruits ).
+DATA(lv_message) = lv_shop && ' sells ' && lv_count && ' kinds of fruit.'.
+WRITE / lv_message.
 
-* SELECT dengan deklarasi inline
+* SELECT with an inline declaration
 ULINE.
 SELECT * FROM scarr INTO TABLE @DATA(lt_scarr) UP TO 3 ROWS.
 LOOP AT lt_scarr INTO DATA(ls_scarr).
@@ -2431,7 +2431,7 @@ ENDLOOP.`,
         <tr><th>Ekspresi</th><th>Menggantikan</th></tr>
         <tr><td><tt>COND tipe( WHEN … THEN … ELSE … )</tt></td><td><tt>IF / ELSEIF / ELSE</tt> yang hanya mengisi satu variabel</td></tr>
         <tr><td><tt>SWITCH tipe( x WHEN … THEN … )</tt></td><td><tt>CASE</tt> yang hanya mengisi satu variabel</td></tr>
-        <tr><td><tt>itab[ 2 ]</tt>, <tt>itab[ id = 5 ]-nama</tt></td><td><tt>READ TABLE</tt></td></tr>
+        <tr><td><tt>itab[ 2 ]</tt>, <tt>itab[ id = 5 ]-name</tt></td><td><tt>READ TABLE</tt></td></tr>
         <tr><td><tt>line_exists( itab[ … ] )</tt></td><td><tt>READ TABLE … TRANSPORTING NO FIELDS</tt> + cek <tt>sy-subrc</tt></td></tr>
         <tr><td><tt>VALUE tipe( FOR r IN itab WHERE ( … ) ( … ) )</tt></td><td><tt>LOOP</tt> + <tt>APPEND</tt> untuk membangun tabel baru</td></tr>
         <tr><td><tt>REDUCE tipe( INIT s = 0 FOR r IN itab NEXT s = s + r-f )</tt></td><td><tt>LOOP</tt> untuk menjumlah / menghitung</td></tr>
@@ -2439,79 +2439,79 @@ ENDLOOP.`,
       </table>
       <p>Hati-hati dengan table expression: bila barisnya tidak ada, yang terjadi bukan <tt>sy-subrc = 4</tt> melainkan exception
          <tt>cx_sy_itab_line_not_found</tt>. Pakai <tt>line_exists( )</tt>, <tt>VALUE #( … OPTIONAL )</tt>, atau <tt>TRY … CATCH</tt>.</p>`,
-    code: `REPORT z_belajar_ekspresi.
+    code: `REPORT z_learn_expressions.
 
-TYPES: BEGIN OF ty_siswa,
+TYPES: BEGIN OF ty_student,
          id    TYPE i,
-         nama  TYPE string,
-         nilai TYPE i,
-       END OF ty_siswa,
-       tt_siswa TYPE STANDARD TABLE OF ty_siswa WITH EMPTY KEY.
+         name  TYPE string,
+         score TYPE i,
+       END OF ty_student,
+       tt_student TYPE STANDARD TABLE OF ty_student WITH EMPTY KEY.
 
-TYPES: BEGIN OF ty_rapor,
-         nama  TYPE string,
+TYPES: BEGIN OF ty_report_card,
+         name  TYPE string,
          grade TYPE c LENGTH 1,
-       END OF ty_rapor,
-       tt_rapor TYPE STANDARD TABLE OF ty_rapor WITH EMPTY KEY.
+       END OF ty_report_card,
+       tt_report_card TYPE STANDARD TABLE OF ty_report_card WITH EMPTY KEY.
 
-DATA(lt_siswa) = VALUE tt_siswa(
-  ( id = 1 nama = 'Ani'  nilai = 92 )
-  ( id = 2 nama = 'Budi' nilai = 67 )
-  ( id = 3 nama = 'Cici' nilai = 45 ) ).
+DATA(lt_students) = VALUE tt_student(
+  ( id = 1 name = 'Ani'  score = 92 )
+  ( id = 2 name = 'Budi' score = 67 )
+  ( id = 3 name = 'Cici' score = 45 ) ).
 
-* Table expression: membaca tanpa READ TABLE
-DATA(lv_nilai_budi) = lt_siswa[ 2 ]-nilai.
-DATA(ls_cici)       = lt_siswa[ nama = 'Cici' ].
-WRITE: / 'Nilai Budi:', lv_nilai_budi, '| id Cici:', ls_cici-id.
+* Table expression: reading without READ TABLE
+DATA(lv_score_budi) = lt_students[ 2 ]-score.
+DATA(ls_cici)       = lt_students[ name = 'Cici' ].
+WRITE: / 'Score of Budi:', lv_score_budi, '| id Cici:', ls_cici-id.
 
-lt_siswa[ 3 ]-nilai = 58.                       " mengubah langsung di tabel
+lt_students[ 3 ]-score = 58.                       " changes the table directly
 
-IF line_exists( lt_siswa[ id = 9 ] ).
-  WRITE / 'Siswa 9 ada.'.
+IF line_exists( lt_students[ id = 9 ] ).
+  WRITE / 'Student 9 exists.'.
 ELSE.
-  WRITE / 'Siswa 9 tidak ada.'.
+  WRITE / 'Student 9 does not exist.'.
 ENDIF.
-DATA(lv_nama) = VALUE #( lt_siswa[ id = 9 ]-nama DEFAULT '(tidak ditemukan)' ).
-WRITE: / 'Dengan DEFAULT:', lv_nama.
+DATA(lv_name) = VALUE #( lt_students[ id = 9 ]-name DEFAULT '(not found)' ).
+WRITE: / 'With DEFAULT:', lv_name.
 
 TRY.
-    DATA(lv_gagal) = lt_siswa[ 9 ]-nama.
+    DATA(lv_failed) = lt_students[ 9 ]-name.
   CATCH cx_sy_itab_line_not_found.
-    WRITE / 'Tanpa pengaman: exception cx_sy_itab_line_not_found.'.
+    WRITE / 'Without a safeguard: exception cx_sy_itab_line_not_found.'.
 ENDTRY.
 
-* COND dan SWITCH
+* COND and SWITCH
 ULINE.
-LOOP AT lt_siswa INTO DATA(ls_siswa).
-  DATA(lv_grade) = COND string( WHEN ls_siswa-nilai >= 85 THEN 'A'
-                                WHEN ls_siswa-nilai >= 60 THEN 'B'
+LOOP AT lt_students INTO DATA(ls_student).
+  DATA(lv_grade) = COND string( WHEN ls_student-score >= 85 THEN 'A'
+                                WHEN ls_student-score >= 60 THEN 'B'
                                 ELSE 'C' ).
-  DATA(lv_ket) = SWITCH string( lv_grade WHEN 'A' THEN 'istimewa'
-                                         WHEN 'B' THEN 'lulus'
+  DATA(lv_remark) = SWITCH string( lv_grade WHEN 'A' THEN 'excellent'
+                                         WHEN 'B' THEN 'passed'
                                          ELSE 'remedial' ).
-  WRITE: / ls_siswa-nama, ls_siswa-nilai, lv_grade, lv_ket.
+  WRITE: / ls_student-name, ls_student-score, lv_grade, lv_remark.
 ENDLOOP.
 
-* REDUCE dan FOR
+* REDUCE and FOR
 ULINE.
-DATA(lv_total) = REDUCE i( INIT s = 0 FOR r IN lt_siswa NEXT s = s + r-nilai ).
-DATA(lv_lulus) = REDUCE i( INIT n = 0 FOR r IN lt_siswa WHERE ( nilai >= 60 ) NEXT n = n + 1 ).
-WRITE: / 'Total nilai:', lv_total, '| lulus:', lv_lulus, 'dari', lines( lt_siswa ).
+DATA(lv_total) = REDUCE i( INIT s = 0 FOR r IN lt_students NEXT s = s + r-score ).
+DATA(lv_passed) = REDUCE i( INIT n = 0 FOR r IN lt_students WHERE ( score >= 60 ) NEXT n = n + 1 ).
+WRITE: / 'Total score:', lv_total, '| passed:', lv_passed, 'of', lines( lt_students ).
 
-DATA(lt_rapor) = VALUE tt_rapor( FOR r IN lt_siswa WHERE ( nilai >= 50 )
-                                 ( nama = r-nama grade = COND #( WHEN r-nilai >= 85 THEN 'A' ELSE 'B' ) ) ).
-LOOP AT lt_rapor INTO DATA(ls_rapor).
-  WRITE: / 'Rapor:', ls_rapor-nama, ls_rapor-grade.
+DATA(lt_report_card) = VALUE tt_report_card( FOR r IN lt_students WHERE ( score >= 50 )
+                                 ( name = r-name grade = COND #( WHEN r-score >= 85 THEN 'A' ELSE 'B' ) ) ).
+LOOP AT lt_report_card INTO DATA(ls_report_card).
+  WRITE: / 'Report card:', ls_report_card-name, ls_report_card-grade.
 ENDLOOP.
 
-DATA(lt_kelipatan) = VALUE tt_siswa( FOR i = 1 UNTIL i > 3 ( id = i * 10 nama = |Nomor { i }| ) ).
-WRITE: / 'FOR dengan penghitung:', lt_kelipatan[ 3 ]-id, lt_kelipatan[ 3 ]-nama.
+DATA(lt_multiples) = VALUE tt_student( FOR i = 1 UNTIL i > 3 ( id = i * 10 name = |Number { i }| ) ).
+WRITE: / 'FOR with a counter:', lt_multiples[ 3 ]-id, lt_multiples[ 3 ]-name.
 
-* CORRESPONDING: salin komponen bernama sama ke tipe lain
-DATA(lt_nama) = CORRESPONDING tt_rapor( lt_siswa ).
-WRITE: / 'CORRESPONDING:', lines( lt_nama ), 'baris, baris pertama =', lt_nama[ 1 ]-nama.`,
+* CORRESPONDING: copy components of the same name to another type
+DATA(lt_names) = CORRESPONDING tt_report_card( lt_students ).
+WRITE: / 'CORRESPONDING:', lines( lt_names ), 'rows, first row =', lt_names[ 1 ]-name.`,
     task: `<ul>
-      <li>Hitung nilai tertinggi dengan <tt>REDUCE</tt> (petunjuk: <tt>NEXT m = COND #( WHEN r-nilai &gt; m THEN r-nilai ELSE m )</tt>).</li>
+      <li>Hitung nilai tertinggi dengan <tt>REDUCE</tt> (petunjuk: <tt>NEXT m = COND #( WHEN r-score &gt; m THEN r-score ELSE m )</tt>).</li>
       <li>Bangun tabel berisi hanya siswa yang <b>tidak</b> lulus dengan <tt>VALUE … FOR … WHERE</tt>.</li>
       <li>Tulis ulang satu blok <tt>COND</tt> sebagai <tt>IF / ELSEIF</tt> biasa dan bandingkan jumlah barisnya.</li>
     </ul>`
@@ -2530,71 +2530,71 @@ WRITE: / 'CORRESPONDING:', lines( lt_nama ), 'baris, baris pertama =', lt_nama[ 
         <li>Parameter khusus <tt>sender</tt> berisi objek yang memicu event.</li>
       </ul>
       <p>Tanpa <tt>SET HANDLER</tt>, event tetap terpicu tetapi tidak ada yang bereaksi — dan itu bukan error.</p>`,
-    code: `REPORT z_belajar_event_class.
+    code: `REPORT z_learn_event_class.
 
-CLASS lcl_stok DEFINITION.
+CLASS lcl_stock DEFINITION.
   PUBLIC SECTION.
-    EVENTS stok_menipis EXPORTING VALUE(ev_barang) TYPE string
-                                  VALUE(ev_sisa)   TYPE i.
-    METHODS: constructor IMPORTING iv_barang TYPE string
-                                   iv_jumlah TYPE i,
-             ambil       IMPORTING iv_jumlah TYPE i.
+    EVENTS stock_low EXPORTING VALUE(ev_item)         TYPE string
+                                  VALUE(ev_remaining) TYPE i.
+    METHODS: constructor IMPORTING iv_item TYPE string
+                                   iv_quantity TYPE i,
+             take       IMPORTING iv_quantity TYPE i.
   PRIVATE SECTION.
-    DATA: mv_barang TYPE string,
-          mv_jumlah TYPE i.
+    DATA: mv_item TYPE string,
+          mv_quantity TYPE i.
 ENDCLASS.
 
-CLASS lcl_stok IMPLEMENTATION.
+CLASS lcl_stock IMPLEMENTATION.
   METHOD constructor.
-    mv_barang = iv_barang.
-    mv_jumlah = iv_jumlah.
+    mv_item = iv_item.
+    mv_quantity = iv_quantity.
   ENDMETHOD.
 
-  METHOD ambil.
-    mv_jumlah = mv_jumlah - iv_jumlah.
-    WRITE / |{ mv_barang }: diambil { iv_jumlah }, sisa { mv_jumlah }|.
-    IF mv_jumlah < 10.
-      RAISE EVENT stok_menipis EXPORTING ev_barang = mv_barang
-                                         ev_sisa   = mv_jumlah.
+  METHOD take.
+    mv_quantity = mv_quantity - iv_quantity.
+    WRITE / |{ mv_item }: { iv_quantity } taken, { mv_quantity } left|.
+    IF mv_quantity < 10.
+      RAISE EVENT stock_low EXPORTING ev_item         = mv_item
+                                         ev_remaining = mv_quantity.
     ENDIF.
   ENDMETHOD.
 ENDCLASS.
 
-* Pendengar: tidak dikenal oleh lcl_stok
-CLASS lcl_pembelian DEFINITION.
+* The listener: unknown to lcl_stok
+CLASS lcl_purchasing DEFINITION.
   PUBLIC SECTION.
-    METHODS on_stok_menipis FOR EVENT stok_menipis OF lcl_stok
-      IMPORTING ev_barang ev_sisa.
-    DATA mv_pesanan TYPE i.
+    METHODS on_stock_low FOR EVENT stock_low OF lcl_stock
+      IMPORTING ev_item ev_remaining.
+    DATA mv_orders TYPE i.
 ENDCLASS.
 
-CLASS lcl_pembelian IMPLEMENTATION.
-  METHOD on_stok_menipis.
-    mv_pesanan = mv_pesanan + 1.
-    WRITE /3 |>> Pembelian: pesan ulang { ev_barang } (sisa { ev_sisa })|.
+CLASS lcl_purchasing IMPLEMENTATION.
+  METHOD on_stock_low.
+    mv_orders = mv_orders + 1.
+    WRITE /3 |>> Purchasing: reorder { ev_item } ({ ev_remaining } left)|.
   ENDMETHOD.
 ENDCLASS.
 
 START-OF-SELECTION.
-  DATA(lo_kertas)    = NEW lcl_stok( iv_barang = 'Kertas A4' iv_jumlah = 25 ).
-  DATA(lo_tinta)     = NEW lcl_stok( iv_barang = 'Tinta'     iv_jumlah = 12 ).
-  DATA(lo_pembelian) = NEW lcl_pembelian( ).
+  DATA(lo_paper)      = NEW lcl_stock( iv_item = 'A4 paper'  iv_quantity = 25 ).
+  DATA(lo_ink)        = NEW lcl_stock( iv_item = 'Ink'       iv_quantity = 12 ).
+  DATA(lo_purchasing) = NEW lcl_purchasing( ).
 
-* Hanya stok kertas yang didengarkan
-  SET HANDLER lo_pembelian->on_stok_menipis FOR lo_kertas.
+* Only the paper stock is listened to
+  SET HANDLER lo_purchasing->on_stock_low FOR lo_paper.
 
-  lo_kertas->ambil( 10 ).
-  lo_kertas->ambil( 8 ).               " sisa 7  -> event -> handler berjalan
-  lo_tinta->ambil( 5 ).                " sisa 7  -> event, tetapi belum ada yang mendengarkan
+  lo_paper->take( 10 ).
+  lo_paper->take( 8 ).                 " 7 left  -> event -> the handler runs
+  lo_ink->take( 5 ).                   " 7 left  -> event, but nobody is listening yet
 
   ULINE.
-  SET HANDLER lo_pembelian->on_stok_menipis FOR lo_tinta.
-  lo_tinta->ambil( 2 ).                " sekarang handler ikut berjalan
+  SET HANDLER lo_purchasing->on_stock_low FOR lo_ink.
+  lo_ink->take( 2 ).                " now the handler runs as well
 
-  WRITE: / 'Jumlah pesanan ulang:', lo_pembelian->mv_pesanan.`,
+  WRITE: / 'Number of reorders:', lo_purchasing->mv_orders.`,
     task: `<ul>
       <li>Ganti kedua <tt>SET HANDLER</tt> dengan satu <tt>… FOR ALL INSTANCES.</tt> Berapa pesanan ulang yang tercatat?</li>
-      <li>Tambahkan pendengar kedua, <tt>lcl_gudang</tt>, yang mencetak peringatan sendiri untuk event yang sama.</li>
+      <li>Tambahkan pendengar kedua, <tt>lcl_warehouse</tt>, yang mencetak peringatan sendiri untuk event yang sama.</li>
       <li>Tambahkan <tt>sender</tt> ke daftar <tt>IMPORTING</tt> handler dan panggil sebuah method publik pengirimnya.</li>
     </ul>`
   },
@@ -2610,77 +2610,77 @@ START-OF-SELECTION.
         <li><tt>CREATE DATA dref.</tt> membuat data baru tanpa nama yang hanya bisa dicapai lewat referensi itu.</li>
         <li><tt>LOOP AT itab REFERENCE INTO dref.</tt> — seperti <tt>ASSIGNING</tt>, perubahan langsung mengenai baris tabel.</li>
         <li><tt>ASSIGN COMPONENT n OF STRUCTURE s TO &lt;fs&gt;.</tt> mengambil komponen lewat <b>nomor atau nama</b>; <tt>sy-subrc</tt> = 4 bila tidak ada. Dengan <tt>DO</tt> + <tt>EXIT</tt>, seluruh komponen bisa dijelajahi.</li>
-        <li><tt>ASSIGN (nama) TO &lt;fs&gt;.</tt> mengambil variabel yang namanya tersimpan di variabel lain.</li>
+        <li><tt>ASSIGN (name) TO &lt;fs&gt;.</tt> mengambil variabel yang namanya tersimpan di variabel lain.</li>
       </ul>
       <p>Referensi yang belum diisi bernilai kosong; men-dereference-nya memicu <tt>cx_sy_ref_is_initial</tt>. Periksa dengan <tt>IS BOUND</tt>.</p>`,
-    code: `REPORT z_belajar_dinamis.
+    code: `REPORT z_learn_dynamic.
 
-TYPES: BEGIN OF ty_produk,
-         kode  TYPE c LENGTH 5,
-         nama  TYPE string,
-         harga TYPE i,
-       END OF ty_produk.
+TYPES: BEGIN OF ty_product,
+         code  TYPE c LENGTH 5,
+         name  TYPE string,
+         price TYPE i,
+       END OF ty_product.
 
-DATA: gv_angka  TYPE i VALUE 5,
-      gs_produk TYPE ty_produk,
-      gt_produk TYPE STANDARD TABLE OF ty_produk,
-      gr_angka  TYPE REF TO i,
-      gr_produk TYPE REF TO ty_produk,
-      gv_nama   TYPE string.
+DATA: gv_number   TYPE i VALUE 5,
+      gs_product  TYPE ty_product,
+      gt_products TYPE STANDARD TABLE OF ty_product,
+      gr_number   TYPE REF TO i,
+      gr_product  TYPE REF TO ty_product,
+      gv_name     TYPE string.
 
-FIELD-SYMBOLS <fs_apa_saja> TYPE any.
+FIELD-SYMBOLS <fs_any> TYPE any.
 
-* 1) Referensi ke variabel
-gr_angka = REF #( gv_angka ).
-gr_angka->* = 99.                        " mengubah gv_angka lewat referensi
-WRITE: / 'gv_angka =', gv_angka, '| lewat referensi =', gr_angka->*.
+* 1) A reference to a variable
+gr_number = REF #( gv_number ).
+gr_number->* = 99.                        " changes gv_angka through the reference
+WRITE: / 'gv_number =', gv_number, '| through the reference =', gr_number->*.
 
-* 2) Data tanpa nama
-CREATE DATA gr_angka.
-gr_angka->* = 7.
-WRITE: / 'Data baru =', gr_angka->*, '| gv_angka tetap', gv_angka.
+* 2) Anonymous data
+CREATE DATA gr_number.
+gr_number->* = 7.
+WRITE: / 'New data =', gr_number->*, '| gv_number is still', gv_number.
 
-* 3) Referensi ke struktur dan ke baris tabel
-gs_produk-kode = 'P001'. gs_produk-nama = 'Keyboard'. gs_produk-harga = 350000.
-APPEND gs_produk TO gt_produk.
-gs_produk-kode = 'P002'. gs_produk-nama = 'Mouse'.    gs_produk-harga = 150000.
-APPEND gs_produk TO gt_produk.
+* 3) References to a structure and to a table row
+gs_product-code = 'P001'. gs_product-name = 'Keyboard'. gs_product-price = 350000.
+APPEND gs_product TO gt_products.
+gs_product-code = 'P002'. gs_product-name = 'Mouse'.    gs_product-price = 150000.
+APPEND gs_product TO gt_products.
 
-LOOP AT gt_produk REFERENCE INTO gr_produk.
-  gr_produk->harga = gr_produk->harga * 2.
+LOOP AT gt_products REFERENCE INTO gr_product.
+  gr_product->price = gr_product->price * 2.
 ENDLOOP.
-WRITE: / 'Harga setelah digandakan:', gt_produk[ 1 ]-harga, gt_produk[ 2 ]-harga.
+WRITE: / 'Price after doubling:', gt_products[ 1 ]-price, gt_products[ 2 ]-price.
 
-* 4) Menjelajahi komponen struktur tanpa tahu namanya
+* 4) Walking through the components of a structure without knowing their names
 ULINE.
-gs_produk = gt_produk[ 2 ].
+gs_product = gt_products[ 2 ].
 DO.
-  ASSIGN COMPONENT sy-index OF STRUCTURE gs_produk TO <fs_apa_saja>.
+  ASSIGN COMPONENT sy-index OF STRUCTURE gs_product TO <fs_any>.
   IF sy-subrc <> 0.
     EXIT.
   ENDIF.
-  WRITE: / 'Komponen', sy-index, '=', <fs_apa_saja>.
+  WRITE: / 'Component', sy-index, '=', <fs_any>.
 ENDDO.
 
-* 5) Komponen dan variabel lewat nama
-ASSIGN COMPONENT 'NAMA' OF STRUCTURE gs_produk TO <fs_apa_saja>.
-<fs_apa_saja> = 'Mouse Wireless'.
-WRITE: / 'gs_produk-nama =', gs_produk-nama.
+* 5) Components and variables by name
+ASSIGN COMPONENT 'NAME' OF STRUCTURE gs_product TO <fs_any>.
+<fs_any> = 'Mouse Wireless'.
+WRITE: / 'gs_product-name =', gs_product-name.
 
-gv_nama = 'GV_ANGKA'.
-ASSIGN (gv_nama) TO <fs_apa_saja>.
+gv_name = 'GV_NUMBER'.
+ASSIGN (gv_name) TO <fs_any>.
 IF sy-subrc = 0.
-  WRITE: / 'Variabel bernama', gv_nama, 'berisi', <fs_apa_saja>.
+  WRITE: / 'The variable named', gv_name, 'contains', <fs_any>.
 ENDIF.
 
-* 6) Referensi kosong
-CLEAR gr_produk.
-IF gr_produk IS NOT BOUND.
-  WRITE / 'gr_produk belum menunjuk ke mana pun.'.
+* 6) An initial reference
+CLEAR gr_product.
+IF gr_product IS NOT BOUND.
+  WRITE / 'gr_product does not point anywhere yet.'.
 ENDIF.`,
     task: `<ul>
-      <li>Buat FORM <tt>cetak_struktur USING ps_data TYPE any</tt> yang mencetak semua komponen struktur apa pun, lalu panggil untuk <tt>gs_produk</tt> dan untuk satu baris SCARR.</li>
-      <li>Setelah <tt>CLEAR gr_produk</tt>, akses <tt>gr_produk-&gt;harga</tt> dan tangkap exception-nya dengan <tt>TRY … CATCH cx_sy_ref_is_initial</tt>.</li>
+      <li>Buat FORM <tt>print_structure USING ps_data TYPE any</tt> yang mencetak semua komponen struktur apa pun, lalu panggil untuk <tt>gs_product</tt> dan untuk satu baris SCARR.</li>
+      <li>Setelah <tt>CLEAR gr_product</tt>, akses <tt>gr_product-&gt;price</tt> dan tangkap exception-nya dengan <tt>TRY … CATCH cx_sy_ref_is_initial</tt>.</li>
     </ul>`
   },
   {
@@ -2691,7 +2691,7 @@ ENDIF.`,
       <p><tt>CL_SALV_TABLE</tt> diatur lewat <b>objek-objek pembantu</b>. Setiap bagian ALV punya objeknya sendiri:</p>
       <table>
         <tr><th>Diambil dengan</th><th>Mengatur</th></tr>
-        <tr><td><tt>get_columns( )</tt></td><td>kumpulan kolom: <tt>set_optimize( )</tt>, <tt>get_column( 'NAMA' )</tt></td></tr>
+        <tr><td><tt>get_columns( )</tt></td><td>kumpulan kolom: <tt>set_optimize( )</tt>, <tt>get_column( 'NAME' )</tt></td></tr>
         <tr><td><tt>get_column( … )</tt></td><td>satu kolom: <tt>set_long_text</tt> / <tt>set_medium_text</tt> / <tt>set_short_text</tt>, <tt>set_visible( abap_false )</tt>, <tt>set_cell_type( if_salv_c_cell_type=&gt;hotspot )</tt></td></tr>
         <tr><td><tt>get_display_settings( )</tt></td><td><tt>set_striped_pattern( )</tt>, <tt>set_list_header( )</tt></td></tr>
         <tr><td><tt>get_sorts( )</tt>, <tt>get_aggregations( )</tt></td><td><tt>add_sort( columnname = … )</tt>, <tt>add_aggregation( columnname = … )</tt></td></tr>
@@ -2703,9 +2703,9 @@ ENDIF.`,
         <li>Kolom yang tidak ada memicu <tt>cx_salv_not_found</tt>; <tt>factory</tt> bisa memicu <tt>cx_salv_msg</tt>.</li>
       </ul>
       <p>Jalankan, lalu klik nomor PO yang bergaris bawah.</p>`,
-    code: `REPORT z_belajar_salv_lanjut.
+    code: `REPORT z_learn_salv_advanced.
 
-CLASS lcl_laporan_po DEFINITION.
+CLASS lcl_po_report DEFINITION.
   PUBLIC SECTION.
     TYPES: BEGIN OF ty_po,
              ebeln TYPE ekko-ebeln,
@@ -2718,23 +2718,23 @@ CLASS lcl_laporan_po DEFINITION.
              total TYPE p LENGTH 15 DECIMALS 2,
              waers TYPE ekko-waers,
            END OF ty_po.
-    METHODS: jalankan,
+    METHODS: execute,
              on_link_click FOR EVENT link_click OF cl_salv_events_table
                IMPORTING row column.
   PRIVATE SECTION.
     DATA: mt_po  TYPE STANDARD TABLE OF ty_po,
           mo_alv TYPE REF TO cl_salv_table.
-    METHODS: ambil_data,
-             tampilkan.
+    METHODS: fetch_data,
+             show.
 ENDCLASS.
 
-CLASS lcl_laporan_po IMPLEMENTATION.
-  METHOD jalankan.
-    ambil_data( ).
-    tampilkan( ).
+CLASS lcl_po_report IMPLEMENTATION.
+  METHOD execute.
+    fetch_data( ).
+    show( ).
   ENDMETHOD.
 
-  METHOD ambil_data.
+  METHOD fetch_data.
     SELECT a~ebeln, b~ebelp, a~bedat, c~name1, b~txz01, b~menge, b~netpr, a~waers
       FROM ekko AS a
       INNER JOIN ekpo AS b ON a~ebeln = b~ebeln
@@ -2747,7 +2747,7 @@ CLASS lcl_laporan_po IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD tampilkan.
+  METHOD show.
     TRY.
         cl_salv_table=>factory(
           IMPORTING
@@ -2756,25 +2756,25 @@ CLASS lcl_laporan_po IMPLEMENTATION.
             t_table      = mt_po ).
 
         mo_alv->get_display_settings( )->set_striped_pattern( abap_true ).
-        mo_alv->get_display_settings( )->set_list_header( 'Daftar Purchase Order' ).
+        mo_alv->get_display_settings( )->set_list_header( 'Purchase Order List' ).
 
         DATA(lo_columns) = mo_alv->get_columns( ).
         lo_columns->set_optimize( abap_true ).
 
-        " kolom nomor PO bisa diklik
+        " the PO number column can be clicked
         DATA(lo_ebeln) = CAST cl_salv_column_table( lo_columns->get_column( 'EBELN' ) ).
         lo_ebeln->set_cell_type( if_salv_c_cell_type=>hotspot ).
 
-        " judul kolom sendiri, dan satu kolom disembunyikan
-        lo_columns->get_column( 'TOTAL' )->set_medium_text( 'Nilai Item' ).
-        lo_columns->get_column( 'TXZ01' )->set_medium_text( 'Barang' ).
+        " own column headings, and one hidden column
+        lo_columns->get_column( 'TOTAL' )->set_medium_text( 'Item Value' ).
+        lo_columns->get_column( 'TXZ01' )->set_medium_text( 'Item' ).
         lo_columns->get_column( 'EBELP' )->set_visible( abap_false ).
 
-        " urut menurut vendor, jumlahkan nilainya
+        " sort by vendor, total the value
         mo_alv->get_sorts( )->add_sort( columnname = 'NAME1' ).
         mo_alv->get_aggregations( )->add_aggregation( columnname = 'TOTAL' ).
 
-        " daftarkan method ini sebagai pendengar klik
+        " register this method as the click listener
         SET HANDLER on_link_click FOR mo_alv->get_event( ).
 
         mo_alv->display( ).
@@ -2787,16 +2787,16 @@ CLASS lcl_laporan_po IMPLEMENTATION.
   METHOD on_link_click.
     READ TABLE mt_po INTO DATA(ls_po) INDEX row.
     IF sy-subrc = 0.
-      MESSAGE |PO { ls_po-ebeln } dari { ls_po-name1 }: { ls_po-txz01 } senilai { ls_po-total } { ls_po-waers }| TYPE 'I'.
+      MESSAGE |PO { ls_po-ebeln } from { ls_po-name1 }: { ls_po-txz01 } worth { ls_po-total } { ls_po-waers }| TYPE 'I'.
     ENDIF.
   ENDMETHOD.
 ENDCLASS.
 
 START-OF-SELECTION.
-  DATA(go_laporan) = NEW lcl_laporan_po( ).
-  go_laporan->jalankan( ).`,
+  DATA(go_report) = NEW lcl_po_report( ).
+  go_report->execute( ).`,
     task: `<ul>
-      <li>Minta kolom yang tidak ada (<tt>get_column( 'HARGA' )</tt>). Exception apa yang tertangkap?</li>
+      <li>Minta kolom yang tidak ada (<tt>get_column( 'PRICE' )</tt>). Exception apa yang tertangkap?</li>
       <li>Tambahkan handler untuk event <tt>double_click</tt> yang menampilkan jumlah (<tt>menge</tt>) baris yang diklik.</li>
       <li>Tambahkan <tt>PARAMETERS p_bukrs</tt> dan saring PO menurut company code.</li>
     </ul>`
@@ -2808,44 +2808,44 @@ START-OF-SELECTION.
     body: `
       <p>Pelajaran penutup menggabungkan semuanya. Laporan okupansi penerbangan ditulis sebagai satu class; program utamanya tinggal empat baris.</p>
       <ul>
-        <li><b>Tanggung jawab terpisah</b>: <tt>ambil_data</tt> hanya membaca database, <tt>olah_data</tt> hanya menghitung, <tt>tampilkan</tt> hanya urusan layar. Masing-masing bisa diubah atau diuji sendiri.</li>
+        <li><b>Tanggung jawab terpisah</b>: <tt>fetch_data</tt> hanya membaca database, <tt>process_data</tt> hanya menghitung, <tt>show</tt> hanya urusan layar. Masing-masing bisa diubah atau diuji sendiri.</li>
         <li><b>State di atribut</b>: tabel hasil disimpan di <tt>mt_data</tt> (private), bukan variabel global.</li>
-        <li><b>Tipe di dalam class</b>: <tt>ty_baris</tt> didefinisikan di <tt>PUBLIC SECTION</tt> class.</li>
+        <li><b>Tipe di dalam class</b>: <tt>ty_row</tt> didefinisikan di <tt>PUBLIC SECTION</tt> class.</li>
         <li><b>Constructor</b> menerima kriteria seleksi, sehingga objek laporan selalu tahu apa yang harus diambil.</li>
       </ul>
       <p>Bandingkan dengan proyek di level Menengah: alurnya sama, tetapi tidak ada lagi variabel global yang bisa diubah dari mana saja.</p>`,
-    code: `REPORT z_belajar_oo_report.
+    code: `REPORT z_learn_oo_report.
 
-CLASS lcl_laporan DEFINITION.
+CLASS lcl_report DEFINITION.
   PUBLIC SECTION.
-    TYPES: BEGIN OF ty_baris,
+    TYPES: BEGIN OF ty_row,
              carrid   TYPE sflight-carrid,
              carrname TYPE scarr-carrname,
              connid   TYPE sflight-connid,
              fldate   TYPE sflight-fldate,
              seatsmax TYPE sflight-seatsmax,
              seatsocc TYPE sflight-seatsocc,
-             persen   TYPE i,
+             percent  TYPE i,
              status   TYPE c LENGTH 8,
-           END OF ty_baris.
+           END OF ty_row.
 
     METHODS: constructor IMPORTING iv_carrid TYPE sflight-carrid,
-             ambil_data,
-             olah_data,
-             tampilkan,
-             jumlah_baris RETURNING VALUE(rv_jumlah) TYPE i.
+             fetch_data,
+             process_data,
+             show,
+             row_count RETURNING VALUE(rv_count) TYPE i.
 
   PRIVATE SECTION.
     DATA: mv_carrid TYPE sflight-carrid,
-          mt_data   TYPE STANDARD TABLE OF ty_baris.
+          mt_data   TYPE STANDARD TABLE OF ty_row.
 ENDCLASS.
 
-CLASS lcl_laporan IMPLEMENTATION.
+CLASS lcl_report IMPLEMENTATION.
   METHOD constructor.
     mv_carrid = iv_carrid.
   ENDMETHOD.
 
-  METHOD ambil_data.
+  METHOD fetch_data.
     SELECT f~carrid c~carrname f~connid f~fldate f~seatsmax f~seatsocc
       FROM sflight AS f
       INNER JOIN scarr AS c ON f~carrid = c~carrid
@@ -2854,24 +2854,24 @@ CLASS lcl_laporan IMPLEMENTATION.
       ORDER BY f~fldate.
   ENDMETHOD.
 
-  METHOD olah_data.
-    LOOP AT mt_data ASSIGNING FIELD-SYMBOL(<ls_baris>).
-      <ls_baris>-persen = <ls_baris>-seatsocc * 100 / <ls_baris>-seatsmax.
-      IF <ls_baris>-persen >= 90.
-        <ls_baris>-status = 'PENUH'.
-      ELSEIF <ls_baris>-persen >= 80.
-        <ls_baris>-status = 'RAMAI'.
+  METHOD process_data.
+    LOOP AT mt_data ASSIGNING FIELD-SYMBOL(<ls_row>).
+      <ls_row>-percent = <ls_row>-seatsocc * 100 / <ls_row>-seatsmax.
+      IF <ls_row>-percent >= 90.
+        <ls_row>-status = 'FULL'.
+      ELSEIF <ls_row>-percent >= 80.
+        <ls_row>-status = 'BUSY'.
       ELSE.
-        <ls_baris>-status = 'LONGGAR'.
+        <ls_row>-status = 'QUIET'.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD jumlah_baris.
-    rv_jumlah = lines( mt_data ).
+  METHOD row_count.
+    rv_count = lines( mt_data ).
   ENDMETHOD.
 
-  METHOD tampilkan.
+  METHOD show.
     DATA lo_alv TYPE REF TO cl_salv_table.
     TRY.
         cl_salv_table=>factory(
@@ -2880,7 +2880,7 @@ CLASS lcl_laporan IMPLEMENTATION.
           CHANGING
             t_table      = mt_data ).
         lo_alv->get_display_settings( )->set_striped_pattern( abap_true ).
-        lo_alv->get_display_settings( )->set_list_header( 'Okupansi Penerbangan' ).
+        lo_alv->get_display_settings( )->set_list_header( 'Flight Occupancy' ).
         lo_alv->display( ).
       CATCH cx_salv_msg INTO DATA(lx_msg).
         MESSAGE lx_msg->get_text( ) TYPE 'E'.
@@ -2891,21 +2891,21 @@ ENDCLASS.
 PARAMETERS p_carr TYPE sflight-carrid DEFAULT 'GA'.
 
 START-OF-SELECTION.
-  DATA(lo_laporan) = NEW lcl_laporan( p_carr ).
-  lo_laporan->ambil_data( ).
+  DATA(lo_report) = NEW lcl_report( p_carr ).
+  lo_report->fetch_data( ).
 
-  IF lo_laporan->jumlah_baris( ) = 0.
-    MESSAGE |Tidak ada penerbangan untuk maskapai { p_carr }| TYPE 'S'.
+  IF lo_report->row_count( ) = 0.
+    MESSAGE |No flights for airline { p_carr }| TYPE 'S'.
     RETURN.
   ENDIF.
 
-  lo_laporan->olah_data( ).
-  WRITE: / 'Maskapai', p_carr, '-', lo_laporan->jumlah_baris( ), 'penerbangan'.
-  lo_laporan->tampilkan( ).`,
+  lo_report->process_data( ).
+  WRITE: / 'Airline', p_carr, '-', lo_report->row_count( ), 'flights'.
+  lo_report->show( ).`,
     task: `<ul>
       <li>Jalankan lewat <b>Parameters (F8)</b> dengan maskapai <tt>SQ</tt>, lalu dengan kode yang tidak ada (<tt>XX</tt>).</li>
-      <li>Tambahkan method <tt>rata_rata_okupansi</tt> yang mengembalikan rata-rata kolom <tt>persen</tt>.</li>
-      <li>Pisahkan tampilan ke class sendiri <tt>lcl_tampilan</tt> yang menerima tabel data — sehingga <tt>lcl_laporan</tt> tidak tahu apa-apa soal ALV.</li>
+      <li>Tambahkan method <tt>average_occupancy</tt> yang mengembalikan rata-rata kolom <tt>percent</tt>.</li>
+      <li>Pisahkan tampilan ke class sendiri <tt>lcl_view</tt> yang menerima tabel data — sehingga <tt>lcl_report</tt> tidak tahu apa-apa soal ALV.</li>
     </ul>`
   },
 
@@ -2925,51 +2925,51 @@ START-OF-SELECTION.
         <li>Fungsi <tt>matches( )</tt> bernilai benar hanya bila <b>seluruh</b> teks cocok dengan pola — pas untuk validasi input. <tt>match( )</tt> mengembalikan bagian yang cocok, <tt>replace( … regex = … occ = 0 )</tt> mengganti semua kecocokan, dan <tt>count( )</tt> menghitungnya.</li>
       </ul>
       <p>Di sistem baru (mulai ABAP 7.55) kata <tt>REGEX</tt> digantikan <tt>PCRE</tt>, dengan cara tulis yang sama: <tt>FIND PCRE …</tt>, <tt>matches( val = … pcre = … )</tt>. Simulator menerima keduanya.</p>`,
-    code: `REPORT z_belajar_regex.
+    code: `REPORT z_learn_regex.
 
-DATA gv_teks TYPE string VALUE 'Order 4500000012 dan 4500000099 dikirim ke budi@contoh.co.id'.
+DATA gv_text TYPE string VALUE 'Orders 4500000012 and 4500000099 were sent to budi@example.co.id'.
 
-* 1) FIND REGEX: posisi, panjang, dan jumlah kecocokan
-FIND REGEX '\\d{10}' IN gv_teks MATCH OFFSET DATA(gv_posisi) MATCH LENGTH DATA(gv_panjang).
+* 1) FIND REGEX: position, length and number of matches
+FIND REGEX '\\d{10}' IN gv_text MATCH OFFSET DATA(gv_position) MATCH LENGTH DATA(gv_length).
 IF sy-subrc = 0.
-  DATA(gv_nomor) = substring( val = gv_teks off = gv_posisi len = gv_panjang ).
-  WRITE: / 'Nomor pertama :', gv_nomor, '(posisi', gv_posisi, ')'.
+  DATA(gv_order_no) = substring( val = gv_text off = gv_position len = gv_length ).
+  WRITE: / 'First number  :', gv_order_no, '(position', gv_position, ')'.
 ENDIF.
-FIND ALL OCCURRENCES OF REGEX '\\d{10}' IN gv_teks MATCH COUNT DATA(gv_jumlah).
-WRITE: / 'Jumlah nomor  :', gv_jumlah.
+FIND ALL OCCURRENCES OF REGEX '\\d{10}' IN gv_text MATCH COUNT DATA(gv_count).
+WRITE: / 'Number count  :', gv_count.
 
-* 2) SUBMATCHES: isi tiap pasang kurung ( )
-FIND REGEX '(\\w+)@([\\w.]+)' IN gv_teks SUBMATCHES DATA(gv_user) DATA(gv_domain).
-WRITE: / 'Pengguna      :', gv_user.
+* 2) SUBMATCHES: the content of each pair of parentheses ( )
+FIND REGEX '(\\w+)@([\\w.]+)' IN gv_text SUBMATCHES DATA(gv_user) DATA(gv_domain).
+WRITE: / 'User          :', gv_user.
 WRITE: / 'Domain        :', gv_domain.
 
-* 3) REPLACE ... REGEX: $1 adalah isi kurung pertama
-DATA(gv_samar) = gv_teks.
-REPLACE ALL OCCURRENCES OF REGEX '\\d{6}(\\d{4})' IN gv_samar WITH '******$1'.
-WRITE: / gv_samar.
+* 3) REPLACE ... REGEX: $1 is the content of the first parentheses
+DATA(gv_masked) = gv_text.
+REPLACE ALL OCCURRENCES OF REGEX '\\d{6}(\\d{4})' IN gv_masked WITH '******$1'.
+WRITE: / gv_masked.
 
-* 4) Fungsi: matches( ) menguji SELURUH teks, match( ) mengambil bagian yang cocok
-DATA gt_kode TYPE STANDARD TABLE OF string WITH EMPTY KEY.
-gt_kode = VALUE #( ( 'AB-123' ) ( 'ab-12' ) ( 'XYZ-999' ) ( 'QQ-007' ) ).
+* 4) Functions: matches( ) tests the WHOLE text, match( ) returns the matching part
+DATA gt_codes TYPE STANDARD TABLE OF string WITH EMPTY KEY.
+gt_codes = VALUE #( ( 'AB-123' ) ( 'ab-12' ) ( 'XYZ-999' ) ( 'QQ-007' ) ).
 SKIP.
-LOOP AT gt_kode INTO DATA(gv_kode).
-  IF matches( val = gv_kode regex = '[A-Z]{2}-\\d{3}' ).
-    WRITE: / gv_kode, 12 'valid'.
+LOOP AT gt_codes INTO DATA(gv_code).
+  IF matches( val = gv_code regex = '[A-Z]{2}-\\d{3}' ).
+    WRITE: / gv_code, 12 'valid'.
   ELSE.
-    WRITE: / gv_kode, 12 'tidak valid'.
+    WRITE: / gv_code, 12 'not valid'.
   ENDIF.
 ENDLOOP.
 
-DATA(gv_angka)  = match( val = gv_teks regex = '\\d+' ).
-DATA(gv_bersih) = replace( val = 'A1B22C333' regex = '\\d+' with = '' occ = 0 ).
-DATA(gv_kata)   = count( val = gv_teks regex = '[a-z]+' ).
+DATA(gv_digits) = match( val = gv_text regex = '\\d+' ).
+DATA(gv_clean)  = replace( val = 'A1B22C333' regex = '\\d+' with = '' occ = 0 ).
+DATA(gv_words)  = count( val = gv_text regex = '[a-z]+' ).
 SKIP.
-WRITE: / 'Angka pertama :', gv_angka.
-WRITE: / 'Tanpa angka   :', gv_bersih.
-WRITE: / 'Kata huruf kecil:', gv_kata.`,
+WRITE: / 'First digits  :', gv_digits.
+WRITE: / 'Without digits:', gv_clean.
+WRITE: / 'Lower-case words:', gv_words.`,
     task: `<ul>
       <li>Ubah pola nomor order agar hanya cocok dengan nomor yang diawali <tt>45</tt>.</li>
-      <li>Tambahkan kode <tt>ZZ-12A</tt> ke <tt>gt_kode</tt>. Perkirakan hasilnya dulu, baru jalankan.</li>
+      <li>Tambahkan kode <tt>ZZ-12A</tt> ke <tt>gt_codes</tt>. Perkirakan hasilnya dulu, baru jalankan.</li>
       <li>Tulis validasi kode pos (tepat lima digit) dengan <tt>matches( )</tt>.</li>
     </ul>`
   },
@@ -2982,12 +2982,12 @@ WRITE: / 'Kata huruf kecil:', gv_kata.`,
       <ul>
         <li>Loop luar berjalan sekali untuk tiap <b>kelompok</b>, bukan untuk tiap baris. <tt>LOOP AT GROUP</tt> di dalamnya membaca anggota kelompok itu.</li>
         <li><tt>GROUP BY gs_order-ernam … INTO DATA(gv_sales)</tt>: variabel di belakang <tt>INTO</tt> (group binding) berisi nilai kuncinya.</li>
-        <li>Kunci boleh berupa struktur: <tt>GROUP BY ( kunnr = … jumlah = GROUP SIZE )</tt>. <tt>GROUP SIZE</tt> berisi jumlah anggota, <tt>GROUP INDEX</tt> nomor urut kelompoknya.</li>
+        <li>Kunci boleh berupa struktur: <tt>GROUP BY ( kunnr = … cnt = GROUP SIZE )</tt>. <tt>GROUP SIZE</tt> berisi jumlah anggota, <tt>GROUP INDEX</tt> nomor urut kelompoknya.</li>
         <li><tt>ASCENDING</tt> / <tt>DESCENDING</tt> mengurutkan kelompok menurut kuncinya. Tanpa itu kelompok muncul menurut kemunculan pertamanya di tabel.</li>
         <li>Tanpa <tt>INTO</tt> di belakang (representative binding), work area berisi baris pertama kelompok dan dipakai sebagai nama kelompoknya: <tt>LOOP AT GROUP gs_order</tt>.</li>
       </ul>
       <p>Tabel aslinya tidak berubah dan tidak perlu diurutkan lebih dulu.</p>`,
-    code: `REPORT z_belajar_group_by.
+    code: `REPORT z_learn_group_by.
 
 TYPES: BEGIN OF ty_order,
          vbeln TYPE vbak-vbeln,
@@ -2996,43 +2996,43 @@ TYPES: BEGIN OF ty_order,
          netwr TYPE vbak-netwr,
        END OF ty_order.
 DATA: gt_order   TYPE STANDARD TABLE OF ty_order WITH EMPTY KEY,
-      gs_anggota TYPE ty_order,
+      gs_member  TYPE ty_order,
       gv_total   TYPE vbak-netwr.
 
 SELECT vbeln kunnr ernam netwr FROM vbak INTO TABLE gt_order.
 
-* 1) Satu kunci, dengan group binding: gv_sales berisi nilai kuncinya
-WRITE: / 'Penjualan per sales'.
+* 1) One key, with a group binding: gv_sales holds the key value
+WRITE: / 'Sales per salesperson'.
 LOOP AT gt_order INTO DATA(gs_order) GROUP BY gs_order-ernam ASCENDING INTO DATA(gv_sales).
   CLEAR gv_total.
-  LOOP AT GROUP gv_sales INTO gs_anggota.
-    gv_total = gv_total + gs_anggota-netwr.
+  LOOP AT GROUP gv_sales INTO gs_member.
+    gv_total = gv_total + gs_member-netwr.
   ENDLOOP.
   WRITE: /3 gv_sales, 16 gv_total.
 ENDLOOP.
 
-* 2) Kunci berbentuk struktur, plus GROUP SIZE
+* 2) A structured key, plus GROUP SIZE
 SKIP.
-WRITE: / 'Jumlah order per pelanggan'.
+WRITE: / 'Number of orders per customer'.
 LOOP AT gt_order INTO gs_order
-     GROUP BY ( kunnr = gs_order-kunnr jumlah = GROUP SIZE )
-     DESCENDING INTO DATA(gs_grup).
-  WRITE: /3 gs_grup-kunnr, 16 gs_grup-jumlah.
+     GROUP BY ( kunnr = gs_order-kunnr cnt = GROUP SIZE )
+     DESCENDING INTO DATA(gs_group).
+  WRITE: /3 gs_group-kunnr, 16 gs_group-cnt.
 ENDLOOP.
 
-* 3) Tanpa INTO di belakang: gs_order (baris pertama) mewakili kelompoknya
+* 3) Without a trailing INTO: gs_order (the first row) represents its group
 SKIP.
-WRITE: / 'Order terbesar tiap pelanggan'.
+WRITE: / 'Largest order of each customer'.
 LOOP AT gt_order INTO gs_order GROUP BY gs_order-kunnr.
-  DATA(gs_maks) = gs_order.
-  LOOP AT GROUP gs_order INTO gs_anggota WHERE netwr > gs_maks-netwr.
-    gs_maks = gs_anggota.
+  DATA(gs_max) = gs_order.
+  LOOP AT GROUP gs_order INTO gs_member WHERE netwr > gs_max-netwr.
+    gs_max = gs_member.
   ENDLOOP.
-  WRITE: /3 gs_maks-kunnr, 16 gs_maks-vbeln, 30 gs_maks-netwr.
+  WRITE: /3 gs_max-kunnr, 16 gs_max-vbeln, 30 gs_max-netwr.
 ENDLOOP.`,
     task: `<ul>
       <li>Tambahkan field <tt>vkorg</tt> ke <tt>ty_order</tt>, lalu cetak jumlah order dan total nilainya per sales organization.</li>
-      <li>Di bagian 2, tambahkan <tt>urut = GROUP INDEX</tt> ke kunci dan cetak nomornya.</li>
+      <li>Di bagian 2, tambahkan <tt>seq = GROUP INDEX</tt> ke kunci dan cetak nomornya.</li>
       <li>Ubah bagian 3 agar menampilkan order <b>terkecil</b> tiap pelanggan.</li>
     </ul>`
   },
@@ -3044,69 +3044,69 @@ ENDLOOP.`,
       <p>Level Mahir mengenalkan <tt>VALUE</tt>, <tt>FOR</tt>, dan <tt>REDUCE</tt>. Empat alat berikut melengkapinya, sehingga pengolahan tabel bisa ditulis sebagai satu ekspresi.</p>
       <ul>
         <li><tt>FILTER #( tabel WHERE … )</tt> mengambil baris yang cocok. Syaratnya: tabel sumber berjenis <tt>SORTED</tt> atau <tt>HASHED</tt>, dan kondisi <tt>WHERE</tt> memakai kolom key-nya. Tambahan <tt>EXCEPT</tt> membalik hasilnya.</li>
-        <li><tt>LET nama = … IN</tt> membuat variabel bantu yang hanya hidup di dalam ekspresi itu — nilai yang dipakai berulang cukup dihitung sekali.</li>
+        <li><tt>LET name = … IN</tt> membuat variabel bantu yang hanya hidup di dalam ekspresi itu — nilai yang dipakai berulang cukup dihitung sekali.</li>
         <li><tt>FOR GROUPS grp OF e IN tabel GROUP BY …</tt> adalah bentuk ekspresi dari <tt>LOOP AT … GROUP BY</tt>; <tt>FOR m IN GROUP grp</tt> membaca anggota kelompoknya.</li>
         <li><tt>CORRESPONDING tipe( sumber MAPPING baru = lama EXCEPT kolom )</tt> menyalin field bernama sama, memetakan nama yang berbeda, dan melewati kolom yang disebut.</li>
       </ul>
       <p>Ekspresi yang terlalu panjang sulit dibaca dan sulit di-debug. Bila satu ekspresi sudah melebihi beberapa baris, pecah menjadi langkah-langkah yang diberi nama.</p>`,
-    code: `REPORT z_belajar_ekspresi_tabel.
+    code: `REPORT z_learn_table_expressions.
 
 TYPES: BEGIN OF ty_emp,
-         pernr TYPE pa0001-pernr,
-         ename TYPE pa0001-ename,
-         orgeh TYPE pa0001-orgeh,
-         gaji  TYPE pa0008-bet01,
+         pernr  TYPE pa0001-pernr,
+         ename  TYPE pa0001-ename,
+         orgeh  TYPE pa0001-orgeh,
+         salary TYPE pa0008-bet01,
        END OF ty_emp,
        tt_emp TYPE SORTED TABLE OF ty_emp WITH NON-UNIQUE KEY orgeh.
 DATA gt_emp TYPE tt_emp.
 
-SELECT a~pernr, a~ename, a~orgeh, b~bet01 AS gaji
+SELECT a~pernr, a~ename, a~orgeh, b~bet01 AS salary
   FROM pa0001 AS a INNER JOIN pa0008 AS b ON b~pernr = a~pernr
   WHERE b~endda = '99991231'
   ORDER BY a~orgeh, a~pernr
   INTO TABLE @gt_emp.
 
-* 1) FILTER: baris yang cocok dengan key tabel, tanpa LOOP
+* 1) FILTER: the rows matching the table key, without a LOOP
 DATA(gt_sales) = FILTER #( gt_emp WHERE orgeh = '50000030' ).
-WRITE: / 'Karyawan Sales :', lines( gt_sales ).
+WRITE: / 'Sales employees:', lines( gt_sales ).
 
-* 2) LET: variabel bantu yang hanya hidup di dalam satu ekspresi
-DATA(gv_ringkas) = CONV string(
-  LET jml = lines( gt_emp )
-      tot = REDUCE i( INIT s = 0 FOR e IN gt_emp NEXT s = s + e-gaji )
-  IN |{ jml } karyawan, rata-rata gaji { tot / jml }| ).
-WRITE: / gv_ringkas.
+* 2) LET: helper variables that live only inside one expression
+DATA(gv_summary) = CONV string(
+  LET cnt = lines( gt_emp )
+      amt = REDUCE i( INIT s = 0 FOR e IN gt_emp NEXT s = s + e-salary )
+  IN |{ cnt } employees, average salary { amt / cnt }| ).
+WRITE: / gv_summary.
 
-* 3) FOR GROUPS: rekap per unit organisasi dalam satu ekspresi
-TYPES: BEGIN OF ty_rekap,
+* 3) FOR GROUPS: summary per organizational unit in one expression
+TYPES: BEGIN OF ty_summary,
          orgeh TYPE pa0001-orgeh,
-         orang TYPE i,
+         headcount TYPE i,
          total TYPE pa0008-bet01,
-       END OF ty_rekap,
-       tt_rekap TYPE STANDARD TABLE OF ty_rekap WITH EMPTY KEY.
-DATA(gt_rekap) = VALUE tt_rekap(
+       END OF ty_summary,
+       tt_summary TYPE STANDARD TABLE OF ty_summary WITH EMPTY KEY.
+DATA(gt_summary) = VALUE tt_summary(
   FOR GROUPS grp OF e IN gt_emp GROUP BY e-orgeh ASCENDING
   ( orgeh = grp
-    orang = REDUCE i( INIT c = 0 FOR m IN GROUP grp NEXT c = c + 1 )
-    total = REDUCE i( INIT s = 0 FOR m IN GROUP grp NEXT s = s + m-gaji ) ) ).
+    headcount = REDUCE i( INIT c = 0 FOR m IN GROUP grp NEXT c = c + 1 )
+    total = REDUCE i( INIT s = 0 FOR m IN GROUP grp NEXT s = s + m-salary ) ) ).
 SKIP.
-LOOP AT gt_rekap INTO DATA(gs_rekap).
-  WRITE: / gs_rekap-orgeh, 12 gs_rekap-orang, 18 gs_rekap-total.
+LOOP AT gt_summary INTO DATA(gs_summary).
+  WRITE: / gs_summary-orgeh, 12 gs_summary-headcount, 18 gs_summary-total.
 ENDLOOP.
 
-* 4) CORRESPONDING ... MAPPING ... EXCEPT: salin ke struktur dengan nama field lain
-TYPES: BEGIN OF ty_kartu,
-         nomor TYPE pa0001-pernr,
-         nama  TYPE pa0001-ename,
-         gaji  TYPE pa0008-bet01,
-       END OF ty_kartu.
-DATA(gs_kartu) = CORRESPONDING ty_kartu( gt_emp[ 1 ] MAPPING nomor = pernr nama = ename EXCEPT gaji ).
+* 4) CORRESPONDING ... MAPPING ... EXCEPT: copy to a structure with other field names
+TYPES: BEGIN OF ty_card,
+         emp_no TYPE pa0001-pernr,
+         name   TYPE pa0001-ename,
+         salary TYPE pa0008-bet01,
+       END OF ty_card.
+DATA(gs_card) = CORRESPONDING ty_card( gt_emp[ 1 ] MAPPING emp_no = pernr name = ename EXCEPT salary ).
 SKIP.
-WRITE: / gs_kartu-nomor, gs_kartu-nama, gs_kartu-gaji.`,
+WRITE: / gs_card-emp_no, gs_card-name, gs_card-salary.`,
     task: `<ul>
-      <li>Buat <tt>gt_bukan_sales</tt> dengan <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> dan cetak jumlah barisnya.</li>
-      <li>Tambahkan kolom <tt>rata</tt> (rata-rata gaji) ke <tt>ty_rekap</tt> dan isi di dalam ekspresi yang sama.</li>
-      <li>Hapus <tt>EXCEPT gaji</tt> di bagian 4, jalankan, dan lihat perubahan outputnya.</li>
+      <li>Buat <tt>gt_non_sales</tt> dengan <tt>FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' )</tt> dan cetak jumlah barisnya.</li>
+      <li>Tambahkan kolom <tt>average</tt> (rata-rata gaji) ke <tt>ty_summary</tt> dan isi di dalam ekspresi yang sama.</li>
+      <li>Hapus <tt>EXCEPT salary</tt> di bagian 4, jalankan, dan lihat perubahan outputnya.</li>
     </ul>`
   },
   {
@@ -3119,65 +3119,65 @@ WRITE: / gs_kartu-nomor, gs_kartu-nama, gs_kartu-gaji.`,
         <li><b>Subquery</b>: <tt>WHERE kolom [NOT] IN ( SELECT … )</tt> membandingkan dengan hasil SELECT lain. <tt>EXISTS ( SELECT … )</tt> benar bila subquery menghasilkan minimal satu baris.</li>
         <li>Subquery <b>berkorelasi</b> merujuk baris query luar, misalnya <tt>WHERE kunrg = kna1~kunnr</tt> — subquery dinilai untuk tiap baris luar.</li>
         <li><tt>CASE WHEN … THEN … ELSE … END AS nama</tt> membuat kolom hasil berdasarkan kondisi.</li>
-        <li>Perhitungan dan fungsi boleh ditulis langsung di daftar kolom: <tt>seatsmax - seatsocc AS sisa</tt>, <tt>concat( carrid, connid )</tt>. Nama alias-nya dapat dipakai di <tt>ORDER BY</tt>.</li>
+        <li>Perhitungan dan fungsi boleh ditulis langsung di daftar kolom: <tt>seatsmax - seatsocc AS free_seats</tt>, <tt>concat( carrid, connid )</tt>. Nama alias-nya dapat dipakai di <tt>ORDER BY</tt>.</li>
         <li><tt>UNION</tt> menggabung hasil dua SELECT yang susunan kolomnya sama dan membuang baris kembar; <tt>UNION ALL</tt> mempertahankan semuanya.</li>
       </ul>
       <p>Lihat baris <b>Database</b> di bawah output: lima SELECT, lima akses — dan tidak ada satu pun SELECT di dalam loop.</p>`,
-    code: `REPORT z_belajar_sql_lanjutan.
+    code: `REPORT z_learn_sql_advanced.
 
-* 1) Subquery: order yang BELUM punya delivery
+* 1) Subquery: orders that do NOT have a delivery yet
 SELECT vbeln, kunnr, netwr FROM vbak
   WHERE vbeln NOT IN ( SELECT vgbel FROM lips )
   ORDER BY vbeln
-  INTO TABLE @DATA(gt_buka).
-WRITE: / 'Order tanpa delivery:', lines( gt_buka ).
-LOOP AT gt_buka INTO DATA(gs_buka).
-  WRITE: /3 gs_buka-vbeln, 16 gs_buka-netwr.
+  INTO TABLE @DATA(gt_open).
+WRITE: / 'Orders without delivery:', lines( gt_open ).
+LOOP AT gt_open INTO DATA(gs_open).
+  WRITE: /3 gs_open-vbeln, 16 gs_open-netwr.
 ENDLOOP.
 
-* 2) EXISTS dengan subquery berkorelasi: pelanggan yang sudah pernah ditagih
+* 2) EXISTS with a correlated subquery: customers that have been billed
 SELECT kunnr, name1 FROM kna1
   WHERE EXISTS ( SELECT vbeln FROM vbrk WHERE kunrg = kna1~kunnr )
   ORDER BY kunnr
-  INTO TABLE @DATA(gt_ditagih).
+  INTO TABLE @DATA(gt_billed).
 SKIP.
-WRITE: / 'Pelanggan yang sudah ditagih:', lines( gt_ditagih ).
+WRITE: / 'Customers already billed:', lines( gt_billed ).
 
-* 3) CASE dan perhitungan di daftar kolom
+* 3) CASE and calculations in the column list
 SELECT vbeln, netwr,
-       CASE WHEN netwr >= 20000000 THEN 'BESAR'
-            WHEN netwr >= 10000000 THEN 'SEDANG'
-            ELSE 'KECIL' END AS kelas
+       CASE WHEN netwr >= 20000000 THEN 'LARGE'
+            WHEN netwr >= 10000000 THEN 'MEDIUM'
+            ELSE 'SMALL' END AS tier
   FROM vbak
   ORDER BY netwr DESCENDING
-  INTO TABLE @DATA(gt_kelas)
+  INTO TABLE @DATA(gt_tiers)
   UP TO 5 ROWS.
 SKIP.
-LOOP AT gt_kelas INTO DATA(gs_kelas).
-  WRITE: /3 gs_kelas-vbeln, 16 gs_kelas-netwr, 30 gs_kelas-kelas.
+LOOP AT gt_tiers INTO DATA(gs_tier).
+  WRITE: /3 gs_tier-vbeln, 16 gs_tier-netwr, 30 gs_tier-tier.
 ENDLOOP.
 
-SELECT carrid, connid, seatsmax - seatsocc AS sisa,
-       concat( carrid, connid ) AS kode
+SELECT carrid, connid, seatsmax - seatsocc AS free_seats,
+       concat( carrid, connid ) AS code
   FROM sflight
-  ORDER BY sisa DESCENDING
-  INTO TABLE @DATA(gt_kursi)
+  ORDER BY free_seats DESCENDING
+  INTO TABLE @DATA(gt_seats)
   UP TO 3 ROWS.
 SKIP.
-LOOP AT gt_kursi INTO DATA(gs_kursi).
-  WRITE: /3 gs_kursi-kode, 12 gs_kursi-sisa, 'kursi kosong'.
+LOOP AT gt_seats INTO DATA(gs_seats).
+  WRITE: /3 gs_seats-code, 12 gs_seats-free_seats, 'free seats'.
 ENDLOOP.
 
-* 4) UNION: pelanggan dan vendor dalam satu daftar mitra
-SELECT kunnr AS nomor, name1, 'Pelanggan' AS peran FROM kna1
+* 4) UNION: customers and vendors in one partner list
+SELECT kunnr AS partner_no, name1, 'Customer' AS role FROM kna1
 UNION
-SELECT lifnr AS nomor, name1, 'Vendor' AS peran FROM lfa1
-INTO TABLE @DATA(gt_mitra).
+SELECT lifnr AS partner_no, name1, 'Vendor' AS role FROM lfa1
+INTO TABLE @DATA(gt_partners).
 SKIP.
-WRITE: / 'Jumlah mitra:', lines( gt_mitra ).`,
+WRITE: / 'Number of partners:', lines( gt_partners ).`,
     task: `<ul>
       <li>Balik pertanyaan 1: tampilkan order yang <b>sudah</b> punya delivery.</li>
-      <li>Tambahkan kelas <tt>MIKRO</tt> untuk order di bawah 5 juta.</li>
+      <li>Tambahkan kelas <tt>MICRO</tt> untuk order di bawah 5 juta.</li>
       <li>Ganti <tt>UNION</tt> dengan <tt>UNION ALL</tt>. Apakah jumlah mitranya berubah? Mengapa?</li>
     </ul>`
   },
@@ -3196,55 +3196,55 @@ WRITE: / 'Jumlah mitra:', lines( gt_mitra ).`,
         <li><tt>GET RUN TIME FIELD</tt> mengukur waktu dalam mikrodetik (di simulator angkanya tidak mewakili sistem nyata). Di SAP, transaksi <tt>SAT</tt> dan <tt>ST05</tt> menunjukkan di mana waktu terbuang.</li>
       </ul>
       <p>Simulator menghitung akses database tiap kali program dijalankan. Baris <b>Database</b> di bawah output menampilkan jumlahnya dan menandai <tt>SELECT</tt> yang dijalankan berulang di dalam loop.</p>`,
-    code: `REPORT z_belajar_kinerja.
+    code: `REPORT z_learn_performance.
 
-TYPES: BEGIN OF ty_teks,
+TYPES: BEGIN OF ty_text,
          matnr TYPE makt-matnr,
          maktx TYPE makt-maktx,
-       END OF ty_teks.
-DATA: gt_item TYPE STANDARD TABLE OF vbap,
-      gs_makt TYPE makt,
-      gt_teks TYPE HASHED TABLE OF ty_teks WITH UNIQUE KEY matnr,
-      gv_t0   TYPE i,
-      gv_t1   TYPE i,
-      gv_lama TYPE i.
+       END OF ty_text.
+DATA: gt_item     TYPE STANDARD TABLE OF vbap,
+      gs_makt     TYPE makt,
+      gt_texts    TYPE HASHED TABLE OF ty_text WITH UNIQUE KEY matnr,
+      gv_t0       TYPE i,
+      gv_t1       TYPE i,
+      gv_duration TYPE i.
 
 SELECT * FROM vbap INTO TABLE gt_item.
 
-* CARA LAMBAT: satu akses database untuk setiap baris
+* THE SLOW WAY: one database access for every row
 GET RUN TIME FIELD gv_t0.
 LOOP AT gt_item INTO DATA(gs_item).
   SELECT SINGLE * FROM makt INTO gs_makt
     WHERE matnr = gs_item-matnr AND spras = 'EN'.
 ENDLOOP.
 GET RUN TIME FIELD gv_t1.
-gv_lama = gv_t1 - gv_t0.
-WRITE: / 'Cara 1 - SELECT di dalam LOOP :', lines( gt_item ), 'akses database'.
+gv_duration = gv_t1 - gv_t0.
+WRITE: / 'Way 1 - SELECT inside the LOOP :', lines( gt_item ), 'database accesses'.
 
-* CARA CEPAT: baca sekali, simpan di tabel HASHED, cari lewat key
+* THE FAST WAY: read once, keep it in a HASHED table, look up by key
 GET RUN TIME FIELD gv_t0.
-SELECT matnr maktx FROM makt INTO TABLE gt_teks WHERE spras = 'EN'.
+SELECT matnr maktx FROM makt INTO TABLE gt_texts WHERE spras = 'EN'.
 LOOP AT gt_item INTO gs_item.
-  READ TABLE gt_teks INTO DATA(gs_teks) WITH TABLE KEY matnr = gs_item-matnr.
+  READ TABLE gt_texts INTO DATA(gs_text) WITH TABLE KEY matnr = gs_item-matnr.
 ENDLOOP.
 GET RUN TIME FIELD gv_t1.
-gv_lama = gv_t1 - gv_t0.
-WRITE: / 'Cara 2 - sekali baca + HASHED  : 1 akses database'.
+gv_duration = gv_t1 - gv_t0.
+WRITE: / 'Way 2 - read once + HASHED     : 1 database access'.
 
-* CARA TERBAIK bila hanya perlu gabungan: biarkan database yang menggabung
+* THE BEST WAY when only a join is needed: let the database do the join
 SELECT p~vbeln, p~posnr, t~maktx
   FROM vbap AS p INNER JOIN makt AS t ON t~matnr = p~matnr
   WHERE t~spras = 'EN'
-  INTO TABLE @DATA(gt_gabung).
-WRITE: / 'Cara 3 - JOIN                  : 1 akses database,', lines( gt_gabung ), 'baris'.
+  INTO TABLE @DATA(gt_joined).
+WRITE: / 'Way 3 - JOIN                   : 1 database access,', lines( gt_joined ), 'rows'.
 
 SKIP.
-WRITE: / 'Lihat baris "Database" di bawah output: akses dihitung, dan'.
-WRITE: / 'SELECT yang berulang di dalam loop ditandai.'.`,
+WRITE: / 'See the "Database" line below the output: accesses are counted, and'.
+WRITE: / 'a SELECT repeated inside a loop is flagged.'.`,
     task: `<ul>
       <li>Jalankan dan baca baris <b>Database</b>: baris kode mana yang ditandai, dan berapa kali ia dijalankan?</li>
-      <li>Hapus Cara 1, jalankan lagi, dan bandingkan jumlah akses databasenya.</li>
-      <li>Tulis Cara 4 dengan <tt>FOR ALL ENTRIES IN gt_item</tt>.</li>
+      <li>Hapus bagian <b>Way 1</b>, jalankan lagi, dan bandingkan jumlah akses databasenya.</li>
+      <li>Tulis <b>Way 4</b> dengan <tt>FOR ALL ENTRIES IN gt_item</tt>.</li>
     </ul>`
   },
   {
@@ -3261,65 +3261,65 @@ WRITE: / 'SELECT yang berulang di dalam loop ditandai.'.`,
         <li>Uji nilai batasnya: tepat di ambang (5.000.000), tepat di bawahnya (4.999.999), dan jauh di atasnya.</li>
       </ul>
       <p>Test class tidak ikut berjalan saat program di-Run. Di SAP test dijalankan dengan <tt>Ctrl+Shift+F10</tt>; di simulator lewat menu ⋯ → <b>Jalankan Unit Test</b>, dengan tombol yang sama.</p>`,
-    code: `REPORT z_belajar_unit_test.
+    code: `REPORT z_learn_unit_test.
 
-* --- kode yang diuji ----------------------------------------------------
-CLASS lcl_diskon DEFINITION.
+* --- code under test ----------------------------------------------------
+CLASS lcl_discount DEFINITION.
   PUBLIC SECTION.
-    METHODS persen IMPORTING iv_total TYPE i RETURNING VALUE(rv_persen) TYPE i.
-    METHODS bayar  IMPORTING iv_total TYPE i RETURNING VALUE(rv_bayar) TYPE i.
+    METHODS percent    IMPORTING iv_total TYPE i RETURNING VALUE(rv_percent) TYPE i.
+    METHODS amount_due IMPORTING iv_total TYPE i RETURNING VALUE(rv_amount_due) TYPE i.
 ENDCLASS.
 
-CLASS lcl_diskon IMPLEMENTATION.
-  METHOD persen.
-    rv_persen = COND #( WHEN iv_total >= 10000000 THEN 10
-                        WHEN iv_total >= 5000000  THEN 5
+CLASS lcl_discount IMPLEMENTATION.
+  METHOD percent.
+    rv_percent = COND #( WHEN iv_total >= 10000000 THEN 10
+                        WHEN iv_total >= 5000000   THEN 5
                         ELSE 0 ).
   ENDMETHOD.
-  METHOD bayar.
-    rv_bayar = iv_total - iv_total * persen( iv_total ) / 100.
+  METHOD amount_due.
+    rv_amount_due = iv_total - iv_total * percent( iv_total ) / 100.
   ENDMETHOD.
 ENDCLASS.
 
-* --- test class: tidak ikut berjalan saat program di-Run ------------------
-CLASS ltc_diskon DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
+* --- test class: does not run when the program is executed ------------------
+CLASS ltc_discount DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
   PRIVATE SECTION.
-    DATA mo_cut TYPE REF TO lcl_diskon.          " cut = class under test
+    DATA mo_cut TYPE REF TO lcl_discount.          " cut = class under test
     METHODS setup.
-    METHODS tanpa_diskon   FOR TESTING.
-    METHODS batas_5_persen FOR TESTING.
-    METHODS diskon_besar   FOR TESTING.
-    METHODS jumlah_bayar   FOR TESTING.
+    METHODS no_discount         FOR TESTING.
+    METHODS threshold_5_percent FOR TESTING.
+    METHODS large_discount      FOR TESTING.
+    METHODS net_amount_due      FOR TESTING.
 ENDCLASS.
 
-CLASS ltc_diskon IMPLEMENTATION.
+CLASS ltc_discount IMPLEMENTATION.
   METHOD setup.
     mo_cut = NEW #( ).
   ENDMETHOD.
-  METHOD tanpa_diskon.
-    cl_abap_unit_assert=>assert_equals( act = mo_cut->persen( 4999999 ) exp = 0 ).
+  METHOD no_discount.
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->percent( 4999999 ) exp = 0 ).
   ENDMETHOD.
-  METHOD batas_5_persen.
-    cl_abap_unit_assert=>assert_equals( act = mo_cut->persen( 5000000 ) exp = 5
-                                        msg = 'Tepat 5 juta sudah dapat 5 persen' ).
+  METHOD threshold_5_percent.
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->percent( 5000000 ) exp = 5
+                                        msg = 'Exactly 5 million already gets 5 percent' ).
   ENDMETHOD.
-  METHOD diskon_besar.
-    cl_abap_unit_assert=>assert_equals( act = mo_cut->persen( 25000000 ) exp = 10 ).
+  METHOD large_discount.
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->percent( 25000000 ) exp = 10 ).
   ENDMETHOD.
-  METHOD jumlah_bayar.
-    cl_abap_unit_assert=>assert_equals( act = mo_cut->bayar( 10000000 ) exp = 9000000 ).
-    cl_abap_unit_assert=>assert_equals( act = mo_cut->bayar( 1000 ) exp = 1000 ).
+  METHOD net_amount_due.
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->amount_due( 10000000 ) exp = 9000000 ).
+    cl_abap_unit_assert=>assert_equals( act = mo_cut->amount_due( 1000 ) exp = 1000 ).
   ENDMETHOD.
 ENDCLASS.
 
 START-OF-SELECTION.
-  DATA(go_diskon) = NEW lcl_diskon( ).
-  DATA(gv_bayar) = go_diskon->bayar( 12000000 ).
-  WRITE: / 'Bayar untuk 12.000.000 :', gv_bayar.
-  WRITE: / 'Test tidak berjalan lewat Run. Buka menu titik tiga, pilih Jalankan Unit Test.'.`,
+  DATA(go_discount) = NEW lcl_discount( ).
+  DATA(gv_amount_due) = go_discount->amount_due( 12000000 ).
+  WRITE: / 'Amount due for 12,000,000:', gv_amount_due.
+  WRITE: / 'Tests do not run with Run. Open the three-dot menu and choose Run unit tests.'.`,
     task: `<ul>
       <li>Jalankan unit test-nya: keempat test harus lulus.</li>
-      <li>Ubah <tt>&gt;= 5000000</tt> menjadi <tt>&gt; 5000000</tt> di method <tt>persen</tt>, jalankan test lagi, dan baca laporan kegagalannya.</li>
+      <li>Ubah <tt>&gt;= 5000000</tt> menjadi <tt>&gt; 5000000</tt> di method <tt>percent</tt>, jalankan test lagi, dan baca laporan kegagalannya.</li>
       <li>Tambahkan aturan diskon 15 persen untuk total mulai 50 juta — tulis test-nya dulu, baru kodenya.</li>
     </ul>`
   },
@@ -3330,101 +3330,101 @@ START-OF-SELECTION.
     body: `
       <p><b>Pola desain</b> adalah jawaban yang sudah teruji untuk masalah yang terus berulang. Dua pola yang paling sering muncul di kode SAP sama-sama mengatur satu hal: siapa yang boleh membuat objek, dan bagaimana caranya.</p>
       <ul>
-        <li><b>Singleton</b>: class dengan <tt>CREATE PRIVATE</tt> tidak bisa dibuat dengan <tt>NEW</tt> dari luar. Satu-satunya jalan adalah method static (<tt>ambil</tt>), yang menyimpan objeknya di <tt>CLASS-DATA</tt> dan selalu mengembalikan objek yang sama. Cocok untuk pengaturan, log, atau buffer yang harus tunggal.</li>
+        <li><b>Singleton</b>: class dengan <tt>CREATE PRIVATE</tt> tidak bisa dibuat dengan <tt>NEW</tt> dari luar. Satu-satunya jalan adalah method static (<tt>get_instance</tt>), yang menyimpan objeknya di <tt>CLASS-DATA</tt> dan selalu mengembalikan objek yang sama. Cocok untuk pengaturan, log, atau buffer yang harus tunggal.</li>
         <li><b>Factory</b>: sebuah method menerima "jenis" dan mengembalikan objek yang sesuai, bertipe interface. Pemanggil hanya mengenal interface-nya.</li>
         <li>Karena itu, menambah jenis baru — misalnya pengiriman laut — hanya menyentuh factory dan satu class baru. Program utama tidak berubah.</li>
         <li>Anda sudah memakai factory berkali-kali: <tt>cl_salv_table=>factory( )</tt>.</li>
       </ul>
       <p>Jangan berlebihan: singleton adalah data global yang tersamar dan menyulitkan unit test. Pakai hanya bila objeknya memang harus satu.</p>`,
-    code: `REPORT z_belajar_pola_desain.
+    code: `REPORT z_learn_design_patterns.
 
-* --- Singleton: hanya boleh ada SATU objek pengaturan -----------------------
-CLASS lcl_pengaturan DEFINITION CREATE PRIVATE.
+* --- Singleton: there may be only ONE settings object -----------------------
+CLASS lcl_settings DEFINITION CREATE PRIVATE.
   PUBLIC SECTION.
-    CLASS-METHODS ambil RETURNING VALUE(ro_objek) TYPE REF TO lcl_pengaturan.
-    DATA mv_mata_uang TYPE string VALUE 'IDR'.
+    CLASS-METHODS get_instance RETURNING VALUE(ro_instance) TYPE REF TO lcl_settings.
+    DATA mv_currency TYPE string VALUE 'IDR'.
   PRIVATE SECTION.
-    CLASS-DATA go_satu TYPE REF TO lcl_pengaturan.
+    CLASS-DATA go_instance TYPE REF TO lcl_settings.
 ENDCLASS.
 
-CLASS lcl_pengaturan IMPLEMENTATION.
-  METHOD ambil.
-    IF go_satu IS NOT BOUND.
-      go_satu = NEW #( ).
+CLASS lcl_settings IMPLEMENTATION.
+  METHOD get_instance.
+    IF go_instance IS NOT BOUND.
+      go_instance = NEW #( ).
     ENDIF.
-    ro_objek = go_satu.
+    ro_instance = go_instance.
   ENDMETHOD.
 ENDCLASS.
 
-* --- Factory: pemanggil meminta "sebuah pengirim", bukan class tertentu -------
-INTERFACE lif_pengirim.
-  METHODS nama   RETURNING VALUE(rv_nama) TYPE string.
-  METHODS ongkos IMPORTING iv_berat TYPE i RETURNING VALUE(rv_ongkos) TYPE i.
+* --- Factory: the caller asks for "a carrier", not for a specific class -------
+INTERFACE lif_carrier.
+  METHODS name   RETURNING VALUE(rv_name) TYPE string.
+  METHODS cost IMPORTING iv_weight TYPE i RETURNING VALUE(rv_cost) TYPE i.
 ENDINTERFACE.
 
-CLASS lcl_darat DEFINITION.
+CLASS lcl_land DEFINITION.
   PUBLIC SECTION.
-    INTERFACES lif_pengirim.
+    INTERFACES lif_carrier.
 ENDCLASS.
-CLASS lcl_darat IMPLEMENTATION.
-  METHOD lif_pengirim~nama.
-    rv_nama = 'Darat'.
+CLASS lcl_land IMPLEMENTATION.
+  METHOD lif_carrier~name.
+    rv_name = 'Land'.
   ENDMETHOD.
-  METHOD lif_pengirim~ongkos.
-    rv_ongkos = iv_berat * 2000.
+  METHOD lif_carrier~cost.
+    rv_cost = iv_weight * 2000.
   ENDMETHOD.
 ENDCLASS.
 
-CLASS lcl_udara DEFINITION.
+CLASS lcl_air DEFINITION.
   PUBLIC SECTION.
-    INTERFACES lif_pengirim.
+    INTERFACES lif_carrier.
 ENDCLASS.
-CLASS lcl_udara IMPLEMENTATION.
-  METHOD lif_pengirim~nama.
-    rv_nama = 'Udara'.
+CLASS lcl_air IMPLEMENTATION.
+  METHOD lif_carrier~name.
+    rv_name = 'Air'.
   ENDMETHOD.
-  METHOD lif_pengirim~ongkos.
-    rv_ongkos = iv_berat * 9000 + 25000.
+  METHOD lif_carrier~cost.
+    rv_cost = iv_weight * 9000 + 25000.
   ENDMETHOD.
 ENDCLASS.
 
-CLASS lcl_pabrik DEFINITION.
+CLASS lcl_factory DEFINITION.
   PUBLIC SECTION.
-    CLASS-METHODS buat IMPORTING iv_jenis TYPE string
-                       RETURNING VALUE(ro_pengirim) TYPE REF TO lif_pengirim.
+    CLASS-METHODS create_carrier IMPORTING iv_kind TYPE string
+                       RETURNING VALUE(ro_carrier) TYPE REF TO lif_carrier.
 ENDCLASS.
-CLASS lcl_pabrik IMPLEMENTATION.
-  METHOD buat.
-    CASE iv_jenis.
-      WHEN 'UDARA'.
-        ro_pengirim = NEW lcl_udara( ).
+CLASS lcl_factory IMPLEMENTATION.
+  METHOD create_carrier.
+    CASE iv_kind.
+      WHEN 'AIR'.
+        ro_carrier = NEW lcl_air( ).
       WHEN OTHERS.
-        ro_pengirim = NEW lcl_darat( ).
+        ro_carrier = NEW lcl_land( ).
     ENDCASE.
   ENDMETHOD.
 ENDCLASS.
 
 START-OF-SELECTION.
-* dua kali "ambil", tetapi objeknya satu: perubahan lewat go_a terlihat lewat go_b
-  DATA(go_a) = lcl_pengaturan=>ambil( ).
-  DATA(go_b) = lcl_pengaturan=>ambil( ).
-  go_a->mv_mata_uang = 'USD'.
-  WRITE: / 'Mata uang lewat go_b:', go_b->mv_mata_uang.
+* "ambil" is called twice, but there is one object: a change through go_a is visible through go_b
+  DATA(go_a) = lcl_settings=>get_instance( ).
+  DATA(go_b) = lcl_settings=>get_instance( ).
+  go_a->mv_currency = 'USD'.
+  WRITE: / 'Currency through go_b:', go_b->mv_currency.
 
-* program utama tidak menyebut lcl_darat / lcl_udara sama sekali
-  DATA gt_jenis TYPE STANDARD TABLE OF string WITH EMPTY KEY.
-  gt_jenis = VALUE #( ( 'DARAT' ) ( 'UDARA' ) ).
+* the main program never mentions lcl_darat / lcl_udara
+  DATA gt_kinds TYPE STANDARD TABLE OF string WITH EMPTY KEY.
+  gt_kinds = VALUE #( ( 'LAND' ) ( 'AIR' ) ).
   SKIP.
-  LOOP AT gt_jenis INTO DATA(gv_jenis).
-    DATA(go_kirim)  = lcl_pabrik=>buat( gv_jenis ).
-    DATA(gv_nama)   = go_kirim->nama( ).
-    DATA(gv_ongkos) = go_kirim->ongkos( 10 ).
-    WRITE: / gv_nama, 10 gv_ongkos, 'untuk 10 kg'.
+  LOOP AT gt_kinds INTO DATA(gv_kind).
+    DATA(go_carrier) = lcl_factory=>create_carrier( gv_kind ).
+    DATA(gv_name)    = go_carrier->name( ).
+    DATA(gv_cost)    = go_carrier->cost( 10 ).
+    WRITE: / gv_name, 10 gv_cost, 'for 10 kg'.
   ENDLOOP.`,
     task: `<ul>
-      <li>Tambahkan <tt>lcl_laut</tt> (ongkos = berat × 1.200 + 50.000) dan daftarkan di factory dengan jenis <tt>LAUT</tt>.</li>
-      <li>Tulis <tt>DATA(go_x) = NEW lcl_pengaturan( ).</tt> di program utama dan baca pesan error-nya.</li>
-      <li>Tambahkan method <tt>hari</tt> ke interface, yang mengembalikan lama pengiriman tiap jenis.</li>
+      <li>Tambahkan <tt>lcl_sea</tt> (ongkos = berat × 1.200 + 50.000) dan daftarkan di factory dengan jenis <tt>SEA</tt>.</li>
+      <li>Tulis <tt>DATA(go_x) = NEW lcl_settings( ).</tt> di program utama dan baca pesan error-nya.</li>
+      <li>Tambahkan method <tt>days</tt> ke interface, yang mengembalikan lama pengiriman tiap jenis.</li>
     </ul>`
   },
   {
@@ -3437,39 +3437,39 @@ START-OF-SELECTION.
         <li><tt>cl_abap_typedescr=>describe_by_name( nama )</tt> mengembalikan objek deskripsi tipe. Untuk struktur dan tabel database hasilnya di-<tt>CAST</tt> ke <tt>cl_abap_structdescr</tt>.</li>
         <li>Atribut <tt>components</tt> berisi daftar kolom: <tt>name</tt>, <tt>type_kind</tt> (C teks, N teks numerik, D tanggal, P packed, I integer), <tt>length</tt>, dan <tt>decimals</tt>.</li>
         <li><tt>CREATE DATA ref TYPE STANDARD TABLE OF (nama)</tt> membuat internal table yang bentuknya baru ditentukan saat program berjalan; <tt>ASSIGN ref-&gt;* TO &lt;fs&gt;</tt> membuatnya bisa dipakai.</li>
-        <li>Nama dalam kurung juga berlaku di Open SQL: <tt>FROM (p_tabel)</tt>, bahkan <tt>WHERE (gv_kondisi)</tt> dengan kondisi berupa teks.</li>
+        <li>Nama dalam kurung juga berlaku di Open SQL: <tt>FROM (p_table)</tt>, bahkan <tt>WHERE (gv_condition)</tt> dengan kondisi berupa teks.</li>
         <li><tt>describe_by_data( variabel )</tt> melakukan hal yang sama untuk variabel yang sudah ada.</li>
       </ul>
       <p>Kode generik tidak diperiksa compiler: nama tabel yang salah baru ketahuan saat program berjalan. Dan jangan pernah menyusun <tt>WHERE</tt> dinamis langsung dari input pengguna tanpa memeriksanya — di situlah celah SQL injection.</p>`,
-    code: `REPORT z_belajar_generik.
+    code: `REPORT z_learn_generic.
 
-PARAMETERS: p_tabel TYPE string DEFAULT 'SCARR',
-            p_baris TYPE i DEFAULT 2.
+PARAMETERS: p_table TYPE string DEFAULT 'SCARR',
+            p_rows TYPE i DEFAULT 2.
 
-DATA: gr_data  TYPE REF TO data,
-      gv_kolom TYPE i.
+DATA: gr_data         TYPE REF TO data,
+      gv_column_count TYPE i.
 FIELD-SYMBOLS: <gt_data>  TYPE STANDARD TABLE,
-               <gs_baris> TYPE any,
-               <gv_nilai> TYPE any.
+               <gs_row>   TYPE any,
+               <gv_value> TYPE any.
 
 START-OF-SELECTION.
-* 1) RTTS: bentuk tabel dikenali saat program berjalan
-  DATA(go_struk) = CAST cl_abap_structdescr( cl_abap_typedescr=>describe_by_name( p_tabel ) ).
-  gv_kolom = lines( go_struk->components ).
-  WRITE: / 'Tabel', p_tabel, 'punya', gv_kolom, 'kolom'.
+* 1) RTTS: the shape of the table is found out at runtime
+  DATA(go_struct) = CAST cl_abap_structdescr( cl_abap_typedescr=>describe_by_name( p_table ) ).
+  gv_column_count = lines( go_struct->components ).
+  WRITE: / 'Table', p_table, 'has', gv_column_count, 'columns'.
 
-* 2) Internal table dibuat sesuai nama itu, lalu diisi dengan SELECT dinamis
-  CREATE DATA gr_data TYPE STANDARD TABLE OF (p_tabel).
+* 2) The internal table is created for that name, then filled by a dynamic SELECT
+  CREATE DATA gr_data TYPE STANDARD TABLE OF (p_table).
   ASSIGN gr_data->* TO <gt_data>.
-  SELECT * FROM (p_tabel) INTO TABLE <gt_data> UP TO p_baris ROWS.
+  SELECT * FROM (p_table) INTO TABLE <gt_data> UP TO p_rows ROWS.
 
-* 3) Semua kolom dicetak tanpa tahu satu pun namanya
-  LOOP AT <gt_data> ASSIGNING <gs_baris>.
+* 3) Every column is printed without knowing a single name
+  LOOP AT <gt_data> ASSIGNING <gs_row>.
     SKIP.
-    LOOP AT go_struk->components INTO DATA(gs_kolom).
-      ASSIGN COMPONENT gs_kolom-name OF STRUCTURE <gs_baris> TO <gv_nilai>.
+    LOOP AT go_struct->components INTO DATA(gs_column).
+      ASSIGN COMPONENT gs_column-name OF STRUCTURE <gs_row> TO <gv_value>.
       IF sy-subrc = 0.
-        WRITE: / gs_kolom-name, 14 gs_kolom-type_kind, 18 <gv_nilai>.
+        WRITE: / gs_column-name, 14 gs_column-type_kind, 18 <gv_value>.
       ENDIF.
     ENDLOOP.
   ENDLOOP.`,
@@ -3494,25 +3494,25 @@ START-OF-SELECTION.
         <li>BAPI tidak melempar exception. Hasilnya dilaporkan lewat parameter <tt>RETURN</tt>: periksa field <tt>type</tt> (<tt>E</tt> atau <tt>A</tt> berarti gagal). BAPI juga tidak pernah commit sendiri — panggil <tt>BAPI_TRANSACTION_COMMIT</tt> sesudahnya.</li>
       </ul>
       <p>Di simulator, order <tt>0000000012</tt> sedang dikunci pengguna BUDI, dan otorisasi menghapus (<tt>ACTVT</tt> 06) ditolak — pakai keduanya untuk mencoba jalur gagal.</p>`,
-    code: `REPORT z_belajar_transaksi.
+    code: `REPORT z_learn_transactions.
 
-PARAMETERS: p_vbeln TYPE vbak-vbeln DEFAULT '0000000010',
-            p_naik  TYPE i DEFAULT 10.              " kenaikan nilai dalam persen
+PARAMETERS: p_vbeln    TYPE vbak-vbeln DEFAULT '0000000010',
+            p_increase TYPE i DEFAULT 10.              " increase of the value in percent
 
-DATA: gv_lama  TYPE vbak-netwr,
-      gv_baru  TYPE vbak-netwr,
-      gv_nomor TYPE n LENGTH 10,
-      gs_mat   TYPE bapimatdoa,
-      gs_ret   TYPE bapireturn.
+DATA: gv_old_value TYPE vbak-netwr,
+      gv_new_value TYPE vbak-netwr,
+      gv_change_no TYPE n LENGTH 10,
+      gs_mat       TYPE bapimatdoa,
+      gs_ret       TYPE bapireturn.
 
 START-OF-SELECTION.
-* 1) Otorisasi: bolehkah pengguna ini mengubah (ACTVT 02) order?
+* 1) Authorization: may this user change (ACTVT 02) orders?
   AUTHORITY-CHECK OBJECT 'V_VBAK_AAT' ID 'AUART' FIELD 'TA' ID 'ACTVT' FIELD '02'.
   IF sy-subrc <> 0.
-    MESSAGE 'Tidak punya otorisasi untuk mengubah order' TYPE 'E'.
+    MESSAGE 'No authorization to change orders' TYPE 'E'.
   ENDIF.
 
-* 2) Kunci dokumennya, supaya tidak diubah dua orang pada saat yang sama
+* 2) Lock the document, so that two people cannot change it at the same time
   CALL FUNCTION 'ENQUEUE_EVVBAKE'
     EXPORTING
       vbeln          = p_vbeln
@@ -3521,36 +3521,36 @@ START-OF-SELECTION.
       system_failure = 2
       OTHERS         = 3.
   IF sy-subrc <> 0.
-    WRITE: / 'Order', p_vbeln, 'sedang dibuka oleh', sy-msgv1, '- coba lagi nanti.'.
+    WRITE: / 'Order', p_vbeln, 'is being edited by', sy-msgv1, '- try again later.'.
     RETURN.
   ENDIF.
 
-* 3) Ubah datanya. Semua perubahan baru permanen setelah COMMIT WORK.
-  SELECT SINGLE netwr FROM vbak INTO gv_lama WHERE vbeln = p_vbeln.
+* 3) Change the data. All changes become permanent only after COMMIT WORK.
+  SELECT SINGLE netwr FROM vbak INTO gv_old_value WHERE vbeln = p_vbeln.
   IF sy-subrc = 0.
-    gv_baru = gv_lama * ( 100 + p_naik ) / 100.
-    UPDATE vbak SET netwr = gv_baru WHERE vbeln = p_vbeln.
+    gv_new_value = gv_old_value * ( 100 + p_increase ) / 100.
+    UPDATE vbak SET netwr = gv_new_value WHERE vbeln = p_vbeln.
     CALL FUNCTION 'NUMBER_GET_NEXT'
       EXPORTING
         nr_range_nr = '01'
-        object      = 'ZUBAH'
+        object      = 'ZCHANGE'
       IMPORTING
-        number      = gv_nomor.
+        number      = gv_change_no.
     COMMIT WORK.
-    WRITE: / 'Nilai lama :', gv_lama.
-    WRITE: / 'Nilai baru :', gv_baru.
-    WRITE: / 'Nomor perubahan:', gv_nomor.
+    WRITE: / 'Old value :', gv_old_value.
+    WRITE: / 'New value :', gv_new_value.
+    WRITE: / 'Change number:', gv_change_no.
   ELSE.
     ROLLBACK WORK.
-    WRITE: / 'Order', p_vbeln, 'tidak ada - tidak ada yang diubah.'.
+    WRITE: / 'Order', p_vbeln, 'does not exist - nothing was changed.'.
   ENDIF.
 
-* 4) Lepaskan kunci - selalu, apa pun hasilnya
+* 4) Release the lock - always, whatever the outcome
   CALL FUNCTION 'DEQUEUE_EVVBAKE'
     EXPORTING
       vbeln = p_vbeln.
 
-* 5) BAPI melaporkan masalah lewat parameter RETURN, bukan lewat exception
+* 5) A BAPI reports problems through the RETURN parameter, not through an exception
   CALL FUNCTION 'BAPI_MATERIAL_GET_DETAIL'
     EXPORTING
       material              = '9999-999'
@@ -3559,7 +3559,7 @@ START-OF-SELECTION.
       return                = gs_ret.
   SKIP.
   IF gs_ret-type = 'E'.
-    WRITE: / 'BAPI mengembalikan error:', gs_ret-message.
+    WRITE: / 'The BAPI returned an error:', gs_ret-message.
   ENDIF.`,
     task: `<ul>
       <li>Jalankan lewat <b>Parameter (F8)</b> dengan order <tt>0000000012</tt> dan baca pesan kuncinya.</li>
@@ -3578,31 +3578,31 @@ START-OF-SELECTION.
         <li><b>Pencarian di memori</b>: <tt>VALUE #( tabel[ … ]-kolom OPTIONAL )</tt> membaca satu nilai dan mengembalikan nilai awal bila barisnya tidak ada — tanpa exception.</li>
         <li><b>Status dengan COND</b>: urutan <tt>WHEN</tt> menentukan, karena kondisi pertama yang benar itulah yang dipakai.</li>
         <li><b>Ringkasan dengan GROUP BY</b>: jumlah dan nilai order per status.</li>
-        <li><b>Class dengan tanggung jawab terpisah</b>: <tt>ambil_data</tt>, <tt>ringkas</tt>, <tt>tampilkan</tt>.</li>
+        <li><b>Class dengan tanggung jawab terpisah</b>: <tt>fetch_data</tt>, <tt>summarize</tt>, <tt>show</tt>.</li>
       </ul>
       <p>Buka menu <b>Tabel</b> untuk melihat isi LIKP, LIPS, VBRK, dan VBRP, lalu cocokkan satu order dengan barisnya di laporan.</p>`,
-    code: `REPORT z_studi_order_to_cash.
+    code: `REPORT z_case_order_to_cash.
 
 PARAMETERS p_vkorg TYPE vbak-vkorg DEFAULT '1000'.
 
 CLASS lcl_o2c DEFINITION.
   PUBLIC SECTION.
-    TYPES: BEGIN OF ty_baris,
-             vbeln   TYPE vbak-vbeln,
-             name1   TYPE kna1-name1,
-             netwr   TYPE vbak-netwr,
-             dikirim TYPE i,
-             ditagih TYPE vbak-netwr,
-             status  TYPE string,
-           END OF ty_baris,
-           tt_baris TYPE STANDARD TABLE OF ty_baris WITH EMPTY KEY.
+    TYPES: BEGIN OF ty_row,
+             vbeln     TYPE vbak-vbeln,
+             name1     TYPE kna1-name1,
+             netwr     TYPE vbak-netwr,
+             delivered TYPE i,
+             billed    TYPE vbak-netwr,
+             status    TYPE string,
+           END OF ty_row,
+           tt_rows TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
     METHODS constructor IMPORTING iv_vkorg TYPE vbak-vkorg.
-    METHODS ambil_data.
-    METHODS ringkas.
-    METHODS tampilkan.
+    METHODS fetch_data.
+    METHODS summarize.
+    METHODS show.
   PRIVATE SECTION.
     DATA: mv_vkorg TYPE vbak-vkorg,
-          mt_data  TYPE tt_baris.
+          mt_data  TYPE tt_rows.
 ENDCLASS.
 
 CLASS lcl_o2c IMPLEMENTATION.
@@ -3610,8 +3610,8 @@ CLASS lcl_o2c IMPLEMENTATION.
     mv_vkorg = iv_vkorg.
   ENDMETHOD.
 
-  METHOD ambil_data.
-*   order + nama pelanggan: satu SELECT dengan JOIN
+  METHOD fetch_data.
+*   orders + customer name: one SELECT with a JOIN
     SELECT a~vbeln, k~name1, a~netwr
       FROM vbak AS a INNER JOIN kna1 AS k ON k~kunnr = a~kunnr
       WHERE a~vkorg = @mv_vkorg
@@ -3621,39 +3621,39 @@ CLASS lcl_o2c IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-*   nilai tagihan dan jumlah item terkirim: dihitung database, dibaca SEKALI
-    SELECT aubel, SUM( netwr ) AS nilai FROM vbrp
+*   billed value and number of delivered items: calculated by the database, read ONCE
+    SELECT aubel, SUM( netwr ) AS amount FROM vbrp
       GROUP BY aubel
-      INTO TABLE @DATA(lt_tagih).
-    SELECT vgbel, COUNT( * ) AS jumlah FROM lips
+      INTO TABLE @DATA(lt_billed).
+    SELECT vgbel, COUNT( * ) AS cnt FROM lips
       GROUP BY vgbel
-      INTO TABLE @DATA(lt_kirim).
+      INTO TABLE @DATA(lt_delivered).
 
-    LOOP AT mt_data ASSIGNING FIELD-SYMBOL(<ls_baris>).
-      <ls_baris>-ditagih = VALUE #( lt_tagih[ aubel = <ls_baris>-vbeln ]-nilai OPTIONAL ).
-      <ls_baris>-dikirim = VALUE #( lt_kirim[ vgbel = <ls_baris>-vbeln ]-jumlah OPTIONAL ).
-      <ls_baris>-status = COND #(
-        WHEN <ls_baris>-ditagih >= <ls_baris>-netwr THEN 'DITAGIH PENUH'
-        WHEN <ls_baris>-ditagih > 0                 THEN 'DITAGIH SEBAGIAN'
-        WHEN <ls_baris>-dikirim > 0                 THEN 'DIKIRIM'
-        ELSE 'BUKA' ).
+    LOOP AT mt_data ASSIGNING FIELD-SYMBOL(<ls_row>).
+      <ls_row>-billed = VALUE #( lt_billed[ aubel = <ls_row>-vbeln ]-amount OPTIONAL ).
+      <ls_row>-delivered = VALUE #( lt_delivered[ vgbel = <ls_row>-vbeln ]-cnt OPTIONAL ).
+      <ls_row>-status = COND #(
+        WHEN <ls_row>-billed >= <ls_row>-netwr      THEN 'FULLY BILLED'
+        WHEN <ls_row>-billed > 0                    THEN 'PARTLY BILLED'
+        WHEN <ls_row>-delivered > 0                 THEN 'DELIVERED'
+        ELSE 'OPEN' ).
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD ringkas.
-    DATA lv_nilai TYPE vbak-netwr.
-    LOOP AT mt_data INTO DATA(ls_baris)
-         GROUP BY ( status = ls_baris-status jumlah = GROUP SIZE )
-         ASCENDING INTO DATA(ls_grup).
-      CLEAR lv_nilai.
-      LOOP AT GROUP ls_grup INTO DATA(ls_anggota).
-        lv_nilai = lv_nilai + ls_anggota-netwr.
+  METHOD summarize.
+    DATA lv_amount TYPE vbak-netwr.
+    LOOP AT mt_data INTO DATA(ls_row)
+         GROUP BY ( status = ls_row-status cnt = GROUP SIZE )
+         ASCENDING INTO DATA(ls_group).
+      CLEAR lv_amount.
+      LOOP AT GROUP ls_group INTO DATA(ls_member).
+        lv_amount = lv_amount + ls_member-netwr.
       ENDLOOP.
-      WRITE: / ls_grup-status, 20 ls_grup-jumlah, 'order', 34 lv_nilai.
+      WRITE: / ls_group-status, 20 ls_group-cnt, 'orders', 34 lv_amount.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD tampilkan.
+  METHOD show.
     DATA lo_alv TYPE REF TO cl_salv_table.
     TRY.
         cl_salv_table=>factory( IMPORTING r_salv_table = lo_alv
@@ -3668,15 +3668,15 @@ CLASS lcl_o2c IMPLEMENTATION.
 ENDCLASS.
 
 START-OF-SELECTION.
-  DATA(go_laporan) = NEW lcl_o2c( p_vkorg ).
-  go_laporan->ambil_data( ).
-  go_laporan->ringkas( ).
-  go_laporan->tampilkan( ).`,
+  DATA(go_report) = NEW lcl_o2c( p_vkorg ).
+  go_report->fetch_data( ).
+  go_report->summarize( ).
+  go_report->show( ).`,
     task: `<ul>
-      <li>Tambahkan kolom <tt>sisa</tt>: nilai order dikurangi nilai yang sudah ditagih.</li>
+      <li>Tambahkan kolom <tt>remaining</tt>: nilai order dikurangi nilai yang sudah ditagih.</li>
       <li>Tambahkan parameter yang menyaring laporan menurut status.</li>
-      <li>Pindahkan aturan status ke method tersendiri yang menerima <tt>netwr</tt>, <tt>ditagih</tt>, <tt>dikirim</tt>, lalu tulis test class untuknya.</li>
-      <li>Ganti pencarian <tt>lt_tagih[ … ]</tt> dengan tabel <tt>HASHED</tt> ber-key <tt>aubel</tt>.</li>
+      <li>Pindahkan aturan status ke method tersendiri yang menerima <tt>netwr</tt>, <tt>billed</tt>, <tt>delivered</tt>, lalu tulis test class untuknya.</li>
+      <li>Ganti pencarian <tt>lt_billed[ … ]</tt> dengan tabel <tt>HASHED</tt> ber-key <tt>aubel</tt>.</li>
     </ul>`
   }
 ];

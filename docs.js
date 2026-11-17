@@ -447,7 +447,14 @@ GUI_DOWNLOAD                  EXPORTING filename   TABLES data_tab " simulasi, t
 GUI_UPLOAD                    selalu menaikkan FILE_OPEN_ERROR
 
 " ── BAPI ─────────────────────────────────────────────────────
-BAPI_TRANSACTION_COMMIT, BAPI_TRANSACTION_ROLLBACK</code>
+BAPI_TRANSACTION_COMMIT, BAPI_TRANSACTION_ROLLBACK
+BAPI_MATERIAL_GET_DETAIL      EXPORTING material   IMPORTING material_general_data return
+BAPI_FLIGHT_GETLIST           EXPORTING airline max_rows   TABLES flight_list return
+
+" ── Lock & number range ──────────────────────────────────────────
+ENQUEUE_EVVBAKE (ENQUEUE_*)   EXPORTING vbeln ...  EXCEPTIONS foreign_lock system_failure
+DEQUEUE_EVVBAKE (DEQUEUE_*)   EXPORTING vbeln ...
+NUMBER_GET_NEXT               EXPORTING nr_range_nr object   IMPORTING number</code>
       <h4>Class standar yang disimulasikan</h4>
       <code>cl_salv_table=>factory( IMPORTING r_salv_table = lo_alv CHANGING t_table = itab ).
 lo_alv->display( ).
@@ -463,6 +470,118 @@ cl_demo_output=>display( lt_data ).        " cetak cepat variabel / tabel</code>
       <p>Tulis <code>FUNCTION nama. … ENDFUNCTION.</code> di program yang sama. Interface-nya dibaca dari blok komentar <code>*"</code> di bawah baris FUNCTION
          (IMPORTING, EXPORTING, CHANGING, TABLES, EXCEPTIONS) — lihat pelajaran "Membuat function module sendiri".</p>
     `
+  },
+  {
+    id: 'advanced',
+    title: 'Teknik Lanjutan',
+    content: `
+      <h3>Teknik lanjutan</h3>
+      <p>Ringkasan sintaks untuk pelajaran level Pakar. Semua pola di bawah ini berjalan di simulator.</p>
+      <h4>Regular expression</h4>
+      <code>FIND REGEX '\\d{10}' IN lv_text MATCH OFFSET DATA(lv_pos) MATCH LENGTH DATA(lv_len).
+FIND ALL OCCURRENCES OF REGEX '\\d{10}' IN lv_text MATCH COUNT DATA(lv_count).
+FIND REGEX '(\\w+)@([\\w.]+)' IN lv_text SUBMATCHES DATA(lv_user) DATA(lv_domain).   " isi tiap pasang kurung
+REPLACE ALL OCCURRENCES OF REGEX '\\d{6}(\\d{4})' IN lv_text WITH '******$1'.
+
+IF matches( val = lv_code regex = '[A-Z]{2}-\\d{3}' ).      " seluruh teks harus cocok
+ENDIF.
+lv_first = match( val = lv_text regex = '\\d+' ).
+lv_clean = replace( val = lv_text regex = '\\d+' with = '' occ = 0 ).
+lv_count = count( val = lv_text regex = '[a-z]+' ).</code>
+      <h4>LOOP AT … GROUP BY</h4>
+      <code>LOOP AT gt_order INTO DATA(gs_order)
+     GROUP BY ( kunnr = gs_order-kunnr  size = GROUP SIZE )
+     ASCENDING INTO DATA(gs_group).
+  LOOP AT GROUP gs_group INTO DATA(gs_member).       " anggota kelompok
+    lv_total = lv_total + gs_member-netwr.
+  ENDLOOP.
+  WRITE: / gs_group-kunnr, gs_group-size, lv_total.
+  CLEAR lv_total.
+ENDLOOP.</code>
+      <h4>FILTER, LET, FOR GROUPS, CORRESPONDING</h4>
+      <code>DATA(gt_sales) = FILTER #( gt_emp WHERE orgeh = '50000030' ).        " tabel SORTED / HASHED, kondisi pada key
+DATA(gt_other) = FILTER #( gt_emp EXCEPT WHERE orgeh = '50000030' ).
+
+DATA(lv_info) = CONV string( LET n = lines( gt_emp ) IN |{ n } rows| ).
+
+DATA(gt_sum) = VALUE tt_sum(
+  FOR GROUPS grp OF e IN gt_emp GROUP BY e-orgeh ASCENDING
+  ( orgeh = grp
+    total = REDUCE i( INIT s = 0 FOR m IN GROUP grp NEXT s = s + m-salary ) ) ).
+
+DATA(gs_card) = CORRESPONDING ty_card( gs_emp MAPPING emp_no = pernr EXCEPT salary ).</code>
+      <h4>SQL lanjutan</h4>
+      <code>SELECT vbeln, netwr FROM vbak                              " subquery
+  WHERE vbeln NOT IN ( SELECT vgbel FROM lips )
+  INTO TABLE @DATA(gt_open).
+
+SELECT kunnr, name1 FROM kna1                              " subquery berkorelasi
+  WHERE EXISTS ( SELECT vbeln FROM vbrk WHERE kunrg = kna1~kunnr )
+  INTO TABLE @DATA(gt_billed).
+
+SELECT carrid, connid, seatsmax - seatsocc AS free,        " perhitungan dan CASE
+       CASE WHEN seatsocc &gt;= 200 THEN 'A' ELSE 'B' END AS rank
+  FROM sflight
+  ORDER BY free DESCENDING
+  INTO TABLE @DATA(gt_free).
+
+SELECT kunnr AS id, name1 FROM kna1
+UNION
+SELECT lifnr AS id, name1 FROM lfa1
+INTO TABLE @DATA(gt_partner).
+
+SELECT * FROM (lv_table) INTO TABLE &lt;gt_data&gt; WHERE (lv_where).   " dinamis</code>
+      <h4>ABAP Unit</h4>
+      <code>CLASS ltc_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
+  PRIVATE SECTION.
+    DATA mo_cut TYPE REF TO lcl_calc.
+    METHODS setup.                                         " sebelum tiap test
+    METHODS first_test FOR TESTING.
+ENDCLASS.
+
+CLASS ltc_test IMPLEMENTATION.
+  METHOD setup.
+    mo_cut = NEW #( ).
+  ENDMETHOD.
+  METHOD first_test.
+    cl_abap_unit_assert=&gt;assert_equals( act = mo_cut-&gt;add( 2 ) exp = 4 msg = '...' ).
+  ENDMETHOD.
+ENDCLASS.
+
+" assert_equals  assert_differs  assert_true  assert_false  assert_initial
+" assert_not_initial  assert_bound  assert_not_bound  assert_subrc  fail</code>
+      <p>Test class tidak ikut berjalan saat Run. Jalankan lewat menu ⋯ → <strong>Jalankan Unit Test</strong> (Ctrl+Shift+F10).</p>
+      <h4>RTTS dan tipe dinamis</h4>
+      <code>DATA(lo_struct) = CAST cl_abap_structdescr(
+                    cl_abap_typedescr=&gt;describe_by_name( 'SCARR' ) ).
+LOOP AT lo_struct-&gt;components INTO DATA(ls_comp).          " name  type_kind  length  decimals
+  WRITE: / ls_comp-name, ls_comp-type_kind, ls_comp-length.
+ENDLOOP.
+
+CREATE DATA lr_data TYPE STANDARD TABLE OF (lv_table).     " tipe ditentukan saat runtime
+ASSIGN lr_data-&gt;* TO &lt;gt_data&gt;.</code>
+      <h4>Otorisasi, lock, dan COMMIT</h4>
+      <code>AUTHORITY-CHECK OBJECT 'V_VBAK_AAT' ID 'AUART' FIELD 'TA' ID 'ACTVT' FIELD '02'.
+IF sy-subrc &lt;&gt; 0.                                          " 0 = boleh
+  MESSAGE '...' TYPE 'E'.
+ENDIF.
+
+CALL FUNCTION 'ENQUEUE_EVVBAKE'
+  EXPORTING
+    vbeln        = lv_vbeln
+  EXCEPTIONS
+    foreign_lock = 1                                       " pengunci ada di sy-msgv1
+    OTHERS       = 2.
+
+UPDATE vbak SET netwr = lv_new WHERE vbeln = lv_vbeln.
+COMMIT WORK.                                               " atau ROLLBACK WORK
+
+CALL FUNCTION 'DEQUEUE_EVVBAKE'
+  EXPORTING
+    vbeln = lv_vbeln.</code>
+      <h4>Statistik database</h4>
+      <p>Setelah tiap Run, baris <strong>Database</strong> di bawah output menampilkan jumlah akses baca, jumlah baris yang dibaca, dan jumlah perubahan. SELECT yang dijalankan berulang di dalam loop ditandai bersama nomor barisnya.</p>
+`
   },
   {
     id: 'simulator',
@@ -485,7 +604,11 @@ cl_demo_output=>display( lt_data ).        " cetak cepat variabel / tabel</code>
          • <strong>Exception</strong>: TRY / CATCH / ENDTRY, RAISE EXCEPTION, class exception sendiri, cx_sy_zerodivide, cx_sy_ref_is_initial, cx_sy_itab_line_not_found, cx_sy_conversion_no_number<br>
          • <strong>Modern</strong>: DATA( ), FIELD-SYMBOL( ), VALUE (termasuk FOR dan BASE), COND, SWITCH, CONV, REDUCE, CORRESPONDING, table expression <code>itab[ … ]</code>, line_exists( ), host variable @<br>
          • <strong>Dinamis</strong>: field-symbol, data reference (REF #, GET REFERENCE, CREATE DATA, -&gt;*), ASSIGN COMPONENT, ASSIGN (nama)<br>
-         • <strong>ALV</strong>: REUSE_ALV_GRID_DISPLAY (field catalog, layout, sort, total, hotspot, user command, top of page), CL_SALV_TABLE (kolom, sort, agregasi, event link_click / double_click), CL_GUI_ALV_GRID</p>
+         • <strong>ALV</strong>: REUSE_ALV_GRID_DISPLAY (field catalog, layout, sort, total, hotspot, user command, top of page), CL_SALV_TABLE (kolom, sort, agregasi, event link_click / double_click), CL_GUI_ALV_GRID<br>
+         • <strong>Lanjutan</strong>: regular expression (FIND / REPLACE … REGEX atau PCRE, matches, match, count), LOOP AT … GROUP BY, FILTER, LET, FOR GROUPS, subquery SQL (IN, EXISTS), CASE dan perhitungan di daftar kolom, UNION, FROM / WHERE dinamis, RTTS (cl_abap_typedescr, cl_abap_structdescr), CREATE PRIVATE<br>
+         • <strong>Unit test</strong>: CLASS … FOR TESTING, setup / teardown, cl_abap_unit_assert — dijalankan lewat menu ⋯ → Jalankan Unit Test<br>
+         • <strong>Transaksi</strong>: AUTHORITY-CHECK, ENQUEUE_ / DEQUEUE_, NUMBER_GET_NEXT, BAPI dengan parameter RETURN, ROLLBACK WORK yang benar-benar membatalkan perubahan<br>
+         • <strong>Kinerja</strong>: baris Database di bawah output: jumlah akses baca dan tulis, serta SELECT yang berulang di dalam loop</p>
       <h4>Yang berbeda dari SAP</h4>
       <p>• Tabel database adalah data contoh (menu <strong>Tabel</strong>). Perubahan lewat INSERT / UPDATE / DELETE hanya berlaku selama program berjalan.<br>
          • Function module ditulis di program yang sama; interface-nya dibaca dari blok komentar <code>*"</code> seperti yang ditampilkan SE37.<br>
@@ -494,8 +617,8 @@ cl_demo_output=>display( lt_data ).        " cetak cepat variabel / tabel</code>
          • WRITE memisahkan nilai dengan satu spasi; lebar kolom otomatis per tipe data seperti di SAP tidak ditiru — pakai posisi kolom bila perlu rata.</p>
       <h4>Belum didukung</h4>
       <p>• Dynpro / screen (CALL SCREEN, MODULE, PBO / PAI): screen dibuat di Screen Painter, bukan di kode<br>
-         • LOOP AT … GROUP BY, subquery SQL, UNION, CDS view, AMDP<br>
-         • Class global (SE24), friend, test class (ABAP Unit), RTTS (cl_abap_typedescr)<br>
+         • CDS view, AMDP, Native SQL (EXEC SQL)<br>
+         • Class global (SE24), friend, test double / mocking, pembuatan tipe baru lewat RTTC (cl_abap_structdescr=&gt;create)<br>
          • File dan sistem: OPEN DATASET, EXPORT / IMPORT MEMORY, SUBMIT, CALL TRANSACTION (hanya ditampilkan sebagai pesan), background job<br>
          • Statement yang tidak dikenal dilewati dengan peringatan, bukan dijalankan diam-diam</p>
     `
