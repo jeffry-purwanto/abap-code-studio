@@ -60,6 +60,7 @@
     'menu.assist':     ['Pelengkap kode otomatis', 'Automatic code completion', 'Automatische Code-Vervollständigung', '自动代码补全'],
     'menu.assist.sub': ['Saran dan penutup blok (IF → ENDIF)', 'Suggestions and block closers (IF → ENDIF)', 'Vorschläge und Blockabschluss (IF → ENDIF)', '代码建议与块结尾（IF → ENDIF）'],
     'menu.assist.tip': ['Saran kode saat mengetik; Enter setelah IF, LOOP, dst. menambahkan ENDIF, ENDLOOP. Ctrl+Space selalu membuka saran.', 'Suggestions while you type; Enter after IF, LOOP, etc. adds ENDIF, ENDLOOP. Ctrl+Space always opens the suggestions.', 'Vorschläge beim Tippen; Enter nach IF, LOOP usw. ergänzt ENDIF, ENDLOOP. Strg+Leertaste öffnet die Vorschläge jederzeit.', '输入时给出建议；在 IF、LOOP 等之后按 Enter 会补上 ENDIF、ENDLOOP。Ctrl+Space 随时打开建议。'],
+    'assist.next':     ['Berikutnya', 'Next', 'Weiter', '下一个'],
     'hint.tpl':        ['pola', 'template', 'Vorlage', '模板'],
     'hint.field':      ['field', 'field', 'Feld', '字段'],
     'hint.table':      ['tabel', 'table', 'Tabelle', '表'],
@@ -80,6 +81,8 @@
     'out.empty':       ['Program selesai tanpa output.', 'Program finished without output.', 'Programm ohne Ausgabe beendet.', '程序已结束，没有输出。'],
     'out.linesel.tip': ['Klik dua kali: AT LINE-SELECTION', 'Double-click: AT LINE-SELECTION', 'Doppelklick: AT LINE-SELECTION', '双击：AT LINE-SELECTION'],
     'out.messages':    ['Pesan', 'Messages', 'Meldungen', '消息'],
+    'out.more':        ['… {n} baris berikutnya tidak ditampilkan (yang tampil: {limit} baris pertama).', '… {n} more lines are not shown (shown: the first {limit} lines).', '… {n} weitere Zeilen werden nicht angezeigt (angezeigt: die ersten {limit} Zeilen).', '……其余 {n} 行未显示（仅显示前 {limit} 行）。'],
+    'alv.more':        ['… {n} baris berikutnya tidak ditampilkan (yang tampil: {limit} baris pertama). Total dan ekspor CSV tetap menghitung semua baris.', '… {n} more rows are not shown (shown: the first {limit} rows). Totals and the CSV export still cover all rows.', '… {n} weitere Zeilen werden nicht angezeigt (angezeigt: die ersten {limit} Zeilen). Summen und CSV-Export umfassen weiterhin alle Zeilen.', '……其余 {n} 行未显示（仅显示前 {limit} 行）。合计和 CSV 导出仍包含所有行。'],
     'out.runtime':     ['Runtime error', 'Runtime error', 'Laufzeitfehler', '运行时错误'],
     'out.goto.tip':    ['Lompat ke baris ini', 'Jump to this line', 'Zu dieser Zeile springen', '跳转到此行'],
     'out.line':        ['Baris {n}', 'Line {n}', 'Zeile {n}', '第 {n} 行'],
@@ -260,12 +263,42 @@
     document.querySelectorAll('[data-lang-opt]').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang-opt') === lang));
   }
 
+  // ── translated content ──────────────────────────────────────────────────────────────────
+  // The interface texts above are always here. The translations of the lessons, the docs and the
+  // simulator messages are a third of all script bytes and of no use to a reader of Indonesian, so
+  // those files are fetched only for another language: at the start when one is saved, otherwise at
+  // the moment it is chosen. Until they have arrived the content is shown in Indonesian.
+  const PACK = ['content-i18n.js', 'content-i18n-bodies.js', 'content-i18n-docs.js', 'messages-i18n.js'];
+  const present = () => !!(window.ABAP_CONTENT_I18N && window.MSG_I18N);
+  let pack = null;                                     // the fetch, once it has started
+  function loadPack() {
+    if (present()) return Promise.resolve();
+    if (!pack) {
+      pack = Promise.all(PACK.map(src => new Promise((ok, fail) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.async = false;                               // fetched side by side, run in this order
+        s.onload = ok;
+        s.onerror = () => fail(new Error(src));
+        document.head.appendChild(s);
+      }))).catch(e => { pack = null; throw e; });      // no connection: the next change of language tries again
+    }
+    return pack;
+  }
+  const announce = () => document.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
+  // the content of the current language: resolved when it can be shown
+  function content() {
+    return lang === 'id' ? Promise.resolve() : loadPack();
+  }
+
   function setLang(code) {
     if (!LANGS.some(l => l.code === code)) return;
     lang = code;
     try { localStorage.setItem('abap_studio_lang', code); } catch (e) { /* private mode */ }
     apply();
-    document.dispatchEvent(new CustomEvent('langchange', { detail: { lang: code } }));
+    const waiting = code !== 'id' && !present();
+    announce();                                        // the interface changes at once …
+    if (waiting) loadPack().then(() => { if (lang !== 'id') announce(); }, () => {});   // … the content when it is here
   }
 
   // language menu of the navigation rail
@@ -286,15 +319,19 @@
   }
 
   window.I18N = {
-    LANGS, tr, apply, setLang, toggleMenu, closeMenu,
+    LANGS, tr, apply, setLang, toggleMenu, closeMenu, content,
     get lang() { return lang; },
     get locale() { return (LANGS.find(l => l.code === lang) || LANGS[0]).locale; },
     keys: () => Object.keys(D),
     entry: k => D[k]
   };
   window.tr = tr;
+  // until content-i18n.js is here, a lesson / snippet / doc is its Indonesian source
+  if (!window.contentFor) window.contentFor = (type, obj) => obj;
 
   if (typeof document !== 'undefined') {
+    // a saved language other than Indonesian: fetch its content while the rest of the page loads
+    if (lang !== 'id') loadPack().then(() => { if (lang !== 'id' && document.readyState !== 'loading') announce(); }, () => {});
     const start = () => { buildMenu(); apply(); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
     else start();

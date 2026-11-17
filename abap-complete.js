@@ -8,10 +8,19 @@
 //      table names, components after "struct-", members after "obj->" / "class=>".
 //   3. A template has slots; Tab moves from one slot to the next, repeated names follow the first.
 // The indentation rules are those of the Pretty Printer (formatAbap in app.js).
+//
+// On-screen keyboards (phones, tablets) send no key events: text arrives as a change of the document, Enter
+// as an inserted line break, and a word that is still being composed is only on the page, not in the document
+// yet. So everything here reacts to what changed, not to which key was pressed:
+//   - typed text is taken from the "change" event; a composed word is read from the page (context),
+//   - a line break that came without the Enter key is redone the way the Enter key does it (afterNewline),
+//   - a suggestion is picked by tapping it, and a button next to the cursor stands in for the Tab key.
 (function (CodeMirror) {
   'use strict';
 
   const Pos = CodeMirror.Pos;
+  const ORIGIN = '+assist';                                                  // changes made here, not typed
+  const soft = cm => cm.getOption('inputStyle') === 'contenteditable';       // CodeMirror's input on mobile browsers
   const sp = n => ' '.repeat(Math.max(0, n));
   const label = (key, dflt) => { const t = typeof window.tr === 'function' ? window.tr(key) : key; return t && t !== key ? t : dflt; };
   const WORDS = CodeMirror.abapWords || { keywords: new Set(), builtins: new Set() };
@@ -114,7 +123,7 @@
       const lower = /^\s*[a-z]/.test(before);
       const closed = new RegExp('\\bEND\\s+OF\\s+' + b[1].replace(/[^\w]/g, '\\$&') + '\\b', 'i').test(data.code);
       cm.operation(() => {
-        cm.replaceSelection('\n' + sp(col + 2) + (closed ? '' : '\n' + sp(col) + (lower ? 'end of ' : 'END OF ') + b[1] + '.'), 'end', '+input');
+        cm.replaceSelection('\n' + sp(col + 2) + (closed ? '' : '\n' + sp(col) + (lower ? 'end of ' : 'END OF ') + b[1] + '.'), 'end', ORIGIN);
         cm.setCursor(Pos(cur.line + 1, col + 2));
       });
       return undefined;
@@ -141,17 +150,36 @@
       }
     }
     cm.operation(() => {
-      cm.replaceSelection(text, 'end', '+input');
+      cm.replaceSelection(text, 'end', ORIGIN);
       cm.setCursor(Pos(cur.line + 1, inner));
     });
     return undefined;
+  }
+
+  // The Enter key. Pass = CodeMirror adds a plain new line itself; that line break is then not looked at again.
+  function enterKey(cm) {
+    const r = onEnter(cm);
+    if (r === CodeMirror.Pass) { cm.state.abapEnterKey = true; setTimeout(() => { cm.state.abapEnterKey = false; }, 0); }
+    return r;
+  }
+  function newline(cm) { if (enterKey(cm) === CodeMirror.Pass) cm.execCommand('newlineAndIndent'); }
+
+  // A line break that came without the Enter key (on-screen keyboard): take it back and enter it properly.
+  function afterNewline(cm, change) {
+    const end = CodeMirror.changeEnd(change);
+    if (cm.somethingSelected() || CodeMirror.cmpPos(cm.getCursor(), end)) return;
+    const head = change.text[0], tail = change.text[1];
+    cm.replaceRange('', Pos(change.from.line, change.from.ch + head.length), end, ORIGIN);
+    if (head) typed(cm, head, false);
+    newline(cm);
+    if (tail) { cm.replaceSelection(tail, 'end', ORIGIN); typed(cm, tail, true); }      // typed right after Enter
   }
 
   // ─────────────────────────────────────────────────────────── typing ENDIF / ELSE / WHEN: move to the block's level
   function electric(cm) {
     const cur = cm.getCursor(), line = cm.getLine(cur.line);
     if (cur.ch !== line.length) return;
-    const m = /^(\s*)(?:([A-Za-z-]+)|((?:PUBLIC|PROTECTED|PRIVATE)\s+SECTION))\.?$/i.exec(line);
+    const m = /^(\s*)(?:([A-Za-z-]+)|((?:PUBLIC|PROTECTED|PRIVATE)\s+SECTION))\.?\s*$/i.exec(line);
     if (!m) return;
     const word = (m[2] || '').toUpperCase();
     let want, extra = 0;
@@ -171,7 +199,52 @@
         depth--;
       }
     }
-    if (target != null && target !== m[1].length) cm.replaceRange(sp(target), Pos(cur.line, 0), Pos(cur.line, m[1].length), '+input');
+    if (target != null && target !== m[1].length) cm.replaceRange(sp(target), Pos(cur.line, 0), Pos(cur.line, m[1].length), ORIGIN);
+  }
+
+  // Text that was just typed. here = the cursor stands right behind it.
+  function typed(cm, text, here) {
+    const ch = text.slice(-1);
+    if (/[A-Za-z.\s]/.test(ch)) electric(cm);
+    if (!here) return;
+    if (/[>~]/.test(ch) && cm.state.completionActive) cm.state.completionActive.close();     // members replace the name list
+    if (!cm.state.completionActive && /[A-Za-z_\-<>~]/.test(ch)) show(cm, false);
+  }
+
+  // ─────────────────────────────────────────────────────────── a word the on-screen keyboard is still composing
+  // CodeMirror puts a composed word into the document when it is finished. Until then it is only on the page.
+  const clean = s => s.replace(/[​‌‍﻿]/g, '').replace(/ /g, ' ');
+
+  // The line of the cursor and the column in it: { line, text, ch }.
+  function context(cm) {
+    const cur = cm.getCursor(), ime = cm.state.abapIme;
+    if (ime && ime.composing) {
+      const sel = window.getSelection(), node = sel && sel.focusNode;
+      const el = node && (node.nodeType === 1 ? node : node.parentNode);
+      const lineEl = el && el.closest ? el.closest('.CodeMirror-line') : null;
+      if (lineEl && cm.getWrapperElement().contains(lineEl)) {
+        const r = document.createRange();
+        r.selectNodeContents(lineEl);
+        r.setEnd(sel.focusNode, sel.focusOffset);
+        const box = lineEl.getBoundingClientRect();
+        return { line: cm.lineAtHeight((box.top + box.bottom) / 2, 'window'), text: clean(lineEl.textContent), ch: clean(r.toString()).length };
+      }
+    }
+    return { line: cur.line, text: cm.getLine(cur.line), ch: cur.ch };
+  }
+
+  // Finish the word being composed, so that the document has it.
+  function flush(cm) {
+    const ime = cm.state.abapIme, input = cm.display && cm.display.input;
+    if (!ime || !ime.composing) return;
+    ime.composing = false;
+    if (input && typeof input.forceCompositionEnd === 'function') input.forceCompositionEnd();
+  }
+
+  function composeTyped(cm) {
+    const cx = context(cm);
+    if (cm.state.completionActive) cm.state.completionActive.close();        // the list is built anew for every letter
+    if (/[\w\-<>~]/.test(cx.text.charAt(cx.ch - 1))) show(cm, false);
   }
 
   // ─────────────────────────────────────────────────────────── code templates
@@ -214,6 +287,7 @@
     cm.state.abapTpl = null;
     for (const s of st.slots) s.mark.clear();
     st.range.clear();
+    chipSoon(cm);
   }
 
   // repeated names take over what was typed into their slot
@@ -227,13 +301,15 @@
         const a = src && src.mark.find(), b = mir.mark.find();
         if (!a || !b) continue;
         const text = cm.getRange(a.from, a.to);
-        if (cm.getRange(b.from, b.to) !== text) cm.replaceRange(text, b.from, b.to, '+input');
+        if (cm.getRange(b.from, b.to) !== text) cm.replaceRange(text, b.from, b.to, ORIGIN);
       }
     } finally { st.busy = false; }
   }
 
   // Tab: select the next slot. false = no template is active.
   function nextSlot(cm) {
+    if (!cm.state.abapTpl) return false;
+    flush(cm);
     const st = cm.state.abapTpl;
     if (!st) return false;
     syncMirrors(cm);
@@ -273,6 +349,44 @@
       cm.state.abapTpl = { slots, stops: slots.filter(s => !s.mirror), range, index: -1 };
       if (!nextSlot(cm)) cm.setCursor(at(text.length));
     });
+    chipSoon(cm);
+  }
+
+  // ─────────────────────────────────────────────────────────── touch screens have no Tab key
+  // While a template is active, a button on the cursor's line moves to the next slot.
+  const touchScreen = cm => soft(cm) || !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+
+  function chipUpdate(cm) {
+    let el = cm.state.abapChip;
+    if (!cm.state.abapTpl || !touchScreen(cm)) { if (el) el.classList.remove('on'); return; }
+    if (!el) {
+      el = cm.state.abapChip = document.createElement('button');
+      el.type = 'button';
+      el.className = 'assist-next';
+      // acting on the press itself, and cancelling it, keeps the focus and the keyboard in the editor
+      const go = e => { e.preventDefault(); e.stopPropagation(); nextSlot(cm); cm.focus(); };
+      el.addEventListener('touchstart', go, { passive: false });
+      el.addEventListener('mousedown', go);
+      cm.getWrapperElement().appendChild(el);
+    }
+    el.textContent = label('assist.next', 'Next') + ' ›';
+    el.classList.add('on');
+    const wrap = cm.getWrapperElement().getBoundingClientRect();
+    const c = cm.cursorCoords(null, 'window');
+    const w = el.offsetWidth, h = el.offsetHeight;
+    const left = wrap.width - w - 8;
+    const head = cm.getCursor();
+    const lineEnd = cm.charCoords(Pos(head.line, cm.getLine(head.line).length), 'window').left;
+    let top = c.top - wrap.top + (c.bottom - c.top - h) / 2;                  // on the cursor's line, at the right edge
+    if (Math.max(c.left, lineEnd) - wrap.left > left - 12) top = c.top - wrap.top - h - 2;   // the line reaches it: one line up
+    if (top < 2) top = c.bottom - wrap.top + 2;
+    el.style.left = Math.max(2, left) + 'px';
+    el.style.top = top + 'px';
+    if (c.bottom < wrap.top || c.top > wrap.bottom) el.classList.remove('on');
+  }
+  function chipSoon(cm) {
+    if (cm.state.abapChipTimer) return;
+    cm.state.abapChipTimer = setTimeout(() => { cm.state.abapChipTimer = 0; chipUpdate(cm); }, 0);
   }
 
   // ─────────────────────────────────────────────────────────── what a name stands for
@@ -378,9 +492,17 @@
   }
   const entry = (text, tag, extra) => Object.assign({ text, tag, render }, extra || {});
 
+  // The words in front of the cursor that a picked suggestion replaces. The document is brought up to date
+  // first, so this also holds for a word that was still being composed when the list was shown.
+  function target(cm, len) {
+    flush(cm);
+    const to = cm.getCursor();
+    return { from: Pos(to.line, Math.max(0, to.ch - len)), to };
+  }
+
   function hint(cm, options) {
-    const cur = cm.getCursor(), line = cm.getLine(cur.line);
-    const tok = cm.getTokenAt(cur);
+    const cx = context(cm), cur = Pos(cx.line, cx.ch), line = cx.text;
+    const tok = cm.getTokenAt(cm.getCursor());
     if (line[0] === '*' || (tok && (tok.type === 'comment' || tok.type === 'string'))) return null;
     const left = line.slice(0, cur.ch);
     const word = (/[A-Za-z_]\w*$/.exec(left) || [''])[0];
@@ -453,10 +575,42 @@
     list = list.slice(0, 60);
     // nothing to offer when the only suggestion is exactly what is already there
     if (list.length === 1 && !list[0].template && list[0].text.toLowerCase() === P) return null;
-    const result = { list, from: Pos(cur.line, from), to: Pos(cur.line, cur.ch) };
+    const len = cur.ch - from;
+    for (const item of list) {
+      const own = item.hint;
+      item.hint = (c, d, me) => {
+        const r = target(c, len);
+        if (own) own(c, r, me); else c.replaceRange(me.text, r.from, r.to, 'complete');
+      };
+    }
+    const docLen = cm.getLine(cur.line).length;                               // a composed word is not in the document yet
+    const result = { list, from: Pos(cur.line, Math.min(from, docLen)), to: Pos(cur.line, Math.min(cur.ch, docLen)) };
     // Enter on a word that is already complete starts a new line instead of picking a suggestion
     result.exact = !list[0].template && list.some(x => !x.template && x.text.toLowerCase() === P);
     return result;
+  }
+
+  // The part of the page that can be seen, in window coordinates. An on-screen keyboard covers the lower
+  // part of the window without making the window smaller, so window.innerHeight is not the limit.
+  function visible() {
+    if (api._viewport) return api._viewport();
+    const vv = window.visualViewport;
+    return vv ? { top: vv.offsetTop, bottom: vv.offsetTop + vv.height } : { top: 0, bottom: window.innerHeight };
+  }
+
+  // The list is on the page: a tap must not take the focus away, and the list must not hide behind the keyboard.
+  function popupShown(cm, data) {
+    const done = cm.state.completionActive, el = done && done.widget && done.widget.hints;
+    if (!el) return;
+    el.addEventListener('mousedown', e => { if (e.target.closest && e.target.closest('li')) e.preventDefault(); });
+    const view = visible(), box = el.getBoundingClientRect();
+    if (box.top >= view.top && box.bottom <= view.bottom) return;
+    const line = cm.cursorCoords(data.from, 'window');
+    const below = view.bottom - line.bottom - 6, above = line.top - view.top - 6;
+    const up = below < box.height && above > below;
+    const height = Math.max(40, Math.min(box.height, up ? above : below));
+    el.style.setProperty('max-height', height + 'px', 'important');
+    el.style.top = (parseFloat(el.style.top) || 0) + ((up ? line.top - height - 2 : line.bottom) - box.top) + 'px';
   }
 
   function show(cm, explicit) {
@@ -464,11 +618,18 @@
     const pickOrNewline = (c, handle) => {
       if (current && current.exact && !moved) {
         handle.close();
-        if (onEnter(c) === CodeMirror.Pass) c.execCommand('newlineAndIndent');
+        newline(c);
       } else handle.pick();
     };
+    const source = (c, o) => {
+      current = hint(c, { explicit });
+      if (current) CodeMirror.on(current, 'shown', () => popupShown(c, current));
+      return current;
+    };
+    // a word composed over a selected slot has replaced it on the page, while the document still has the selection
+    source.supportsSelection = !!(cm.state.abapIme && cm.state.abapIme.composing);
     cm.showHint({
-      hint: (c, o) => { current = hint(c, { explicit }); return current; },
+      hint: source,
       completeSingle: false,
       closeCharacters: /[\s()\[\]{};:,]/,                                     // ">" stays open: obj->member
       extraKeys: {
@@ -482,25 +643,38 @@
   // ─────────────────────────────────────────────────────────── wiring
   function attach(cm) {
     cm.addKeyMap({
-      Enter: onEnter,
+      Enter: enterKey,
       Tab: c => (nextSlot(c) ? undefined : CodeMirror.Pass),
       Esc: c => { if (!c.state.abapTpl) return CodeMirror.Pass; clearTemplate(c); return undefined; }
     });
-    cm.on('inputRead', (c, change) => {
+    // "change" and not "inputRead": text from an on-screen keyboard never raises "inputRead".
+    // Changes made in this handler belong to the same undo step as the typing that caused them.
+    cm.on('change', (c, change) => {
+      if (change.origin === ORIGIN) return;
+      if (c.state.abapTpl) syncMirrors(c);
       if (!api.enabled || change.origin !== '+input') return;
-      const ch = change.text.length === 1 ? change.text[0] : '';
-      if (!ch) return;
-      if (/[A-Za-z.\s]/.test(ch)) electric(c);
-      if (/[>~]/.test(ch) && c.state.completionActive) c.state.completionActive.close();     // members replace the name list
-      if (!c.state.completionActive && /[A-Za-z_\-<>~]/.test(ch)) show(c, false);
+      const t = change.text;
+      if (t.length === 2 && soft(c) && !c.state.abapEnterKey) { afterNewline(c, change); return; }
+      if (t.length === 1 && t[0]) typed(c, t[0], !CodeMirror.cmpPos(CodeMirror.changeEnd(change), c.getCursor()));
     });
-    cm.on('changes', c => { if (c.state.abapTpl) syncMirrors(c); });
     cm.on('cursorActivity', c => {
       const st = c.state.abapTpl;
-      if (!st || st.moving || st.busy) return;
+      if (!st) return;
+      chipSoon(c);
+      if (st.moving || st.busy) return;
       const r = st.range.find(), p = c.getCursor();
       if (!r || CodeMirror.cmpPos(p, r.from) < 0 || CodeMirror.cmpPos(p, r.to) > 0) clearTemplate(c);
     });
+    cm.on('scroll', c => { if (c.state.abapTpl) chipSoon(c); });
+    window.addEventListener('resize', () => { if (cm.state.abapTpl) chipSoon(cm); });
+
+    if (soft(cm)) {
+      const field = cm.getInputField(), ime = cm.state.abapIme = { composing: false };
+      field.setAttribute('autocomplete', 'off');                              // code, not prose: no word prediction wanted
+      field.addEventListener('compositionstart', () => { ime.composing = true; });
+      field.addEventListener('compositionend', () => { ime.composing = false; });
+      field.addEventListener('input', () => { if (ime.composing && api.enabled) composeTyped(cm); });
+    }
   }
 
   const api = { enabled: true, attach, hint, show, onEnter, nextSlot, templates: TEMPLATES, _scan: scan, _classify: classify };

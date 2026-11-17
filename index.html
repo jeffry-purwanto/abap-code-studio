@@ -6,15 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="author" content="jeffrypurwanto" />
   <title>ABAP Code Studio — by jeffrypurwanto</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" />
   <link rel="icon" type="image/svg+xml" href="logo.svg" />
   <script>try { document.documentElement.dataset.theme = localStorage.getItem('abap_studio_theme') === 'light' ? 'light' : 'dark'; } catch (e) {}</script>
+  <!-- Everything comes from this site: no other server has to answer before the page can be shown.
+       The two fonts of the first screen are fetched right away, the others when a page uses them. -->
+  <link rel="preload" href="fonts/plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/plex-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="style.css" />
-  <!-- CodeMirror for editor -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css" />
+  <link rel="stylesheet" href="vendor/codemirror.css" />
 </head>
 <body>
   <!-- NAVIGATION RAIL -->
@@ -373,12 +372,10 @@
   </div>
 
   <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+  <!-- vendor/codemirror.js = CodeMirror 5.65.16 and its add-ons in one file.
+       The translations of the lessons, the docs and the simulator messages (content-i18n*.js, messages-i18n.js)
+       are not listed here: i18n.js fetches them when a language other than Indonesian is in use. -->
+  <script src="vendor/codemirror.js"></script>
   <script src="i18n.js"></script>
   <script src="dummy-data.js"></script>
   <script src="abap-mode.js"></script>
@@ -387,10 +384,6 @@
   <script src="snippets.js"></script>
   <script src="docs.js"></script>
   <script src="lessons.js"></script>
-  <script src="content-i18n.js"></script>
-  <script src="content-i18n-bodies.js"></script>
-  <script src="content-i18n-docs.js"></script>
-  <script src="messages-i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

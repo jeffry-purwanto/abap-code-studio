@@ -559,14 +559,14 @@ function runCode(params) {
     const file = files.find(x => x.id === activeFileId);
     lastResult = { output: result.output, errors: result.errors, stats: result.stats, title: interpreter.programName || (file ? file.name : 'Program') };
     alvGrids = [];
+    // Everything (WRITE list, ALV grids, messages) is shown in the Output panel and, like the list screen
+    // after F8 in SAP, in a wide result window. That window is opened first: renderOutput fills it only
+    // while it is open, so a result is not built a second time for a window nobody looks at.
+    if (sapScreenEnabled() && (result.output.length || result.errors.length)) document.getElementById('sapScreen')?.classList.add('open');
     renderOutput();
     renderVariables(result.variables);
     renderSyntaxIssues(syntaxIssues);
-
-    // Everything (WRITE list, ALV grids, messages) is shown in the Output panel ...
     switchPanel('output', document.querySelector('.panel-tab'));
-    // ... and, like the list screen after F8 in SAP, in a wide result window
-    if (sapScreenEnabled() && (result.output.length || result.errors.length)) openSapScreen();
 
     if (btn) {
       btn.classList.remove('running');
@@ -575,9 +575,19 @@ function runCode(params) {
   }, 80);
 }
 
-// Build the result once and show it in the Output panel and in the SAP-style result screen
+// A list longer than this is cut on the page (the program still ran to its end): a loop that never stops
+// writes up to 100 000 lines, and that many elements freeze a phone for seconds. Same for the rows of a grid.
+const OUTPUT_LIMIT = 2000;
+const ALV_ROW_LIMIT = 1000;
+let sapBodyStale = false;      // the result window has not got the current result yet (it was closed)
+
+// Build the result once and show it in the Output panel and, while it is open, in the SAP-style result screen
 function renderOutput(scrollToEnd) {
-  const targets = [document.getElementById('outputBody'), document.getElementById('sapBody')].filter(Boolean);
+  const sapBody = document.getElementById('sapBody');
+  const sapOpen = !!document.getElementById('sapScreen')?.classList.contains('open');
+  const targets = [document.getElementById('outputBody'), sapOpen ? sapBody : null].filter(Boolean);
+  sapBodyStale = !sapOpen;
+  if (!sapOpen && sapBody) sapBody.innerHTML = '';
   const result = lastResult || { output: [], errors: [] };
   const report = result.tests ? unitReportHtml(result.tests) : '';
   const stats = statsHtml(result.stats);
@@ -592,7 +602,8 @@ function renderOutput(scrollToEnd) {
     alvGrids = [];
     const selectable = !!(interpreter.blocks && interpreter.blocks['AT LINE-SELECTION']);
     const lines = [];
-    result.output.forEach((line, i) => {
+    const total = result.output.length;
+    result.output.slice(0, OUTPUT_LIMIT).forEach((line, i) => {
       if (line.type === 'alv') {
         // ALV grids are rendered inline, in the order the program produced them
         alvGrids.push(prev.get(line.alvId) || newAlvState(line));
@@ -603,6 +614,7 @@ function renderOutput(scrollToEnd) {
         ? ` data-selectable="1" ondblclick="listLineSelect(${i})" title="${tr('out.linesel.tip')}"` : '';
       lines.push(`<div class="output-line ${line.cls || 'info'}"${pick}>${escHtml(msgOut(line.text)) || '&nbsp;'}</div>`);
     });
+    if (total > OUTPUT_LIMIT) lines.push(`<div class="output-more">${tr('out.more', { n: (total - OUTPUT_LIMIT).toLocaleString(I18N.locale), limit: OUTPUT_LIMIT.toLocaleString(I18N.locale) })}</div>`);
     if (result.errors.length) {
       lines.push(`<div class="output-messages"><div class="output-messages-title">${tr('out.messages')}</div>`);
       for (const e of result.errors) {
@@ -709,8 +721,13 @@ function openSapScreen() {
   const el = document.getElementById('sapScreen');
   if (!el) return;
   if (!lastResult) { toast(tr('toast.runfirst'), 'info'); return; }
-  updateSapScreenChrome();
   el.classList.add('open');
+  if (sapBodyStale) {
+    // the window was closed when the result was built: build it now, and leave the Output panel where it was scrolled to
+    const panel = document.getElementById('outputBody'), at = panel ? panel.scrollTop : 0;
+    renderOutput();
+    if (panel) panel.scrollTop = at;
+  } else updateSapScreenChrome();
 }
 
 function closeSapScreen() {
@@ -1091,6 +1108,7 @@ function toast(msg, type = 'info') {
 // Utilities
 // ───────────────────────────────────────────────────────────
 document.addEventListener('langchange', () => {
+  if (!editor) return;                                 // translations that arrive before the start: the start draws everything
   const guard = fn => { try { fn(); } catch (e) {} };
   guard(() => I18N.apply());
   guard(() => renderSidebar());
@@ -1363,8 +1381,11 @@ function drawAlvTable(idx) {
     html = `<table class="alv-table"><thead><tr>${ths}</tr></thead></table>
       <div class="alv-empty">${g.data.length ? tr('alv.nomatch') : tr('alv.emptytab')}</div>`;
   } else {
-    const trs = g.filtered.map((row, rIdx) => {
-      const dataIdx = g.data.indexOf(row);
+    const indexOf = new Map(g.data.map((row, i) => [row, i]));          // row -> position in the data, looked up per row
+    const more = g.filtered.length > ALV_ROW_LIMIT
+      ? `<div class="output-more">${tr('alv.more', { n: (g.filtered.length - ALV_ROW_LIMIT).toLocaleString(I18N.locale), limit: ALV_ROW_LIMIT.toLocaleString(I18N.locale) })}</div>` : '';
+    const trs = g.filtered.slice(0, ALV_ROW_LIMIT).map((row, rIdx) => {
+      const dataIdx = indexOf.get(row);
       const tds = [`<td class="alv-row-idx">${rIdx + 1}</td>`].concat(cols.map(c => {
         const val = alvCell(row, c.field);
         const isNum = typeof val === 'number';
@@ -1396,7 +1417,7 @@ function drawAlvTable(idx) {
       <thead><tr>${ths}</tr></thead>
       <tbody>${trs}</tbody>
       ${totalsHtml}
-    </table>`;
+    </table>${more}`;
   }
   containers.forEach(el => { el.innerHTML = html; });
 }

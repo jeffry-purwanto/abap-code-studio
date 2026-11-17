@@ -1875,7 +1875,8 @@
       if (U(src[0]) === 'LINES' && U(src[1]) === 'OF') {
         const or = this.ref(src[2]);
         const other = or ? or.get() : this.evalExpr([src[2]]);
-        if (Array.isArray(other)) for (const row of other) tab.arr.push(this.shape(lineDesc, this.clone(row)));
+        // a copy of the source: "APPEND LINES OF itab TO itab" doubles the table once, it must not chase its own tail
+        if (Array.isArray(other)) for (const row of other.slice()) tab.arr.push(this.shape(lineDesc, this.clone(row)));
       } else if (U(src[0]) === 'INITIAL' && U(src[1]) === 'LINE') {
         tab.arr.push(this.initValue(lineDesc));
       } else {

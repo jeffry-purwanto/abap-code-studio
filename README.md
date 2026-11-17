@@ -17,14 +17,24 @@ There is nothing to install or build.
 1. Download or clone this repository.
 2. Open `index.html` in a modern browser (Chrome, Edge or Firefox).
 
-An internet connection is needed on first load, because the code editor (CodeMirror) and the fonts come from a CDN. Your programs, lesson progress and language choice are saved in the browser's local storage, so they stay on your machine.
+Everything the page needs is in this folder, including the code editor (CodeMirror) and the fonts, so it also works without an internet connection. Your programs, lesson progress and language choice are saved in the browser's local storage, so they stay on your machine.
+
+### Hosting on GitHub Pages
+
+The folder is a complete static site: publish the repository root with GitHub Pages and open the `github.io` address. All paths are relative, so it works under `https://<user>.github.io/<repository>/` as well. The empty `.nojekyll` file tells Pages to serve the files as they are.
+
+The page is set up to start quickly there:
+
+- Every file comes from the same server. No other host has to answer before the page can be shown.
+- The translations of the lessons, the reference and the simulator messages are fetched only when a language other than Indonesian is in use.
+- A very long result is cut on the page (2,000 list lines, 1,000 grid rows) and the rest is counted, so a loop that never stops cannot freeze the browser.
 
 ## What you can do
 
 | Area | What it offers |
 |---|---|
 | **Editor** | Syntax highlighting, tabs for several programs, Pretty Printer, import and export of `.abap` files |
-| **Code completion** | Enter after `IF`, `LOOP`, `CASE`, `METHOD` … adds the matching `ENDIF`, `ENDLOOP` … and indents; code templates with Tab stops; suggestions for your own names, table names, structure components (`gs_order-`), SQL columns (`a~`) and class members (`lo_obj->`). Can be switched off in the ⋯ menu; Ctrl+Space always opens the suggestions |
+| **Code completion** | Enter after `IF`, `LOOP`, `CASE`, `METHOD` … adds the matching `ENDIF`, `ENDLOOP` … and indents; code templates with Tab stops; suggestions for your own names, table names, structure components (`gs_order-`), SQL columns (`a~`) and class members (`lo_obj->`). Works with on-screen keyboards as well: a suggestion is picked by tapping it, and a *Next* button on the cursor's line stands in for the Tab key. Can be switched off in the ⋯ menu; Ctrl+Space always opens the suggestions |
 | **Run** | Output panel with list output, inline ALV grids, messages with clickable line numbers, a syntax check and a variable inspector |
 | **SAP-style result screen** | A wide window that looks like SAP GUI: title bar, toolbar, ALV colours, totals row, status bar |
 | **Selection screen** | `PARAMETERS` and `SELECT-OPTIONS` of your program become an input dialog (F8) |
@@ -98,8 +108,11 @@ Plain HTML, CSS and JavaScript with no build step and no dependencies to install
 | `dummy-data.js` | Sample database tables |
 | `lessons.js`, `snippets.js`, `docs.js` | Learning content (Indonesian source) |
 | `i18n.js` | Interface texts in four languages and the language switcher |
-| `content-i18n.js`, `content-i18n-bodies.js`, `content-i18n-docs.js` | Translations of lessons, snippets and the reference |
-| `messages-i18n.js` | Translations of the simulator's messages |
+| `content-i18n.js`, `content-i18n-bodies.js`, `content-i18n-docs.js` | Translations of lessons, snippets and the reference; loaded by `i18n.js` on demand |
+| `messages-i18n.js` | Translations of the simulator's messages; loaded on demand as well |
+| `vendor/` | CodeMirror 5.65.16 and its add-ons, joined into one script and one style sheet |
+| `fonts/` | IBM Plex Sans, IBM Plex Mono and Source Serif 4 (latin and latin-ext) |
+| `.nojekyll` | Tells GitHub Pages to publish the files unchanged |
 
 ### How translation works
 
@@ -110,6 +123,13 @@ Indonesian is the source language. Everything else is layered on top and falls b
 - **Simulator messages:** the interpreter always produces Indonesian text. When a message is displayed, it is matched against the patterns in `messages-i18n.js` and rebuilt in the current language. The interpreter itself has no knowledge of languages.
 
 To add a language, add a column to `i18n.js` and `messages-i18n.js`, add the language to the `LANGS` list in `i18n.js`, and add a block for it in the three `content-i18n` files.
+
+The four translation files are not listed in `index.html`. `i18n.js` adds them to the page when a language other than Indonesian is saved or chosen; until they have arrived, content is shown in Indonesian.
+
+## Third-party software
+
+- [CodeMirror 5](https://codemirror.net/5/) by Marijn Haverbeke and others, MIT licence (`vendor/LICENSE-codemirror.txt`).
+- IBM Plex Sans and IBM Plex Mono by IBM, and Source Serif 4 by Adobe, SIL Open Font License 1.1 (`fonts/LICENSE.txt`).
 
 ## Author
 
