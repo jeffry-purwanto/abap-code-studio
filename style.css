@@ -623,6 +623,54 @@ li.CodeMirror-hint-active .hint-tag { color: var(--on-primary); opacity: 0.75; }
 .var-type { color: var(--text-dim); white-space: nowrap; }
 .var-val { color: var(--sx-str); word-break: break-all; }
 
+/* -- Debugger (abap-debug.js) -- */
+/* editor: breakpoint column left of the line numbers, the line the program stands on */
+.bp-gutter { width: 13px; }
+.cm-s-studio .CodeMirror-gutter-elt { cursor: pointer; }
+.bp-dot { width: 9px; height: 9px; margin: 7px 0 0 3px; border-radius: 50%; background: var(--error); }
+.cm-s-studio .dbg-line { background: var(--primary-soft); box-shadow: inset 2px 0 0 var(--primary); }
+.cm-s-studio .dbg-line-error { background: rgba(223, 95, 85, 0.16); box-shadow: inset 2px 0 0 var(--error); }
+.cm-s-studio .dbg-gutter .CodeMirror-linenumber { color: var(--primary); font-weight: 600; }
+/* panel */
+.dbg-body { padding: 0; display: flex; flex-direction: column; font-family: var(--font-ui); }
+.dbg-intro { padding: 20px 24px; }
+.dbg-intro .btn-secondary { margin-top: 4px; }
+.dbg-intro .dbg-hint { max-width: 34em; font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+.dbg-bar { display: flex; gap: 2px; padding: 8px 10px 6px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg2); z-index: 1; }
+.dbg-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  min-width: 40px; padding: 5px 4px 3px; border: 1px solid transparent; border-radius: var(--radius);
+  color: var(--text-muted); touch-action: manipulation;
+}
+.dbg-btn svg { width: 17px; height: 17px; }
+.dbg-btn span { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.4px; color: var(--text-dim); }
+.dbg-btn:hover:not(:disabled) { color: var(--text); background: var(--bg3); border-color: var(--border); }
+.dbg-btn:disabled { opacity: 0.3; cursor: default; }
+.dbg-btn.dbg-stop { margin-left: auto; }
+.dbg-btn.dbg-stop:hover:not(:disabled) { color: var(--error); }
+.dbg-pos { padding: 8px 14px 4px; }
+.dbg-pos input[type="range"] { width: 100%; margin: 0; accent-color: var(--primary); }
+.dbg-status { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; font-size: 12px; color: var(--text-muted); padding-top: 2px; }
+.dbg-status strong { color: var(--text); font-weight: 600; }
+.dbg-atbp { color: var(--error); }
+.dbg-stack { font-family: var(--font-mono); font-size: 11px; }
+.dbg-frame { color: var(--text); }
+.dbg-dim, .dbg-frame.dbg-dim { color: var(--text-dim); }
+.dbg-note { margin: 6px 14px 0; padding: 6px 10px; border-left: 2px solid var(--warning); font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.dbg-note-error { border-left-color: var(--error); color: var(--error); }
+.dbg-section { margin-top: 10px; padding: 6px 14px 4px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+.dbg-table td, .dbg-table th { padding-left: 14px; }
+.dbg-table tr.dbg-changed td { background: var(--primary-soft); }
+.dbg-table tr.dbg-changed .var-name { box-shadow: inset 2px 0 0 var(--primary); }
+.dbg-tag { margin-left: 6px; font-size: 9px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-dim); }
+.dbg-key { color: var(--text-muted); }
+.dbg-toggle { font-family: var(--font-mono); font-size: 12px; color: var(--sx-str); }
+.dbg-toggle:disabled { cursor: default; }
+.dbg-row { padding-left: 4px; white-space: pre-wrap; }
+.dbg-idx { display: inline-block; min-width: 2.4em; color: var(--text-dim); }
+.dbg-output { padding: 2px 14px 14px; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.65; max-height: 16em; overflow: auto; }
+.dbg-empty { padding: 4px 14px 8px; font-size: 12px; color: var(--text-dim); }
+
 
 /* ============================================================
    PAGE CONTAINER (Learn / Programs / Tables / Snippets / Docs)

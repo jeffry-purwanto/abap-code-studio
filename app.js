@@ -537,8 +537,10 @@ let lastResult = null;       // { output, errors, title } of the last run; callb
 const SAP_SCREEN_KEY = 'abap_studio_sap_screen';
 
 // params: values typed into the selection screen (PARAMETERS / SELECT-OPTIONS name -> value)
+let lastRunParams = {};        // the debugger (abap-debug.js) starts with the input of the last run
 function runCode(params) {
   const code = editor?.getValue() || '';
+  lastRunParams = params || {};
   // the Run button in the editor bar
   const btn  = document.querySelector('.editor-toolbar .run-btn');
   if (btn) { btn.classList.add('running'); const rl = btn.querySelector('.run-label'); if (rl) rl.textContent = tr('bar.running'); }

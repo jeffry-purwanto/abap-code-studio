@@ -704,7 +704,8 @@ CALL FUNCTION 'DEQUEUE_EVVBAKE'
           ['Advanced', 'regular expressions (FIND / REPLACE … REGEX or PCRE, matches, match, count), LOOP AT … GROUP BY, FILTER, LET, FOR GROUPS, SQL subqueries (IN, EXISTS), CASE and calculations in the column list, UNION, dynamic FROM / WHERE, RTTS (cl_abap_typedescr, cl_abap_structdescr), CREATE PRIVATE'],
           ['Unit tests', 'CLASS … FOR TESTING, setup / teardown, cl_abap_unit_assert — started through the ⋯ menu → Run unit tests'],
           ['Transactions', 'AUTHORITY-CHECK, ENQUEUE_ / DEQUEUE_, NUMBER_GET_NEXT, BAPIs with the RETURN parameter, a ROLLBACK WORK that really undoes the changes'],
-          ['Performance', 'the Database line below the output: number of read and write accesses, and SELECTs repeated inside a loop']
+          ['Performance', 'the Database line below the output: number of read and write accesses, and SELECTs repeated inside a loop'],
+          ['Debugger', 'the Debug tab (Shift+F5): F5 single step, F6 step over a call, F7 step out, F8 continue to a breakpoint, and one step back with Shift+F6; a breakpoint is set by clicking a line number or with the statement BREAK-POINT']
         ],
         h2: 'What differs from SAP',
         diff: [
@@ -868,7 +869,8 @@ CALL FUNCTION 'DEQUEUE_EVVBAKE'
           ['Fortgeschritten', 'reguläre Ausdrücke (FIND / REPLACE … REGEX oder PCRE, matches, match, count), LOOP AT … GROUP BY, FILTER, LET, FOR GROUPS, SQL-Subqueries (IN, EXISTS), CASE und Berechnungen in der Spaltenliste, UNION, dynamisches FROM / WHERE, RTTS (cl_abap_typedescr, cl_abap_structdescr), CREATE PRIVATE'],
           ['Unit-Tests', 'CLASS … FOR TESTING, setup / teardown, cl_abap_unit_assert — Start über das Menü ⋯ → Unit-Tests ausführen'],
           ['Transaktionen', 'AUTHORITY-CHECK, ENQUEUE_ / DEQUEUE_, NUMBER_GET_NEXT, BAPIs mit dem Parameter RETURN, ein ROLLBACK WORK, das die Änderungen wirklich zurücknimmt'],
-          ['Performance', 'die Zeile Datenbank unter der Ausgabe: Anzahl der Lese- und Schreibzugriffe sowie in einer Schleife wiederholte SELECTs']
+          ['Performance', 'die Zeile Datenbank unter der Ausgabe: Anzahl der Lese- und Schreibzugriffe sowie in einer Schleife wiederholte SELECTs'],
+          ['Debugger', 'die Registerkarte Debug (Umschalt+F5): F5 Einzelschritt, F6 Aufruf überspringen, F7 Rücksprung, F8 weiter bis zum Breakpoint und mit Umschalt+F6 einen Schritt zurück; ein Breakpoint wird per Klick auf eine Zeilennummer oder mit der Anweisung BREAK-POINT gesetzt']
         ],
         h2: 'Was sich von SAP unterscheidet',
         diff: [
@@ -1032,7 +1034,8 @@ CALL FUNCTION 'DEQUEUE_EVVBAKE'
           ['进阶', '正则表达式（FIND / REPLACE … REGEX 或 PCRE、matches、match、count）、LOOP AT … GROUP BY、FILTER、LET、FOR GROUPS、SQL 子查询（IN、EXISTS）、列清单中的 CASE 与计算、UNION、动态 FROM / WHERE、RTTS（cl_abap_typedescr、cl_abap_structdescr）、CREATE PRIVATE'],
           ['单元测试', 'CLASS … FOR TESTING、setup / teardown、cl_abap_unit_assert——通过 ⋯ 菜单 → 运行单元测试 启动'],
           ['事务', 'AUTHORITY-CHECK、ENQUEUE_ / DEQUEUE_、NUMBER_GET_NEXT、带 RETURN 参数的 BAPI、真正撤销修改的 ROLLBACK WORK'],
-          ['性能', '输出下方的“数据库”一行：读取和写入次数，以及在循环中重复执行的 SELECT']
+          ['性能', '输出下方的“数据库”一行：读取和写入次数，以及在循环中重复执行的 SELECT'],
+          ['调试器', '“调试”选项卡（Shift+F5）：F5 单步执行，F6 跳过调用，F7 跳出，F8 继续到断点，Shift+F6 后退一步；点击行号或使用 BREAK-POINT 语句设置断点']
         ],
         h2: '与 SAP 的不同之处',
         diff: [

@@ -3678,5 +3678,66 @@ START-OF-SELECTION.
       <li>Pindahkan aturan status ke method tersendiri yang menerima <tt>netwr</tt>, <tt>billed</tt>, <tt>delivered</tt>, lalu tulis test class untuknya.</li>
       <li>Ganti pencarian <tt>lt_billed[ … ]</tt> dengan tabel <tt>HASHED</tt> ber-key <tt>aubel</tt>.</li>
     </ul>`
+  },
+  {
+    id: 'e11', level: 5,
+    title: 'Debugger: mencari bug langkah demi langkah',
+    goal: 'Menemukan penyebab hasil yang salah dengan breakpoint dan dengan mengamati isi variabel.',
+    body: `
+      <p>Program yang berjalan tanpa error belum tentu benar. Program di bawah menghitung rata-rata nilai order per pelanggan, dan hasilnya <b>salah</b> untuk dua dari tiga pelanggan. Membaca kode saja sering tidak cukup; <b>debugger</b> memperlihatkan apa yang benar-benar terjadi, baris demi baris.</p>
+      <ul>
+        <li><b>Memulai</b>: menu ⋯ → <b>Debug langkah demi langkah</b>, atau <tt>Shift+F5</tt>. Program berhenti di pernyataan pertama. Baris yang ditandai <b>belum</b> dijalankan.</li>
+        <li><b>F5</b> menjalankan satu baris dan masuk ke dalam <tt>FORM</tt> atau method. <b>F6</b> menjalankan pemanggilan itu sekaligus. <b>F7</b> menyelesaikan <tt>FORM</tt> yang sedang berjalan dan kembali ke pemanggilnya.</li>
+        <li><b>Breakpoint</b>: klik nomor baris. <b>F8</b> menjalankan program sampai breakpoint berikutnya. Pernyataan <tt>BREAK-POINT.</tt> di dalam kode berfungsi sama.</li>
+        <li><b>Tabel variabel</b> menampilkan isi variabel sebelum baris itu dijalankan, dan variabel yang baru berubah diberi tanda. Variabel lokal sebuah <tt>FORM</tt> hanya terlihat selama <tt>FORM</tt> itu berjalan.</li>
+        <li><b>Mundur</b>: <tt>Shift+F6</tt> kembali satu langkah. Debugger SAP tidak bisa mundur; simulator ini bisa, karena jalannya program direkam lebih dulu.</li>
+      </ul>
+      <p>Cara kerja yang baik: tentukan dulu nilai yang Anda <b>harapkan</b>, lalu cari langkah pertama tempat isi variabel menyimpang dari harapan itu. Di situlah bug-nya.</p>`,
+    code: `REPORT z_learn_debugger.
+
+* Average order value per customer.
+* The result is wrong for two of the three customers - on purpose.
+* Find the reason with the debugger (Shift+F5) instead of guessing.
+TYPES: BEGIN OF ty_order,
+         customer TYPE c LENGTH 10,
+         amount   TYPE i,
+       END OF ty_order.
+
+DATA gt_order    TYPE STANDARD TABLE OF ty_order WITH EMPTY KEY.
+DATA gv_sum      TYPE i.
+DATA gv_count    TYPE i.
+DATA gv_previous TYPE c LENGTH 10.
+
+START-OF-SELECTION.
+  gt_order = VALUE #( ( customer = 'ALFA'  amount = 100 )
+                      ( customer = 'ALFA'  amount = 300 )
+                      ( customer = 'BRAVO' amount = 50 )
+                      ( customer = 'BRAVO' amount = 150 )
+                      ( customer = 'CITRA' amount = 80 ) ).
+
+  LOOP AT gt_order INTO DATA(ls_order).
+    " a new customer starts: print the one that is finished
+    IF ls_order-customer <> gv_previous AND gv_previous IS NOT INITIAL.
+      PERFORM print_average USING gv_previous.
+      CLEAR gv_count.
+    ENDIF.
+    gv_sum      = gv_sum + ls_order-amount.
+    gv_count    = gv_count + 1.
+    gv_previous = ls_order-customer.
+  ENDLOOP.
+  PERFORM print_average USING gv_previous.
+
+FORM print_average USING pv_customer TYPE c.
+  DATA lv_average TYPE i.
+  lv_average = gv_sum / gv_count.
+  WRITE: / pv_customer, 'average', lv_average.
+ENDFORM.`,
+    task: `<ul>
+      <li>Jalankan program dan catat hasilnya. Hitung sendiri rata-rata yang benar untuk ALFA, BRAVO, dan CITRA.</li>
+      <li>Pasang breakpoint di baris <tt>PERFORM print_average USING gv_previous.</tt> yang ada di dalam loop, mulai debug, lalu tekan F8. Lihat <tt>gv_sum</tt> dan <tt>gv_count</tt> untuk ALFA.</li>
+      <li>Tekan F8 sekali lagi. Berapa <tt>gv_sum</tt> ketika BRAVO dicetak, dan berapa seharusnya? Mundur dengan Shift+F6 sampai Anda menemukan baris yang lupa mengosongkannya.</li>
+      <li>Perbaiki program dengan satu perubahan, jalankan lagi, dan pastikan ketiga rata-rata benar.</li>
+      <li>Masuk ke <tt>print_average</tt> dengan F5 dan perhatikan <tt>pv_customer</tt> dan <tt>lv_average</tt> muncul sebagai variabel lokal, lalu keluar dengan F7.</li>
+    </ul>`
   }
 ];

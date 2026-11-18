@@ -2509,4 +2509,60 @@
     </ul>`
   });
 
+  // ---- e11: Debugger ----
+  add('en', 'e11', {
+    body: `<p>A program that runs without an error is not necessarily correct. The program below calculates the average order value per customer, and its result is <b>wrong</b> for two of the three customers. Reading the code is often not enough; the <b>debugger</b> shows what really happens, line by line.</p>
+      <ul>
+        <li><b>Starting</b>: menu ⋯ → <b>Debug step by step</b>, or <tt>Shift+F5</tt>. The program stops at the first statement. The marked line has <b>not</b> run yet.</li>
+        <li><b>F5</b> runs one line and goes into a <tt>FORM</tt> or method. <b>F6</b> runs such a call in one go. <b>F7</b> finishes the <tt>FORM</tt> that is running and returns to its caller.</li>
+        <li><b>Breakpoint</b>: click a line number. <b>F8</b> runs the program to the next breakpoint. The statement <tt>BREAK-POINT.</tt> in the code does the same.</li>
+        <li><b>The variable table</b> shows the contents before that line runs, and a variable that has just changed is marked. The local variables of a <tt>FORM</tt> are visible only while that <tt>FORM</tt> is running.</li>
+        <li><b>Going back</b>: <tt>Shift+F6</tt> returns one step. The SAP debugger cannot go backwards; this simulator can, because the run is recorded first.</li>
+      </ul>
+      <p>A good way to work: decide first which value you <b>expect</b>, then look for the first step at which a variable differs from that expectation. That is where the bug is.</p>`,
+    task: `<ul>
+      <li>Run the program and note the result. Work out the correct averages for ALFA, BRAVO and CITRA yourself.</li>
+      <li>Set a breakpoint on the line <tt>PERFORM print_average USING gv_previous.</tt> inside the loop, start debugging and press F8. Look at <tt>gv_sum</tt> and <tt>gv_count</tt> for ALFA.</li>
+      <li>Press F8 once more. What is <tt>gv_sum</tt> when BRAVO is printed, and what should it be? Go back with Shift+F6 until you find the line that forgot to clear it.</li>
+      <li>Fix the program with a single change, run it again and make sure all three averages are right.</li>
+      <li>Go into <tt>print_average</tt> with F5 and watch <tt>pv_customer</tt> and <tt>lv_average</tt> appear as local variables, then leave with F7.</li>
+    </ul>`
+  });
+  add('de', 'e11', {
+    body: `<p>Ein Programm, das ohne Fehler läuft, ist nicht unbedingt richtig. Das Programm unten berechnet den durchschnittlichen Auftragswert je Kunde, und sein Ergebnis ist für zwei der drei Kunden <b>falsch</b>. Den Code zu lesen reicht oft nicht; der <b>Debugger</b> zeigt Zeile für Zeile, was wirklich geschieht.</p>
+      <ul>
+        <li><b>Starten</b>: Menü ⋯ → <b>Schrittweise debuggen</b> oder <tt>Shift+F5</tt>. Das Programm hält an der ersten Anweisung. Die markierte Zeile ist <b>noch nicht</b> ausgeführt.</li>
+        <li><b>F5</b> führt eine Zeile aus und geht in eine <tt>FORM</tt> oder Methode hinein. <b>F6</b> führt einen solchen Aufruf in einem Zug aus. <b>F7</b> beendet die laufende <tt>FORM</tt> und kehrt zum Aufrufer zurück.</li>
+        <li><b>Breakpoint</b>: auf eine Zeilennummer klicken. <b>F8</b> lässt das Programm bis zum nächsten Breakpoint laufen. Die Anweisung <tt>BREAK-POINT.</tt> im Code bewirkt dasselbe.</li>
+        <li><b>Die Variablentabelle</b> zeigt den Inhalt vor der Ausführung dieser Zeile, und eine gerade geänderte Variable ist markiert. Die lokalen Variablen einer <tt>FORM</tt> sind nur sichtbar, solange diese <tt>FORM</tt> läuft.</li>
+        <li><b>Zurückgehen</b>: <tt>Shift+F6</tt> geht einen Schritt zurück. Der SAP-Debugger kann nicht rückwärts laufen; dieser Simulator kann es, weil der Lauf vorher aufgezeichnet wird.</li>
+      </ul>
+      <p>Ein gutes Vorgehen: zuerst festlegen, welchen Wert man <b>erwartet</b>, dann den ersten Schritt suchen, an dem eine Variable von dieser Erwartung abweicht. Dort liegt der Fehler.</p>`,
+    task: `<ul>
+      <li>Führen Sie das Programm aus und notieren Sie das Ergebnis. Rechnen Sie die richtigen Durchschnitte für ALFA, BRAVO und CITRA selbst aus.</li>
+      <li>Setzen Sie einen Breakpoint auf die Zeile <tt>PERFORM print_average USING gv_previous.</tt> innerhalb der Schleife, starten Sie das Debugging und drücken Sie F8. Sehen Sie sich <tt>gv_sum</tt> und <tt>gv_count</tt> für ALFA an.</li>
+      <li>Drücken Sie noch einmal F8. Wie groß ist <tt>gv_sum</tt>, wenn BRAVO ausgegeben wird, und wie groß müsste es sein? Gehen Sie mit Shift+F6 zurück, bis Sie die Zeile finden, die das Zurücksetzen vergessen hat.</li>
+      <li>Korrigieren Sie das Programm mit einer einzigen Änderung, führen Sie es erneut aus und prüfen Sie, dass alle drei Durchschnitte stimmen.</li>
+      <li>Gehen Sie mit F5 in <tt>print_average</tt> hinein und beobachten Sie, wie <tt>pv_customer</tt> und <tt>lv_average</tt> als lokale Variablen erscheinen; verlassen Sie die Routine dann mit F7.</li>
+    </ul>`
+  });
+  add('zh', 'e11', {
+    body: `<p>程序运行时没有报错，并不代表它是正确的。下面的程序计算每个客户的平均订单金额，但三个客户中有两个的结果是<b>错误</b>的。只读代码往往不够；<b>调试器</b>会一行一行地展示实际发生了什么。</p>
+      <ul>
+        <li><b>开始</b>：菜单 ⋯ → <b>逐步调试</b>，或按 <tt>Shift+F5</tt>。程序停在第一条语句上。被标记的那一行<b>尚未</b>执行。</li>
+        <li><b>F5</b> 执行一行，并进入 <tt>FORM</tt> 或方法内部。<b>F6</b> 一次执行完这样的调用。<b>F7</b> 执行完当前的 <tt>FORM</tt> 并回到调用处。</li>
+        <li><b>断点</b>：点击行号。<b>F8</b> 让程序运行到下一个断点。代码中的 <tt>BREAK-POINT.</tt> 语句作用相同。</li>
+        <li><b>变量表</b>显示该行执行之前的内容，刚刚发生变化的变量会被标出。<tt>FORM</tt> 的局部变量只在该 <tt>FORM</tt> 运行期间可见。</li>
+        <li><b>后退</b>：<tt>Shift+F6</tt> 后退一步。SAP 的调试器不能倒退；本模拟器可以，因为运行过程是先被记录下来的。</li>
+      </ul>
+      <p>一个好的做法：先确定你<b>期望</b>的值，然后找出变量第一次偏离这个期望的那一步。错误就在那里。</p>`,
+    task: `<ul>
+      <li>运行程序并记下结果。自己算出 ALFA、BRAVO 和 CITRA 的正确平均值。</li>
+      <li>在循环内的 <tt>PERFORM print_average USING gv_previous.</tt> 这一行设置断点，开始调试，然后按 F8。查看 ALFA 的 <tt>gv_sum</tt> 和 <tt>gv_count</tt>。</li>
+      <li>再按一次 F8。输出 BRAVO 时 <tt>gv_sum</tt> 是多少，应该是多少？用 Shift+F6 后退，直到找到忘记清空它的那一行。</li>
+      <li>只改一处来修正程序，重新运行，并确认三个平均值都正确。</li>
+      <li>用 F5 进入 <tt>print_average</tt>，观察 <tt>pv_customer</tt> 和 <tt>lv_average</tt> 作为局部变量出现，然后用 F7 离开。</li>
+    </ul>`
+  });
+
 })();

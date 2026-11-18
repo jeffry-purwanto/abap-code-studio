@@ -608,7 +608,8 @@ CALL FUNCTION 'DEQUEUE_EVVBAKE'
          • <strong>Lanjutan</strong>: regular expression (FIND / REPLACE … REGEX atau PCRE, matches, match, count), LOOP AT … GROUP BY, FILTER, LET, FOR GROUPS, subquery SQL (IN, EXISTS), CASE dan perhitungan di daftar kolom, UNION, FROM / WHERE dinamis, RTTS (cl_abap_typedescr, cl_abap_structdescr), CREATE PRIVATE<br>
          • <strong>Unit test</strong>: CLASS … FOR TESTING, setup / teardown, cl_abap_unit_assert — dijalankan lewat menu ⋯ → Jalankan Unit Test<br>
          • <strong>Transaksi</strong>: AUTHORITY-CHECK, ENQUEUE_ / DEQUEUE_, NUMBER_GET_NEXT, BAPI dengan parameter RETURN, ROLLBACK WORK yang benar-benar membatalkan perubahan<br>
-         • <strong>Kinerja</strong>: baris Database di bawah output: jumlah akses baca dan tulis, serta SELECT yang berulang di dalam loop</p>
+         • <strong>Kinerja</strong>: baris Database di bawah output: jumlah akses baca dan tulis, serta SELECT yang berulang di dalam loop<br>
+         • <strong>Debugger</strong>: tab Debug (Shift+F5): F5 satu langkah, F6 lewati pemanggilan, F7 keluar, F8 lanjut ke breakpoint, dan mundur selangkah dengan Shift+F6; breakpoint dipasang dengan klik nomor baris atau pernyataan BREAK-POINT</p>
       <h4>Yang berbeda dari SAP</h4>
       <p>• Tabel database adalah data contoh (menu <strong>Tabel</strong>). Perubahan lewat INSERT / UPDATE / DELETE hanya berlaku selama program berjalan.<br>
          • Function module ditulis di program yang sama; interface-nya dibaca dari blok komentar <code>*"</code> seperti yang ditampilkan SE37.<br>

@@ -60,7 +60,8 @@ window.ABAP_CONTENT_I18N = {
       e07: { title: 'Design patterns: singleton and factory', goal: 'Control how objects are created so that the program stays easy to change.' },
       e08: { title: 'Generic programming: RTTS and dynamic SQL', goal: 'Write one program that works for any table whose name is only known at runtime.' },
       e09: { title: 'Safe transactions: authorization, locks and COMMIT', goal: 'Change data correctly: check the permission, lock the document, then save everything or nothing.' },
-      e10: { title: 'Case study: order-to-cash report', goal: 'Combine the Expert-level techniques in one report across several documents.' }
+      e10: { title: 'Case study: order-to-cash report', goal: 'Combine the Expert-level techniques in one report across several documents.' },
+      e11: { title: 'Debugger: finding a bug step by step', goal: 'Find the cause of a wrong result with breakpoints and by watching the variables.' }
     },
     de: {
       p01: { title: 'Erstes Programm: WRITE', goal: 'Den Aufbau eines ABAP-Programms kennenlernen und Text auf dem Bildschirm ausgeben.' },
@@ -110,7 +111,8 @@ window.ABAP_CONTENT_I18N = {
       e07: { title: 'Entwurfsmuster: Singleton und Factory', goal: 'Steuern, wie Objekte erzeugt werden, damit das Programm leicht änderbar bleibt.' },
       e08: { title: 'Generische Programmierung: RTTS und dynamisches SQL', goal: 'Ein Programm schreiben, das für jede Tabelle funktioniert, deren Name erst zur Laufzeit bekannt ist.' },
       e09: { title: 'Sichere Transaktionen: Berechtigung, Sperren und COMMIT', goal: 'Daten richtig ändern: Berechtigung prüfen, Beleg sperren, dann alles oder nichts speichern.' },
-      e10: { title: 'Fallstudie: Order-to-Cash-Bericht', goal: 'Die Techniken der Stufe Experte in einem belegübergreifenden Bericht verbinden.' }
+      e10: { title: 'Fallstudie: Order-to-Cash-Bericht', goal: 'Die Techniken der Stufe Experte in einem belegübergreifenden Bericht verbinden.' },
+      e11: { title: 'Debugger: einen Fehler Schritt für Schritt finden', goal: 'Die Ursache eines falschen Ergebnisses mit Breakpoints und durch Beobachten der Variablen finden.' }
     },
     zh: {
       p01: { title: '第一个程序：WRITE', goal: '认识 ABAP 程序的基本结构，并在屏幕上输出文本。' },
@@ -160,7 +162,8 @@ window.ABAP_CONTENT_I18N = {
       e07: { title: '设计模式：单例与工厂', goal: '控制对象的创建方式，使程序易于修改。' },
       e08: { title: '通用编程：RTTS 与动态 SQL', goal: '编写一个程序，适用于名称在运行时才知道的任意数据表。' },
       e09: { title: '安全的事务：权限、锁与 COMMIT', goal: '正确地修改数据：检查权限，锁定凭证，然后要么全部保存，要么全不保存。' },
-      e10: { title: '案例研究：订单到收款报表', goal: '把“专家”级别的技术结合到一个跨凭证的报表中。' }
+      e10: { title: '案例研究：订单到收款报表', goal: '把“专家”级别的技术结合到一个跨凭证的报表中。' },
+      e11: { title: '调试器：逐步查找错误', goal: '利用断点并观察变量内容，找出结果错误的原因。' }
     }
   },
 

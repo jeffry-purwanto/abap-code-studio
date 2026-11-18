@@ -19,7 +19,15 @@
   'use strict';
 
   const U = s => (s === undefined || s === null ? '' : String(s)).toUpperCase();
-  const isNum = s => s !== undefined && s !== null && s !== '' && typeof s !== 'object' && typeof s !== 'boolean' && !isNaN(Number(s));
+  // trace for the debugger: declarations are no steps; these system fields are shown; rows kept of a table
+  const TRACE_SKIP = new Set(['REPORT', 'PROGRAM', 'DATA', 'TYPES', 'CONSTANTS', 'STATICS', 'TABLES', 'PARAMETERS', 'PARAMETER', 'SELECT-OPTIONS',
+    'FIELD-SYMBOLS', 'CLASS-DATA', 'TYPE-POOLS', 'INCLUDE', 'SELECTION-SCREEN', 'RANGES', 'NODES',
+    'CLASS', 'ENDCLASS', 'INTERFACE', 'ENDINTERFACE', 'FORM', 'ENDFORM', 'METHOD', 'ENDMETHOD', 'FUNCTION', 'ENDFUNCTION',
+    'MODULE', 'ENDMODULE', 'DEFINE', 'END-OF-DEFINITION', 'INITIALIZATION', 'START-OF-SELECTION', 'END-OF-SELECTION',
+    'TOP-OF-PAGE', 'END-OF-PAGE', 'LOAD-OF-PROGRAM']);
+  const TRACE_SY = new Set(['SY-SUBRC', 'SY-TABIX', 'SY-INDEX', 'SY-DBCNT']);
+  const TRACE_ROWS = 25;
+  const isNum =s => s !== undefined && s !== null && s !== '' && typeof s !== 'object' && typeof s !== 'boolean' && !isNaN(Number(s));
 
   // Instance of a (local) class. Assignments copy the reference, never the object.
   class AbapObject {
@@ -272,6 +280,8 @@
     //   AT SELECTION-SCREEN → START-OF-SELECTION → END-OF-SELECTION.  TOP-OF-PAGE fires at the first list output.
     run(code, opts = {}) {
       this.reset();
+      // opts.trace = { limit }: the debugger wants every executed statement recorded (see traceStep)
+      this.trace = opts.trace ? { steps: [], limit: opts.trace.limit || 5000, last: new Map(), prev: null, prevDepth: 0, cut: false, stackKey: null, stack: [], localsKey: null, locals: [] } : null;
       this.source = String(code || '');
       for (const [k, v] of Object.entries(opts.params || {})) this.params[U(k)] = v;
       this.guard(() => {
@@ -298,7 +308,72 @@
         this.runEvent('START-OF-SELECTION');
         this.runEvent('END-OF-SELECTION');
       });
-      return { output: this.output, variables: this.variables, errors: this.errors, stats: this.runStats() };
+      const result = { output: this.output, variables: this.variables, errors: this.errors, stats: this.runStats() };
+      if (this.trace) {
+        const last = this.traceState(0, false);                    // the state the program ended in
+        last.end = true;
+        this.trace.steps.push(last);
+        result.trace = { steps: this.trace.steps, cut: this.trace.cut };
+        this.trace = null;                                         // later calls (ALV events, unit tests) are not part of it
+      }
+      return result;
+    }
+
+    // ── Trace for the debugger ────────────────────────────────
+    // The debugger does not stop the interpreter. A run is recorded statement by statement and then played
+    // back, forwards and backwards. A step is the state BEFORE its statement runs, as in the ABAP Debugger:
+    //   { line, depth, stack, locals, out, tail, diff, brk }
+    // diff holds only the variables whose value differs from the step before (name -> text, null = gone),
+    // so a long run stays small. Declarations are not steps; statements sharing a line count as one.
+    traceStep(t, tokens, i) {
+      const tr = this.trace;
+      const kw = U(t.words[0]).replace(/[:.]+$/, '');
+      if (TRACE_SKIP.has(kw) && t.words[1] !== '(') return;        // DATA(x) = ... is a statement, DATA x TYPE ... is not
+      const depth = this.callStack.length;
+      const sameLine = tr.prev && tokens[i - 1] === tr.prev && tr.prev.lineNo === t.lineNo && tr.prevDepth === depth;
+      tr.prev = t; tr.prevDepth = depth;
+      if (sameLine) return;
+      if (tr.steps.length >= tr.limit) { tr.cut = true; return; }
+      tr.steps.push(this.traceState(t.lineNo, kw === 'BREAK-POINT'));
+    }
+
+    traceState(line, brk) {
+      const tr = this.trace, diff = {}, seen = new Set();
+      for (const name of Object.keys(this.variables)) {
+        if (name.startsWith('SY-') && !TRACE_SY.has(name)) continue;
+        const rec = this.variables[name];
+        if (!rec) continue;
+        seen.add(name);
+        const text = this.traceValue(rec);
+        if (tr.last.get(name) !== text) { tr.last.set(name, text); diff[name] = text; }
+      }
+      for (const name of [...tr.last.keys()]) if (!seen.has(name)) { tr.last.delete(name); diff[name] = null; }
+      // call stack and the names local to the running FORM / method: kept as shared arrays while they do not change
+      const stackKey = this.callStack.join('\u0001');
+      if (stackKey !== tr.stackKey) { tr.stackKey = stackKey; tr.stack = this.callStack.slice(); }
+      const fr = this.frames[this.frames.length - 1];
+      const localsKey = fr ? Object.keys(fr.saved).join('\u0001') : '';
+      if (localsKey !== tr.localsKey) { tr.localsKey = localsKey; tr.locals = fr ? Object.keys(fr.saved) : []; }
+      const lastOut = this.output[this.output.length - 1];
+      return { line, depth: this.callStack.length, stack: tr.stack, locals: tr.locals, out: this.output.length,
+        tail: lastOut && typeof lastOut.text === 'string' ? lastOut.text.length : 0, diff, brk: !!brk };
+    }
+
+    // A variable as text: "type\u0001JSON". Of a table the first rows, the last row and the row count.
+    traceValue(rec) {
+      let text;
+      try {
+        const v = rec.value;
+        if (Array.isArray(v)) {
+          const o = { n: v.length, rows: v.slice(0, TRACE_ROWS) };
+          if (v.length > TRACE_ROWS) o.last = v[v.length - 1];
+          if (rec.header !== undefined) o.header = rec.header;
+          text = JSON.stringify(o);
+        } else text = JSON.stringify(v === undefined ? '' : v);
+      } catch (e) { text = '"[object]"'; }
+      if (text === undefined) text = '""';
+      if (text.length > 6000) text = JSON.stringify(text.slice(0, 6000) + ' …');
+      return (Array.isArray(rec.value) ? 'table' : rec.type || '') + '\u0001' + text;
     }
 
     // Database accesses of the run; `repeated` lists SELECT statements executed again and again inside a loop
@@ -496,6 +571,7 @@
         this.curLine = t.lineNo;
         this.curT = t;
         if (++this.steps > this.maxSteps) throw { message: 'Maximum execution steps exceeded (infinite loop?)', line: t.lineNo };
+        if (this.trace) this.traceStep(t, tokens, i);
 
         const kw = U(t.words[0]).replace(/[:.]+$/, '');
 
