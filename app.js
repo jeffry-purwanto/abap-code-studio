@@ -545,21 +545,41 @@ function runCode(params) {
   const btn  = document.querySelector('.editor-toolbar .run-btn');
   if (btn) { btn.classList.add('running'); const rl = btn.querySelector('.run-label'); if (rl) rl.textContent = tr('bar.running'); }
 
+  const stopBtn = () => { if (btn) { btn.classList.remove('running'); const rl = btn.querySelector('.run-label'); if (rl) rl.textContent = tr('bar.run'); } };
+
   setTimeout(() => {
+    const file = files.find(x => x.id === activeFileId);
+    const progName = () => { const m = /^\s*(?:REPORT|PROGRAM)\s+([A-Za-z0-9_]+)/im.exec(code); return m ? m[1].toUpperCase() : (file ? file.name : 'Program'); };
+
+    // Like SAP: a program with syntax errors cannot be executed. Check first; if there are errors,
+    // show only those and no program output, so a broken program never looks as if it ran fine.
+    const syntaxIssues = interpreter.checkSyntax(code);
+    const syntaxErrors = syntaxIssues.filter(s => s.type === 'error');
+    if (syntaxErrors.length) {
+      const header = { line: 0, type: 'error', msg: tr('out.syntaxblock.head', { n: syntaxErrors.length }) };
+      lastResult = { output: [], errors: [header, ...syntaxErrors], stats: null, title: progName(), blocked: true };
+      alvGrids = [];
+      renderOutput();
+      renderVariables({});
+      renderSyntaxIssues(syntaxIssues);
+      switchPanel('output', document.querySelector('.panel-tab'));
+      toast(tr('toast.syntaxblock', { n: syntaxErrors.length }), 'error');
+      stopBtn();
+      return;
+    }
+
     const result = interpreter.run(code, { params: params || {} });
 
-    // Show syntax-check findings together with the runtime messages, so a learner
+    // Show the remaining syntax warnings together with the runtime messages, so a learner
     // sees them without opening the Syntax Check tab. Runtime messages are more
     // specific, so a syntax finding on the same line is dropped.
-    const syntaxIssues = interpreter.checkSyntax(code);
     const runtimeLines = new Set(result.errors.map(e => e.line));
     for (const s of syntaxIssues) {
-      if ((s.type === 'error' || s.type === 'warning') && !runtimeLines.has(s.line)) result.errors.push(s);
+      if (s.type === 'warning' && !runtimeLines.has(s.line)) result.errors.push(s);
     }
     result.errors.sort((a, b) => (a.fatal ? 1 : 0) - (b.fatal ? 1 : 0) || a.line - b.line);
 
-    const file = files.find(x => x.id === activeFileId);
-    lastResult = { output: result.output, errors: result.errors, stats: result.stats, title: interpreter.programName || (file ? file.name : 'Program') };
+    lastResult = { output: result.output, errors: result.errors, stats: result.stats, title: interpreter.programName || progName() };
     alvGrids = [];
     // Everything (WRITE list, ALV grids, messages) is shown in the Output panel and, like the list screen
     // after F8 in SAP, in a wide result window. That window is opened first: renderOutput fills it only
@@ -569,11 +589,7 @@ function runCode(params) {
     renderVariables(result.variables);
     renderSyntaxIssues(syntaxIssues);
     switchPanel('output', document.querySelector('.panel-tab'));
-
-    if (btn) {
-      btn.classList.remove('running');
-      const rl = btn.querySelector('.run-label'); if (rl) rl.textContent = tr('bar.run');
-    }
+    stopBtn();
   }, 80);
 }
 
@@ -626,7 +642,8 @@ function renderOutput(scrollToEnd) {
       }
       lines.push(`</div>`);
     }
-    if (!result.output.length && !report) lines.unshift(`<div class="output-empty">${tr('out.empty')}</div>`);
+    // "program finished without output" would be misleading when the program was blocked before it ran
+    if (!result.output.length && !report && !result.blocked) lines.unshift(`<div class="output-empty">${tr('out.empty')}</div>`);
     html = report + lines.join('') + stats;
   }
 

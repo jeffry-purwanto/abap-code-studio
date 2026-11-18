@@ -27,6 +27,28 @@
     'TOP-OF-PAGE', 'END-OF-PAGE', 'LOAD-OF-PROGRAM']);
   const TRACE_SY = new Set(['SY-SUBRC', 'SY-TABIX', 'SY-INDEX', 'SY-DBCNT']);
   const TRACE_ROWS = 25;
+  // Every word that may begin an ABAP statement — supported here OR a real statement the simulator just skips.
+  // Used to tell a typo (not in here → syntax error) from a feature that is simply not simulated (in here → warning).
+  // Being generous is safe: an extra word only means a typo that happens to equal it is missed, never a false error.
+  const KEYWORDS = new Set(('REPORT PROGRAM TYPE-POOLS TYPE-POOL INCLUDE TABLES NODES INFOTYPES FIELD-GROUPS FIELDS CONTROLS CONSTANTS DATA ' +
+    'TYPES STATICS CLASS-DATA FIELD-SYMBOLS PARAMETERS PARAMETER SELECT-OPTIONS RANGES SELECTION-SCREEN ' +
+    'CLASS ENDCLASS INTERFACE ENDINTERFACE METHODS CLASS-METHODS METHOD ENDMETHOD EVENTS CLASS-EVENTS ALIASES INTERFACES DEFINE ' +
+    'PUBLIC PROTECTED PRIVATE SECTION REDEFINITION SUM ENDPROVIDE ENDEXEC ENDENHANCEMENT ' +
+    'FORM ENDFORM PERFORM FUNCTION ENDFUNCTION FUNCTION-POOL MODULE ENDMODULE ' +
+    'START-OF-SELECTION END-OF-SELECTION INITIALIZATION LOAD-OF-PROGRAM TOP-OF-PAGE END-OF-PAGE AT GET ON ' +
+    'IF ELSEIF ELSE ENDIF CASE WHEN ENDCASE DO ENDDO WHILE ENDWHILE LOOP ENDLOOP ENDAT ' +
+    'MOVE MOVE-CORRESPONDING CLEAR REFRESH FREE ADD SUBTRACT MULTIPLY DIVIDE COMPUTE ' +
+    'WRITE ULINE SKIP NEW-LINE NEW-PAGE FORMAT HIDE BACK POSITION RESERVE PRINT-CONTROL SUPPRESS SUMMARY DETAIL WINDOW SCROLL LEAVE SET GET ' +
+    'CONCATENATE CONDENSE REPLACE SHIFT SPLIT TRANSLATE OVERLAY SEARCH CONVERT PACK UNPACK FIND MATCH ' +
+    'APPEND INSERT COLLECT READ MODIFY DELETE SORT PROVIDE EXTRACT ' +
+    'SELECT ENDSELECT UPDATE COMMIT ROLLBACK FETCH OPEN CLOSE EXEC ' +
+    'CALL SUBMIT RAISE MESSAGE EXIT CONTINUE CHECK ASSERT RETURN STOP WAIT ' +
+    'TRY CATCH CLEANUP ENDTRY RESUME RETRY ' +
+    'CREATE ASSIGN UNASSIGN DESCRIBE AUTHORITY-CHECK ENQUEUE DEQUEUE IMPORT EXPORT ' +
+    'DEMAND SUPPLY COMMUNICATION TRANSFER EDITOR-CALL GENERATE SCAN SYNTAX-CHECK BREAK-POINT LOG-POINT ' +
+    'ENHANCEMENT ENHANCEMENT-POINT ENHANCEMENT-SECTION').split(/\s+/));
+  // single-word event blocks: they must stand alone and end with a period
+  const EVENT_STMTS = new Set(['START-OF-SELECTION', 'END-OF-SELECTION', 'INITIALIZATION', 'LOAD-OF-PROGRAM', 'TOP-OF-PAGE', 'END-OF-PAGE']);
   const isNum =s => s !== undefined && s !== null && s !== '' && typeof s !== 'object' && typeof s !== 'boolean' && !isNaN(Number(s));
 
   // Instance of a (local) class. Assignments copy the reference, never the object.
@@ -6509,61 +6531,88 @@
         if (openLine && starters.has(kw) && words[1] !== '=') {      // "return = gs_ret" is a parameter, not RETURN
           issues.push({ line: openLine, type: 'error', msg: `Statement di baris ${openLine} tidak diakhiri titik (.) — baris berikutnya ikut terbaca sebagai lanjutannya` });
         }
-        const continued = stmtOpen;      // this line continues the statement of the previous line
         stmtOpen = !/\.$/.test(noComment);
         openLine = stmtOpen && !/[,:]$/.test(noComment) ? i + 1 : 0;
-
-        // Block matching — skip non-block keywords that look like openers
-        const skipKws = new Set(['START-OF-SELECTION', 'END-OF-SELECTION', 'AT', 'SELECTION-SCREEN',
-          'INITIALIZATION', 'AT-SELECTION-SCREEN', 'END-OF-PAGE', 'TOP-OF-PAGE']);
-        const noBlock = (kw === 'CLASS' || kw === 'INTERFACE') && /\b(DEFERRED|LOAD)\b/.test(noComment.toUpperCase());
-        if (!skipKws.has(kw) && !noBlock) {
-          if (pairs[kw] && !(kw === 'CASE' && continued)) stack.push({ kw, line: i + 1 });      // CASE ... END inside a SELECT is an expression
-          if (closers.has(kw)) {
-            if (!stack.length) {
-              issues.push({ line: i + 1, msg: `Unexpected "${kw}" without matching opener`, type: 'error' });
-            } else {
-              const last = stack[stack.length - 1];
-              if (pairs[last.kw] !== kw) {
-                issues.push({ line: i + 1, msg: `Expected "${pairs[last.kw]}" but found "${kw}"`, type: 'error' });
-              } else {
-                stack.pop();
-              }
-            }
-          }
-        }
 
         // Simple keyword typo detection
         const typos = { 'ENDIFS': 'ENDIF', 'ENDLOOPS': 'ENDLOOP', 'ENDDOS': 'ENDDO', 'ENDWHILES': 'ENDWHILE' };
         if (typos[kw]) issues.push({ line: i + 1, msg: `Possible typo: "${kw}" → did you mean "${typos[kw]}"?`, type: 'warning' });
+
+        // an event block (START-OF-SELECTION, ...) must stand alone and end with a period
+        if (EVENT_STMTS.has(kw) && !/\.\s*$/.test(noComment)) {
+          issues.push({ line: i + 1, type: 'error', msg: `"${kw}" harus berdiri sendiri sebagai satu pernyataan dan diakhiri titik (.).` });
+        }
       }
 
-      // Unclosed blocks
-      for (const b of stack) {
-        issues.push({ line: b.line, msg: `Unclosed "${b.kw}" (missing "${pairs[b.kw]}")`, type: 'error' });
+      // Block matching over STATEMENTS (not physical lines), so "LOOP ... ENDLOOP." written on one line
+      // is balanced correctly. Statements are split on periods by preprocess, keeping their start line.
+      let blockToks = null;
+      try { blockToks = this.tokenize(this.preprocess(code)); } catch (e) { /* fall back to no block check */ }
+      if (blockToks) {
+        const skipKws = new Set(['START-OF-SELECTION', 'END-OF-SELECTION', 'AT', 'SELECTION-SCREEN',
+          'INITIALIZATION', 'END-OF-PAGE', 'TOP-OF-PAGE', 'LOAD-OF-PROGRAM']);
+        for (const t of blockToks) {
+          const kw = U(t.words[0]).replace(/[:.]+$/, '');
+          if (!kw || skipKws.has(kw)) continue;
+          if ((kw === 'CLASS' || kw === 'INTERFACE') && t.words.some(x => /^(DEFERRED|LOAD)$/.test(U(x)))) continue;
+          if (pairs[kw]) { stack.push({ kw, line: t.lineNo }); continue; }
+          if (closers.has(kw)) {
+            if (!stack.length) { issues.push({ line: t.lineNo, msg: `Unexpected "${kw}" without matching opener`, type: 'error' }); continue; }
+            const last = stack[stack.length - 1];
+            if (pairs[last.kw] !== kw) issues.push({ line: t.lineNo, msg: `Expected "${pairs[last.kw]}" but found "${kw}"`, type: 'error' });
+            else stack.pop();
+          }
+        }
+        for (const b of stack) issues.push({ line: b.line, msg: `Unclosed "${b.kw}" (missing "${pairs[b.kw]}")`, type: 'error' });
       }
 
       // Statement-level checks: PERFORM targets and function modules
       try {
-        const tokens = this.tokenize(this.preprocess(code));
+        const tokens = blockToks || this.tokenize(this.preprocess(code));
         const forms = new Set(tokens.filter(t => U(t.words[0]) === 'FORM').map(t => U(t.words[1])));
         const fms = Object.assign({}, this.functionModules());
         for (const t of tokens) if (U(t.words[0]) === 'FUNCTION' && t.words[1]) fms[U(t.words[1])] = true;   // written in this program
+        // names a statement may legitimately be called by: macros (DEFINE) and the program's own FORMs
+        const macros = new Set();
+        let inDefine = false;
         for (const t of tokens) {
-          const kw = U(t.words[0]);
-          if (kw === 'PERFORM' && t.words[1] && !forms.has(U(t.words[1])) && !t.words.some(x => U(x) === 'PROGRAM')) {
-            issues.push({ line: t.lineNo, msg: `PERFORM "${U(t.words[1])}": FORM tidak ditemukan di program ini`, type: 'error' });
+          const k = U(t.words[0]).replace(/[:.]+$/, '');
+          if (k === 'DEFINE') { if (t.words[1]) macros.add(U(t.words[1]).replace(/[:.]+$/, '')); inDefine = true; continue; }
+          if (k === 'END-OF-DEFINITION') inDefine = false;
+        }
+        inDefine = false;
+        for (const t of tokens) {
+          const w = t.words;
+          const kw = U(w[0]).replace(/[:.]+$/, '');
+          if (kw === 'DEFINE') { inDefine = true; continue; }
+          if (kw === 'END-OF-DEFINITION') { inDefine = false; continue; }
+          if (inDefine) continue;                                   // inside a macro body tokens may be partial (&1 …)
+          if (kw === 'PERFORM' && w[1] && !forms.has(U(w[1])) && !w.some(x => U(x) === 'PROGRAM')) {
+            issues.push({ line: t.lineNo, msg: `PERFORM "${U(w[1])}": FORM tidak ditemukan di program ini`, type: 'error' });
           }
-          if (kw === 'CALL' && U(t.words[1]) === 'FUNCTION' && /^'/.test(t.words[2] || '')) {
-            const fn = U(t.words[2].slice(1, -1));
+          if (kw === 'CALL' && U(w[1]) === 'FUNCTION' && /^'/.test(w[2] || '')) {
+            const fn = U(w[2].slice(1, -1));
             if (!fms[fn] && !/^(EN|DE)QUEUE_/.test(fn)) issues.push({ line: t.lineNo, msg: `Function module "${fn}" belum disimulasikan di studio ini (akan dilewati saat Run)`, type: 'warning' });
+          }
+          // a statement whose first word is a plain word that is not an ABAP keyword, a macro or a FORM,
+          // and that is neither an assignment (=) nor a method call ( obj->m( ) / m( ) ): a typo or an unfinished line.
+          if (kw && /^[A-Z][A-Z-]*$/.test(kw) && !KEYWORDS.has(kw) && !macros.has(kw) && !forms.has(kw)) {
+            const lv = this.levels(w);
+            const assigns = w.some((x, i) => lv[i] === 0 && (x === '=' || x === '?='));
+            const calls = this.isChain(w) || w[1] === '(';
+            if (!assigns && !calls) {
+              issues.push({ line: t.lineNo, type: 'error', msg: `"${kw}" bukan perintah ABAP yang dikenal — mungkin salah ketik, atau barisnya belum lengkap.` });
+            }
           }
         }
       } catch (e) { /* statement checks are best-effort */ }
 
       issues.sort((a, b) => a.line - b.line);
-      if (!issues.length) issues.push({ line: 0, msg: 'No syntax issues found ✓', type: 'ok' });
-      return issues;
+      // a chained statement (WRIT: a, b.) can raise the same issue per part — show it once
+      const uniq = [], seen = new Set();
+      for (const s of issues) { const k = s.line + '\u0001' + s.type + '\u0001' + s.msg; if (!seen.has(k)) { seen.add(k); uniq.push(s); } }
+      if (!uniq.length) uniq.push({ line: 0, msg: 'No syntax issues found ✓', type: 'ok' });
+      return uniq;
     }
   }
 

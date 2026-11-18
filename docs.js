@@ -621,7 +621,7 @@ CALL FUNCTION 'DEQUEUE_EVVBAKE'
          • CDS view, AMDP, Native SQL (EXEC SQL)<br>
          • Class global (SE24), friend, test double / mocking, pembuatan tipe baru lewat RTTC (cl_abap_structdescr=&gt;create)<br>
          • File dan sistem: OPEN DATASET, EXPORT / IMPORT MEMORY, SUBMIT, CALL TRANSACTION (hanya ditampilkan sebagai pesan), background job<br>
-         • Statement yang tidak dikenal dilewati dengan peringatan, bukan dijalankan diam-diam</p>
+         • Seperti di SAP, program dengan kesalahan sintaks (salah ketik, titik hilang, blok tak tertutup) tidak dijalankan — Run menolak dan menampilkan daftar kesalahannya. Perintah ABAP asli yang memang belum disimulasikan tetap dilewati dengan peringatan.</p>
     `
   }
 ];
