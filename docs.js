@@ -621,7 +621,7 @@ CALL FUNCTION 'DEQUEUE_EVVBAKE'
          • CDS view, AMDP, Native SQL (EXEC SQL)<br>
          • Class global (SE24), friend, test double / mocking, pembuatan tipe baru lewat RTTC (cl_abap_structdescr=&gt;create)<br>
          • File dan sistem: OPEN DATASET, EXPORT / IMPORT MEMORY, SUBMIT, CALL TRANSACTION (hanya ditampilkan sebagai pesan), background job<br>
-         • Seperti di SAP, program dengan kesalahan sintaks tidak dijalankan — Run, Debug, dan Unit Test menolak dan menampilkan daftar kesalahannya. Setiap pernyataan diperiksa terhadap tata bahasa ABAP lengkap, begitu juga nama yang belum atau sudah dideklarasikan, method dan parameter yang tidak ada, dan tipe yang tidak cocok. Perintah ABAP asli yang memang belum disimulasikan tetap dilewati dengan peringatan.</p>
+         • Seperti di SAP, program dengan kesalahan sintaks tidak dijalankan — Run, Debug, dan Unit Test menolak dan menampilkan daftar kesalahannya. Setiap pernyataan diperiksa terhadap tata bahasa ABAP lengkap, begitu juga nama yang belum atau sudah dideklarasikan, method dan parameter yang tidak ada, tipe yang tidak cocok, field tabel contoh yang salah nama, serta nama method, parameter, dan event class standar dan function module yang disimulasikan. Kesalahan ditandai langsung di editor saat mengetik (garis bergelombang; Ctrl+F2 memeriksa saat itu juga). Perintah ABAP asli yang memang belum disimulasikan tetap dilewati dengan peringatan.</p>
     `
   }
 ];

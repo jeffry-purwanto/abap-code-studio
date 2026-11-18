@@ -49,6 +49,54 @@
     'ENHANCEMENT ENHANCEMENT-POINT ENHANCEMENT-SECTION').split(/\s+/));
   // single-word event blocks: they must stand alone and end with a period
   const EVENT_STMTS = new Set(['START-OF-SELECTION', 'END-OF-SELECTION', 'INITIALIZATION', 'LOAD-OF-PROGRAM', 'TOP-OF-PAGE', 'END-OF-PAGE']);
+  // Interface of the simulated standard function modules: every parameter name SAP knows for them (all
+  // sections together). A CALL FUNCTION with another name ends in SAP with the dump CALL_FUNCTION_PARM_UNKNOWN.
+  const ALV_COMMON = 'I_INTERFACE_CHECK I_BYPASSING_BUFFER I_BUFFER_ACTIVE I_CALLBACK_PROGRAM I_CALLBACK_PF_STATUS_SET I_CALLBACK_USER_COMMAND I_STRUCTURE_NAME ' +
+    'IT_EXCLUDING IS_SEL_HIDE I_DEFAULT I_SAVE IS_VARIANT IT_EVENTS IT_EVENT_EXIT IS_REPREP_ID I_SCREEN_START_COLUMN I_SCREEN_START_LINE I_SCREEN_END_COLUMN ' +
+    'I_SCREEN_END_LINE IT_EXCEPT_QINFO E_EXIT_CAUSED_BY_CALLER ES_EXIT_CAUSED_BY_USER T_OUTTAB ';
+  const ALV_GRID = 'I_CALLBACK_TOP_OF_PAGE I_CALLBACK_HTML_TOP_OF_PAGE I_CALLBACK_HTML_END_OF_LIST I_BACKGROUND_ID I_GRID_TITLE I_GRID_SETTINGS I_HTML_HEIGHT_TOP ' +
+    'I_HTML_HEIGHT_END IT_ALV_GRAPHICS IT_HYPERLINK IR_SALV_FULLSCREEN_ADAPTER ';
+  const FM_PARAMS = {
+    REUSE_ALV_GRID_DISPLAY: ALV_COMMON + ALV_GRID + 'IS_LAYOUT IT_FIELDCAT IT_SPECIAL_GROUPS IT_SORT IT_FILTER IS_PRINT IT_ADD_FIELDCAT',
+    REUSE_ALV_LIST_DISPLAY: ALV_COMMON + 'IS_LAYOUT IT_FIELDCAT IT_SPECIAL_GROUPS IT_SORT IT_FILTER IS_PRINT IR_SALV_LIST_ADAPTER I_SUPPRESS_EMPTY_DATA',
+    REUSE_ALV_GRID_DISPLAY_LVC: ALV_COMMON + ALV_GRID + 'IS_LAYOUT_LVC IT_FIELDCAT_LVC IT_SPECIAL_GROUPS_LVC IT_SORT_LVC IT_FILTER_LVC IS_PRINT_LVC',
+    REUSE_ALV_FIELDCATALOG_MERGE: 'I_PROGRAM_NAME I_INTERNAL_TABNAME I_STRUCTURE_NAME I_CLIENT_NEVER_DISPLAY I_INCLNAME I_BYPASSING_BUFFER I_BUFFER_ACTIVE CT_FIELDCAT',
+    LVC_FIELDCATALOG_MERGE: 'I_BUFFER_ACTIVE I_STRUCTURE_NAME I_CLIENT_NEVER_DISPLAY I_BYPASSING_BUFFER I_INTERNAL_TABNAME CT_FIELDCAT',
+    REUSE_ALV_COMMENTARY_WRITE: 'IT_LIST_COMMENTARY I_LOGO I_END_OF_LIST_GRID I_ALV_FORM',
+    REUSE_ALV_EVENTS_GET: 'I_LIST_TYPE ET_EVENTS',
+    BAPI_MATERIAL_GET_DETAIL: 'MATERIAL PLANT VALUATIONAREA VALUATIONTYPE MATERIAL_EVG MATERIAL_LONG MATERIAL_GENERAL_DATA RETURN MATERIALPLANTDATA MATERIALVALUATIONDATA',
+    BAPI_FLIGHT_GETLIST: 'AIRLINE DESTINATION_FROM DESTINATION_TO MAX_ROWS DATE_RANGE EXTENSION_IN FLIGHT_LIST EXTENSION_OUT RETURN',
+    BAPI_TRANSACTION_COMMIT: 'WAIT RETURN',
+    BAPI_TRANSACTION_ROLLBACK: 'RETURN',
+    CONVERSION_EXIT_ALPHA_INPUT: 'INPUT OUTPUT',
+    CONVERSION_EXIT_ALPHA_OUTPUT: 'INPUT OUTPUT',
+    DATE_CHECK_PLAUSIBILITY: 'DATE',
+    DATE_COMPUTE_DAY: 'DATE DAY',
+    GUI_DOWNLOAD: 'BIN_FILESIZE FILENAME FILETYPE APPEND WRITE_FIELD_SEPARATOR HEADER TRUNC_TRAILING_BLANKS WRITE_LF COL_SELECT COL_SELECT_MASK DAT_MODE CONFIRM_OVERWRITE ' +
+      'NO_AUTH_CHECK CODEPAGE IGNORE_CERR REPLACEMENT WRITE_BOM TRUNC_TRAILING_BLANKS_EOL WK1_N_FORMAT WK1_N_SIZE WK1_T_FORMAT WK1_T_SIZE WRITE_LF_AFTER_LAST_LINE ' +
+      'SHOW_TRANSFER_STATUS VIRUS_SCAN_PROFILE FILELENGTH DATA_TAB FIELDNAMES',
+    GUI_UPLOAD: 'FILENAME FILETYPE HAS_FIELD_SEPARATOR HEADER_LENGTH READ_BY_LINE DAT_MODE CODEPAGE IGNORE_CERR REPLACEMENT CHECK_BOM VIRUS_SCAN_PROFILE NO_AUTH_CHECK ' +
+      'FILELENGTH HEADER DATA_TAB ISSCANPERFORMED',
+    NUMBER_GET_NEXT: 'NR_RANGE_NR OBJECT QUANTITY SUBOBJECT TOYEAR IGNORE_BUFFER NUMBER RETURNCODE',
+    POPUP_TO_CONFIRM: 'TITLEBAR DIAGNOSE_OBJECT TEXT_QUESTION TEXT_BUTTON_1 ICON_BUTTON_1 TEXT_BUTTON_2 ICON_BUTTON_2 DEFAULT_BUTTON DISPLAY_CANCEL_BUTTON USERDEFINED_F1_HELP ' +
+      'START_COLUMN START_ROW POPUP_TYPE IV_QUICKINFO_BUTTON_1 IV_QUICKINFO_BUTTON_2 ANSWER PARAMETER',
+    POPUP_TO_INFORM: 'TITEL TXT1 TXT2 TXT3 TXT4',
+    RP_CALC_DATE_IN_INTERVAL: 'DATE DAYS MONTHS SIGNUM YEARS CALC_DATE',
+    RP_LAST_DAY_OF_MONTHS: 'DAY_IN LAST_DAY_OF_MONTH',
+    SAPGUI_PROGRESS_INDICATOR: 'PERCENTAGE TEXT'
+  };
+  for (const k of Object.keys(FM_PARAMS)) FM_PARAMS[k] = new Set(FM_PARAMS[k].trim().split(/\s+/));
+  // how many single-character edits turn a into b (stops caring above 3)
+  const editDistance = (a, b) => {
+    if (Math.abs(a.length - b.length) > 3) return 9;
+    let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+    for (let i = 1; i <= a.length; i++) {
+      const cur = [i];
+      for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = cur;
+    }
+    return prev[b.length];
+  };
   // a statement -> the keyword(s) ABAP always requires somewhere in it; a string must appear, an array
   // means "at least one of these". If one is missing, a mandatory keyword was deleted and the line is broken.
   const REQUIRED_KW = {
@@ -6598,6 +6646,29 @@
           if (k === 'END-OF-DEFINITION') inDefine = false;
         }
         inDefine = false;
+        // every data object the program declares (any scope): explicit, inline DATA( ), and parameters
+        const declared = new Set();
+        for (const t of tokens) {
+          const w = t.words, k = U(w[0]).replace(/[:.]+$/, '');
+          if (['DATA', 'CONSTANTS', 'STATICS', 'CLASS-DATA', 'PARAMETERS', 'PARAMETER', 'SELECT-OPTIONS', 'RANGES', 'TABLES'].includes(k) && w[1] && w[1] !== '(') {
+            declared.add(U(w[1]).replace(/[:.,]+$/, ''));
+          }
+          for (let j = 0; j + 2 < w.length; j++) if (/^@?DATA$/i.test(w[j]) && w[j + 1] === '(') declared.add(U(w[j + 2]));
+          if (k === 'FORM') for (const f of this.parseFormals(w)) declared.add(f.name);
+          if (k === 'METHODS' || k === 'CLASS-METHODS') {
+            for (let j = 1; j < w.length; j++) {
+              if (['TYPE', 'LIKE'].includes(U(w[j + 1]))) declared.add(U(w[j]));
+              if (U(w[j]) === 'VALUE' && w[j + 1] === '(' && w[j + 2]) declared.add(U(w[j + 2]));
+            }
+          }
+        }
+        const columnsOf = table => {
+          const g = typeof window !== 'undefined' ? window : {};
+          const s = (g.ABAP_DB_SCHEMA || {})[table];
+          if (s && s.fields) return s.fields.map(U);
+          const rows = (g.ABAP_DB || {})[table];
+          return rows && rows[0] ? Object.keys(rows[0]).map(U) : [];
+        };
         for (const t of tokens) {
           const w = t.words;
           const kw = U(w[0]).replace(/[:.]+$/, '');
@@ -6610,7 +6681,26 @@
           }
           if (kw === 'CALL' && U(w[1]) === 'FUNCTION' && /^'/.test(w[2] || '')) {
             const fn = U(w[2].slice(1, -1));
-            if (!fms[fn] && !/^(EN|DE)QUEUE_/.test(fn)) issues.push({ line: t.lineNo, msg: `Function module "${fn}" belum disimulasikan di studio ini (akan dilewati saat Run)`, type: 'warning' });
+            if (!fms[fn] && !/^(EN|DE)QUEUE_/.test(fn)) {
+              // a name one or two letters away from a function module that exists is a typo, not another module
+              const near = fn.length >= 8 ? Object.keys(fms).find(k => editDistance(k, fn) <= 2) : null;
+              if (near) issues.push({ line: t.lineNo, type: 'error', msg: `Function module "${fn}" tidak ada — mungkin maksud Anda "${near}"? Di SAP pemanggilan ini berakhir dengan short dump CALL_FUNCTION_NOT_FOUND.` });
+              else issues.push({ line: t.lineNo, msg: `Function module "${fn}" belum disimulasikan di studio ini (akan dilewati saat Run)`, type: 'warning' });
+            }
+            // parameters of a standard function module: only names of its interface
+            if (FM_PARAMS[fn]) {
+              const SECT = new Set(['EXPORTING', 'IMPORTING', 'CHANGING', 'TABLES']);
+              const lvf = this.levels(w);
+              let section = '';
+              for (let j = 3; j + 1 < w.length; j++) {
+                if (lvf[j] !== 0) continue;
+                if (SECT.has(up[j])) { section = up[j]; continue; }
+                if (up[j] === 'EXCEPTIONS') { section = ''; continue; }
+                if (section && w[j + 1] === '=' && /^[A-Za-z_]\w*$/.test(w[j]) && (j === 3 || w[j - 1] !== '=') && !FM_PARAMS[fn].has(up[j])) {
+                  issues.push({ line: t.lineNo, type: 'error', msg: `Function module ${fn} tidak punya parameter "${w[j].toLowerCase()}" — di SAP pemanggilan ini berakhir dengan short dump CALL_FUNCTION_PARM_UNKNOWN.` });
+                }
+              }
+            }
           }
           // "sy" is the structure of all system fields: a condition needs one field of it (sy-subrc), not the structure
           if (['IF', 'ELSEIF', 'WHILE', 'CHECK', 'ASSERT', 'CASE', 'WHEN'].includes(kw) && up.some(x => x === 'SY' || x === 'SYST')) {
@@ -6619,6 +6709,66 @@
           // every Open SQL SELECT must name its source table with FROM
           if (kw === 'SELECT' && !w.some(x => U(x) === 'FROM')) {
             issues.push({ line: t.lineNo, msg: `SELECT tanpa FROM — setiap SELECT harus menyebut tabel sumbernya, misalnya: SELECT ... FROM nama_tabel ...`, type: 'error' });
+          }
+          // WHERE of a SELECT on one known table: the name in front of a comparison must be a column of that table
+          if (kw === 'SELECT' && !up.includes('JOIN')) {
+            const lv = this.levels(w);
+            const fromAt = up.findIndex((x, j) => j > 0 && lv[j] === 0 && x === 'FROM');
+            const whereAt = up.findIndex((x, j) => j > fromAt && lv[j] === 0 && x === 'WHERE');
+            const table = fromAt > 0 ? up[fromAt + 1] : '';
+            const cols = new Set(columnsOf(table));
+            if (whereAt > 0 && cols.size) {
+              const cmp = new Set(['=', '<>', '<', '>', '<=', '>=', 'EQ', 'NE', 'LT', 'GT', 'LE', 'GE', 'IN', 'LIKE', 'BETWEEN', 'IS', 'NOT']);
+              const stop = new Set(['GROUP', 'ORDER', 'INTO', 'UP', 'HAVING', 'APPENDING', 'UNION']);
+              for (let j = whereAt + 1; j + 1 < w.length; j++) {
+                if (lv[j] !== 0) continue;
+                if (stop.has(up[j])) break;
+                if (/^[A-Za-z_]\w*$/.test(w[j]) && cmp.has(up[j + 1]) && !cmp.has(up[j]) && !['AND', 'OR'].includes(up[j])
+                  && !cols.has(up[j]) && !declared.has(up[j])) {
+                  issues.push({ line: t.lineNo, type: 'error', msg: `Kolom "${w[j].toLowerCase()}" tidak ada di tabel ${table}.` });
+                  break;
+                }
+              }
+            }
+          }
+          // New Open SQL syntax must be used throughout: a comma-separated column list makes the SELECT strict,
+          // and then every program variable in it (INTO target, UP TO n ROWS, FOR ALL ENTRIES IN, WHERE) needs "@".
+          if (kw === 'SELECT') {
+            const lv = this.levels(w);
+            let fromAt = -1;
+            for (let j = 1; j < w.length; j++) if (lv[j] === 0 && up[j] === 'FROM') { fromAt = j; break; }
+            const commaList = fromAt > 0 && w.slice(1, fromAt).some((x, j) => x === ',' && lv[j + 1] === 0);
+            if (commaList) {
+              const need = [];
+              const isName = s => /^[A-Za-z_<][\w<>-]*$/.test(s || '');       // a variable, struct-comp or <fs> without "@"
+              let whereAt = -1;
+              for (let j = fromAt; j < w.length; j++) {
+                if (lv[j] !== 0) continue;
+                if (up[j] === 'WHERE' && whereAt < 0) whereAt = j;
+                if (up[j] === 'INTO' || up[j] === 'APPENDING') {
+                  let k = j + 1;
+                  while (k < w.length && ['CORRESPONDING', 'FIELDS', 'OF', 'TABLE'].includes(up[k])) k++;
+                  if (w[k] === '(') { for (let m = k + 1; m < w.length && w[m] !== ')'; m++) if (isName(w[m])) need.push(w[m]); }
+                  else if (isName(w[k])) need.push(w[k]);
+                }
+                if (up[j] === 'UP' && up[j + 1] === 'TO' && isName(w[j + 2])) need.push(w[j + 2]);
+                if (up[j] === 'IN' && up[j - 1] === 'ENTRIES' && isName(w[j + 1])) need.push(w[j + 1]);
+              }
+              // WHERE: a name the program declares that is not a column of the table read is a program variable
+              const cols = new Set(columnsOf(up[fromAt + 1]));
+              for (let j = fromAt + 2; j < w.length; j++) if (up[j] === 'JOIN') for (const c of columnsOf(up[j + 1])) cols.add(c);
+              if (whereAt > 0 && cols.size) {
+                const stop = new Set(['GROUP', 'ORDER', 'INTO', 'UP', 'HAVING', 'APPENDING', 'UNION']);
+                for (let j = whereAt + 1; j < w.length; j++) {
+                  if ((lv[j] === 0 && stop.has(up[j])) || up[j] === 'SELECT') break;                 // a subquery has columns of its own
+                  if (isName(w[j]) && declared.has(up[j].split('-')[0]) && !cols.has(up[j])) need.push(w[j]);
+                }
+              }
+              if (need.length) {
+                const names = [...new Set(need.map(n => '@' + n.toLowerCase()))].join(', ');
+                issues.push({ line: t.lineNo, type: 'error', msg: `SELECT ini memakai daftar kolom berkoma (sintaks Open SQL baru), jadi setiap variabel program di dalamnya harus diawali @ — tulis ${names}.` });
+              }
+            }
           }
           // strict Open SQL (uses "@" host variables): the column list must be comma-separated.
           // Old non-strict SQL allows space-separated columns, so only check when "@" is present.

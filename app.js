@@ -39,12 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runCode(); }
     if ((e.ctrlKey || e.metaKey) && e.key === 'n') { e.preventDefault(); newFile(); }
     if (e.shiftKey && e.key === 'F1') { e.preventDefault(); prettyPrinter(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'F2') { e.preventDefault(); checkNow(); }
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F10') { e.preventDefault(); runUnitTests(); }
     if (e.key === 'F8') { e.preventDefault(); openSelectionScreen(); }
   });
 
   // the full ABAP syntax check is a large file: fetch it once the page is up, so it is there for the first Run
-  setTimeout(() => { if (window.ABAP_LINT) ABAP_LINT.load().catch(() => {}); }, 800);
+  setTimeout(() => { if (window.ABAP_LINT) ABAP_LINT.load().then(liveCheck, () => {}); }, 800);
 });
 
 // ───────────────────────────────────────────────────────────
@@ -296,6 +297,14 @@ function initEditor() {
   if (window.ABAP_ASSIST) {
     ABAP_ASSIST.enabled = assistEnabled();
     ABAP_ASSIST.attach(editor);
+  }
+
+  // live syntax check: findings are marked in the text shortly after the last change (see markSyntax)
+  editor.on('change', () => liveCheckSoon());
+  const field = editor.getInputField && editor.getInputField();
+  if (field && field.addEventListener) {
+    field.addEventListener('compositionstart', () => { liveComposing = true; });
+    field.addEventListener('compositionend', () => { liveComposing = false; });
   }
 
   let autosaveTimer = null;
@@ -578,6 +587,57 @@ function blockedBySyntax(code) {
   const errors = issues.filter(s => s.type === 'error');
   if (errors.length) showBlocked(code, errors, issues);
   return errors.length > 0;
+}
+
+// ── live check: the findings in the text itself, as an SAP editor shows them ────────────────────
+// A wavy line under the statement and a coloured line number; the message appears on hover and in the
+// Syntax panel. It runs a moment after the last change, never while an on-screen keyboard is composing a
+// word (redrawing that line would break the word).
+let liveMarks = [], liveTimer = null, liveComposing = false;
+function clearSyntaxMarks() {
+  for (const m of liveMarks) { if (m.handle) editor.removeLineClass(m.handle, 'gutter', m.cls); else m.clear(); }
+  liveMarks = [];
+}
+function markSyntax(issues) {
+  if (!editor || !editor.markText || !editor.addLineClass) return;
+  const perLine = new Map();
+  for (const s of issues) {
+    if (!(s.line > 0) || (s.type !== 'error' && s.type !== 'warning')) continue;
+    const cur = perLine.get(s.line) || { type: s.type, msgs: [] };
+    if (s.type === 'error') cur.type = 'error';
+    cur.msgs.push(s.msg);
+    perLine.set(s.line, cur);
+  }
+  editor.operation(() => {
+    clearSyntaxMarks();
+    for (const [line, info] of perLine) {
+      if (line > editor.lineCount()) continue;
+      const text = editor.getLine(line - 1), from = text.length - text.trimStart().length;
+      const title = info.msgs.map(m => msgTr(m)).join('\n');
+      if (text.trim()) liveMarks.push(editor.markText({ line: line - 1, ch: from }, { line: line - 1, ch: text.length }, { className: info.type === 'error' ? 'lint-err' : 'lint-warn', title }));
+      const cls = info.type === 'error' ? 'lint-gutter-err' : 'lint-gutter-warn';
+      liveMarks.push({ handle: editor.addLineClass(line - 1, 'gutter', cls), cls });
+    }
+  });
+}
+function liveCheck() {
+  if (!editor) return;
+  if (liveComposing) { liveCheckSoon(); return; }
+  const code = editor.getValue();
+  const issues = code.trim() ? syntaxCheck(code) : [];
+  markSyntax(issues);
+  if (document.getElementById('panel-syntax')?.classList.contains('active')) renderSyntaxIssues(issues.length ? issues : [{ line: 0, msg: 'No syntax issues found ✓', type: 'ok' }]);
+}
+function liveCheckSoon() { clearTimeout(liveTimer); liveTimer = setTimeout(liveCheck, 700); }
+// Ctrl+F2, "Check" in the ABAP Editor: check now, show the list
+function checkNow() {
+  whenCheckerReady(() => {
+    const issues = syntaxCheck(editor?.getValue() || '');
+    markSyntax(issues);
+    switchPanel('syntax', document.querySelectorAll('.panel-tab')[1]);
+    const n = issues.filter(s => s.type === 'error').length;
+    toast(n ? tr('toast.check.err', { n }) : tr('toast.check.ok'), n ? 'error' : 'success');
+  });
 }
 
 // params: values typed into the selection screen (PARAMETERS / SELECT-OPTIONS name -> value)
@@ -1177,6 +1237,7 @@ document.addEventListener('langchange', () => {
   guard(() => renderOutput());
   guard(() => { if (lastResult && interpreter.variables) renderVariables(interpreter.variables); });
   guard(() => { if (lastSyntaxIssues) renderSyntaxIssues(lastSyntaxIssues); });
+  guard(() => liveCheck());                            // the hover texts of the marks follow the language
   guard(() => renderFilesGrid());
   guard(() => renderSnippets(currentSnippetFilter));
   guard(() => { renderLearnNav(); if (activeLessonId) showLesson(activeLessonId); });

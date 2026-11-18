@@ -623,6 +623,13 @@ li.CodeMirror-hint-active .hint-tag { color: var(--on-primary); opacity: 0.75; }
 .var-type { color: var(--text-dim); white-space: nowrap; }
 .var-val { color: var(--sx-str); word-break: break-all; }
 
+/* -- Live syntax check: findings marked in the text (app.js, markSyntax) -- */
+.cm-s-studio .lint-err, .cm-s-studio .lint-warn { text-decoration-line: underline; text-decoration-style: wavy; text-decoration-skip-ink: none; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.cm-s-studio .lint-err { text-decoration-color: var(--error); }
+.cm-s-studio .lint-warn { text-decoration-color: var(--warning); }
+.cm-s-studio .lint-gutter-err .CodeMirror-linenumber { color: var(--error); font-weight: 600; }
+.cm-s-studio .lint-gutter-warn .CodeMirror-linenumber { color: var(--warning); }
+
 /* -- Debugger (abap-debug.js) -- */
 /* editor: breakpoint column left of the line numbers, the line the program stands on */
 .bp-gutter { width: 13px; }

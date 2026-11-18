@@ -2779,7 +2779,8 @@ CLASS lcl_po_report IMPLEMENTATION.
 
         mo_alv->display( ).
 
-      CATCH cx_salv_msg cx_salv_not_found INTO DATA(lx_salv).
+      " add_sort and add_aggregation can also raise cx_salv_existing and cx_salv_data_error
+      CATCH cx_salv_msg cx_salv_not_found cx_salv_existing cx_salv_data_error INTO DATA(lx_salv).
         MESSAGE lx_salv->get_text( ) TYPE 'E'.
     ENDTRY.
   ENDMETHOD.
