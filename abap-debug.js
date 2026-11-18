@@ -69,6 +69,9 @@
   function start() {
     if (!editor) return;
     stop(true);
+    // as in SAP, a program that does not compile cannot be debugged: its errors are shown instead (app.js)
+    if (window.ABAP_LINT && !ABAP_LINT.ready() && typeof whenCheckerReady === 'function') { whenCheckerReady(start); return; }
+    if (typeof blockedBySyntax === 'function' && blockedBySyntax(editor.getValue())) return;
     const it = new ABAPInterpreter();                   // its own interpreter: the result of the last Run stays as it is
     const result = it.run(editor.getValue(), { params: (typeof lastRunParams !== 'undefined' && lastRunParams) || {}, trace: { limit: LIMIT } });
     const steps = result.trace ? result.trace.steps : [];

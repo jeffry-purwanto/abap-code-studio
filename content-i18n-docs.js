@@ -721,7 +721,7 @@ CALL FUNCTION 'DEQUEUE_EVVBAKE'
           'CDS views, AMDP, Native SQL (EXEC SQL)',
           'Global classes (SE24), friends, test doubles / mocking, creating new types through RTTC (cl_abap_structdescr=&gt;create)',
           'Files and system: OPEN DATASET, EXPORT / IMPORT MEMORY, SUBMIT, CALL TRANSACTION (only shown as a message), background jobs',
-          'As in SAP, a program with a syntax error (a typo, a missing period, an unbalanced block) is not run — Run refuses it and lists the errors. A real ABAP statement that is simply not simulated is still skipped with a warning.'
+          'As in SAP, a program with a syntax error is not run — Run, Debug and the unit tests refuse it and list the errors. Every statement is checked against the complete ABAP grammar, and so are names that are not declared or declared twice, methods and parameters that do not exist, and types that do not match. A real ABAP statement that is simply not simulated is still skipped with a warning.'
         ]
       }
     },
@@ -886,7 +886,7 @@ CALL FUNCTION 'DEQUEUE_EVVBAKE'
           'CDS-Views, AMDP, Native SQL (EXEC SQL)',
           'Globale Klassen (SE24), Friends, Test-Doubles / Mocking, Erzeugen neuer Typen über RTTC (cl_abap_structdescr=&gt;create)',
           'Dateien und System: OPEN DATASET, EXPORT / IMPORT MEMORY, SUBMIT, CALL TRANSACTION (wird nur als Meldung angezeigt), Hintergrundjobs',
-          'Wie in SAP wird ein Programm mit einem Syntaxfehler (Tippfehler, fehlender Punkt, nicht geschlossener Block) nicht ausgeführt — Run verweigert es und listet die Fehler auf. Eine echte ABAP-Anweisung, die nur nicht simuliert ist, wird weiterhin mit einer Warnung übersprungen.'
+          'Wie in SAP wird ein Programm mit einem Syntaxfehler nicht ausgeführt — Run, Debug und die Unit-Tests verweigern es und listen die Fehler auf. Jede Anweisung wird gegen die vollständige ABAP-Grammatik geprüft, ebenso Namen, die nicht oder doppelt deklariert sind, Methoden und Parameter, die es nicht gibt, und Typen, die nicht zusammenpassen. Eine echte ABAP-Anweisung, die nur nicht simuliert ist, wird weiterhin mit einer Warnung übersprungen.'
         ]
       }
     },
@@ -1051,7 +1051,7 @@ CALL FUNCTION 'DEQUEUE_EVVBAKE'
           'CDS 视图、AMDP、Native SQL（EXEC SQL）',
           '全局类（SE24）、friend、测试替身 / mocking、通过 RTTC 创建新类型（cl_abap_structdescr=&gt;create）',
           '文件与系统：OPEN DATASET、EXPORT / IMPORT MEMORY、SUBMIT、CALL TRANSACTION（仅显示为消息）、后台作业',
-          '与 SAP 一样，有语法错误（拼写错误、缺少句点、块未闭合）的程序不会运行——运行会被拒绝并列出错误。模拟器确实未实现的真实 ABAP 语句仍会被跳过并给出警告。'
+          '与 SAP 一样，有语法错误的程序不会运行——运行、调试和单元测试都会被拒绝并列出错误。每条语句都按完整的 ABAP 语法检查，未声明或重复声明的名称、不存在的方法和参数以及不匹配的类型也会被检查。模拟器确实未实现的真实 ABAP 语句仍会被跳过并给出警告。'
         ]
       }
     }

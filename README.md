@@ -27,6 +27,7 @@ The page is set up to start quickly there:
 
 - Every file comes from the same server. No other host has to answer before the page can be shown.
 - The translations of the lessons, the reference and the simulator messages are fetched only when a language other than Indonesian is in use.
+- The ABAP parser behind the syntax check (2.4 MB, about 0.5 MB compressed) is fetched in the background after the page is usable; a Run pressed before it has arrived waits for it.
 - A very long result is cut on the page (2,000 list lines, 1,000 grid rows) and the rest is counted, so a loop that never stops cannot freeze the browser.
 
 ## What you can do
@@ -39,6 +40,7 @@ The page is set up to start quickly there:
 | **SAP-style result screen** | A wide window that looks like SAP GUI: title bar, toolbar, ALV colours, totals row, status bar |
 | **Selection screen** | `PARAMETERS` and `SELECT-OPTIONS` of your program become an input dialog (F8) |
 | **Unit tests** | Test classes (`FOR TESTING`) run from the ⋯ menu or with Ctrl+Shift+F10; the report shows every test method, passed or failed, with expected and actual values |
+| **Syntax check** | As in SAP, a program with a syntax error is not run: Run, Debug and the unit tests refuse it and list the errors with their lines. Every statement is held against the complete ABAP grammar by a real ABAP parser (abaplint), which also finds names that are not declared or declared twice, methods, parameters and structure components that do not exist, and types that do not match. On top of that the simulator explains typical beginner mistakes in plain words. Messages are shown in the chosen language |
 | **Debugger** | Step through a program with the keys of the ABAP Debugger: F5 single step, F6 step over, F7 step out, F8 continue to a breakpoint. Breakpoints are set by clicking a line number or with `BREAK-POINT`. Each step shows the current line, the call stack, every variable (changed ones are marked, local ones are labelled) and the output so far. Unlike in SAP, every step can also be played backwards (Shift+F6), because the run is recorded first. Started with Shift+F5, from the ⋯ menu or from the Debug tab |
 | **Database statistics** | After each run, a line below the output counts the database accesses and flags a `SELECT` that ran repeatedly inside a loop |
 | **Learn** | 49 lessons in 5 levels, each with an explanation, a runnable example and exercises; progress is tracked |
@@ -107,12 +109,13 @@ Plain HTML, CSS and JavaScript with no build step and no dependencies to install
 | `abap-mode.js` | ABAP syntax highlighting for CodeMirror |
 | `abap-complete.js` | Code completion: suggestions, templates, automatic block closers, indentation |
 | `abap-debug.js` | Debugger: breakpoints, stepping forwards and backwards through a recorded run |
+| `abap-lint.js` | Full ABAP syntax check: loads the parser after the start, evens out the simulator's dialect, turns the findings into the app's messages |
 | `dummy-data.js` | Sample database tables |
 | `lessons.js`, `snippets.js`, `docs.js` | Learning content (Indonesian source) |
 | `i18n.js` | Interface texts in four languages and the language switcher |
 | `content-i18n.js`, `content-i18n-bodies.js`, `content-i18n-docs.js` | Translations of lessons, snippets and the reference; loaded by `i18n.js` on demand |
 | `messages-i18n.js` | Translations of the simulator's messages; loaded on demand as well |
-| `vendor/` | CodeMirror 5.65.16 and its add-ons, joined into one script and one style sheet |
+| `vendor/` | CodeMirror 5.65.16 and its add-ons, joined into one script and one style sheet; abaplint (ABAP parser and syntax check) as one file, fetched after the page has started |
 | `fonts/` | IBM Plex Sans, IBM Plex Mono and Source Serif 4 (latin and latin-ext) |
 | `.nojekyll` | Tells GitHub Pages to publish the files unchanged |
 
@@ -131,6 +134,7 @@ The four translation files are not listed in `index.html`. `i18n.js` adds them t
 ## Third-party software
 
 - [CodeMirror 5](https://codemirror.net/5/) by Marijn Haverbeke and others, MIT licence (`vendor/LICENSE-codemirror.txt`).
+- [abaplint](https://abaplint.org/) (`@abaplint/core`) by Lars Hvam and contributors, MIT licence (`vendor/LICENSE-abaplint.txt`).
 - IBM Plex Sans and IBM Plex Mono by IBM, and Source Serif 4 by Adobe, SIL Open Font License 1.1 (`fonts/LICENSE.txt`).
 
 ## Author

@@ -2950,7 +2950,7 @@ WRITE: / gv_masked.
 
 * 4) Functions: matches( ) tests the WHOLE text, match( ) returns the matching part
 DATA gt_codes TYPE STANDARD TABLE OF string WITH EMPTY KEY.
-gt_codes = VALUE #( ( 'AB-123' ) ( 'ab-12' ) ( 'XYZ-999' ) ( 'QQ-007' ) ).
+gt_codes = VALUE #( ( \`AB-123\` ) ( \`ab-12\` ) ( \`XYZ-999\` ) ( \`QQ-007\` ) ).
 SKIP.
 LOOP AT gt_codes INTO DATA(gv_code).
   IF matches( val = gv_code regex = '[A-Z]{2}-\\d{3}' ).
@@ -3413,7 +3413,7 @@ START-OF-SELECTION.
 
 * the main program never mentions lcl_darat / lcl_udara
   DATA gt_kinds TYPE STANDARD TABLE OF string WITH EMPTY KEY.
-  gt_kinds = VALUE #( ( 'LAND' ) ( 'AIR' ) ).
+  gt_kinds = VALUE #( ( \`LAND\` ) ( \`AIR\` ) ).
   SKIP.
   LOOP AT gt_kinds INTO DATA(gv_kind).
     DATA(go_carrier) = lcl_factory=>create_carrier( gv_kind ).
@@ -3497,7 +3497,7 @@ START-OF-SELECTION.
     code: `REPORT z_learn_transactions.
 
 PARAMETERS: p_vbeln    TYPE vbak-vbeln DEFAULT '0000000010',
-            p_increase TYPE i DEFAULT 10.              " increase of the value in percent
+            p_incr     TYPE i DEFAULT 10.              " increase of the value in percent
 
 DATA: gv_old_value TYPE vbak-netwr,
       gv_new_value TYPE vbak-netwr,
@@ -3528,7 +3528,7 @@ START-OF-SELECTION.
 * 3) Change the data. All changes become permanent only after COMMIT WORK.
   SELECT SINGLE netwr FROM vbak INTO gv_old_value WHERE vbeln = p_vbeln.
   IF sy-subrc = 0.
-    gv_new_value = gv_old_value * ( 100 + p_increase ) / 100.
+    gv_new_value = gv_old_value * ( 100 + p_incr ) / 100.
     UPDATE vbak SET netwr = gv_new_value WHERE vbeln = p_vbeln.
     CALL FUNCTION 'NUMBER_GET_NEXT'
       EXPORTING

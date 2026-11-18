@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F10') { e.preventDefault(); runUnitTests(); }
     if (e.key === 'F8') { e.preventDefault(); openSelectionScreen(); }
   });
+
+  // the full ABAP syntax check is a large file: fetch it once the page is up, so it is there for the first Run
+  setTimeout(() => { if (window.ABAP_LINT) ABAP_LINT.load().catch(() => {}); }, 800);
 });
 
 // ───────────────────────────────────────────────────────────
@@ -536,6 +539,47 @@ function deleteFile(id, e) {
 let lastResult = null;       // { output, errors, title } of the last run; callbacks append to the same arrays
 const SAP_SCREEN_KEY = 'abap_studio_sap_screen';
 
+// ── syntax check ──────────────────────────────────────────────────────────────────────────────
+// Two layers. interpreter.checkSyntax knows typical mistakes and says in plain words what to do. The full
+// ABAP check (abap-lint.js: a real ABAP parser, fetched after the start) holds every statement against the
+// ABAP grammar and checks names and types, as the syntax check of SAP does. Where both speak about the
+// same line, the plain-worded finding is kept.
+function syntaxCheck(code) {
+  const own = interpreter.checkSyntax(code).filter(s => s.type !== 'ok');
+  const full = window.ABAP_LINT && ABAP_LINT.ready() ? ABAP_LINT.check(code) : [];
+  const ownLines = new Set(own.filter(s => s.type === 'error').map(s => s.line));
+  const ownBlocks = own.some(s => s.type === 'error' && /^(Unclosed|Unexpected|Expected) /.test(s.msg));     // these name the right line of a block
+  const extra = full.filter(f => !ownLines.has(f.line) && !(ownBlocks && f.key === 'structure'));
+  const all = own.concat(extra).sort((a, b) => a.line - b.line);
+  return all.length ? all : [{ line: 0, msg: 'No syntax issues found ✓', type: 'ok' }];
+}
+// Run fn when the full check is available (or cannot be fetched: then the first layer decides alone).
+function whenCheckerReady(fn) {
+  if (!window.ABAP_LINT || ABAP_LINT.ready()) { fn(); return; }
+  ABAP_LINT.load().then(fn, fn);
+}
+// Like SAP: a program with a compile-time error (bad syntax, an unknown or doubly declared name) cannot be
+// executed. Show only the errors and no program output, so a broken program never looks as if it ran.
+function showBlocked(code, errorList, issues) {
+  const file = files.find(x => x.id === activeFileId);
+  const m = /^\s*(?:REPORT|PROGRAM)\s+([A-Za-z0-9_]+)/im.exec(code);
+  const header = { line: 0, type: 'error', msg: tr('out.syntaxblock.head', { n: errorList.length }) };
+  lastResult = { output: [], errors: [header, ...errorList], stats: null, title: m ? m[1].toUpperCase() : (file ? file.name : 'Program'), blocked: true };
+  alvGrids = [];
+  renderOutput();
+  renderVariables({});
+  if (issues) renderSyntaxIssues(issues);
+  switchPanel('output', document.querySelector('.panel-tab'));
+  toast(tr('toast.syntaxblock', { n: errorList.length }), 'error');
+}
+// true = the code has syntax errors; they are on screen and the caller must not run anything
+function blockedBySyntax(code) {
+  const issues = syntaxCheck(code);
+  const errors = issues.filter(s => s.type === 'error');
+  if (errors.length) showBlocked(code, errors, issues);
+  return errors.length > 0;
+}
+
 // params: values typed into the selection screen (PARAMETERS / SELECT-OPTIONS name -> value)
 let lastRunParams = {};        // the debugger (abap-debug.js) starts with the input of the last run
 function runCode(params) {
@@ -547,28 +591,21 @@ function runCode(params) {
 
   const stopBtn = () => { if (btn) { btn.classList.remove('running'); const rl = btn.querySelector('.run-label'); if (rl) rl.textContent = tr('bar.run'); } };
 
-  setTimeout(() => {
+  whenCheckerReady(() => setTimeout(() => {
     const file = files.find(x => x.id === activeFileId);
     const progName = () => { const m = /^\s*(?:REPORT|PROGRAM)\s+([A-Za-z0-9_]+)/im.exec(code); return m ? m[1].toUpperCase() : (file ? file.name : 'Program'); };
+    const block = (errorList, issues) => { showBlocked(code, errorList, issues); stopBtn(); };
 
-    // Like SAP: a program with syntax errors cannot be executed. Check first; if there are errors,
-    // show only those and no program output, so a broken program never looks as if it ran fine.
-    const syntaxIssues = interpreter.checkSyntax(code);
+    // 1) syntax check, before running
+    const syntaxIssues = syntaxCheck(code);
     const syntaxErrors = syntaxIssues.filter(s => s.type === 'error');
-    if (syntaxErrors.length) {
-      const header = { line: 0, type: 'error', msg: tr('out.syntaxblock.head', { n: syntaxErrors.length }) };
-      lastResult = { output: [], errors: [header, ...syntaxErrors], stats: null, title: progName(), blocked: true };
-      alvGrids = [];
-      renderOutput();
-      renderVariables({});
-      renderSyntaxIssues(syntaxIssues);
-      switchPanel('output', document.querySelector('.panel-tab'));
-      toast(tr('toast.syntaxblock', { n: syntaxErrors.length }), 'error');
-      stopBtn();
-      return;
-    }
+    if (syntaxErrors.length) { block(syntaxErrors, syntaxIssues); return; }
 
     const result = interpreter.run(code, { params: params || {} });
+
+    // 2) compile errors found while running (an undeclared variable): SAP would not have run the program
+    const compileErrors = result.errors.filter(e => e.compile);
+    if (compileErrors.length) { block(compileErrors, syntaxIssues); return; }
 
     // Show the remaining syntax warnings together with the runtime messages, so a learner
     // sees them without opening the Syntax Check tab. Runtime messages are more
@@ -590,7 +627,7 @@ function runCode(params) {
     renderSyntaxIssues(syntaxIssues);
     switchPanel('output', document.querySelector('.panel-tab'));
     stopBtn();
-  }, 80);
+  }, 80));
 }
 
 // A list longer than this is cut on the page (the program still ran to its end): a loop that never stops
@@ -700,6 +737,8 @@ function unitReportHtml(tests) {
 // Run the test classes of the program (CLASS ... DEFINITION FOR TESTING) — Ctrl+Shift+F10, as in SAP
 function runUnitTests() {
   const code = editor?.getValue() || '';
+  if (window.ABAP_LINT && !ABAP_LINT.ready()) { whenCheckerReady(runUnitTests); return; }
+  if (blockedBySyntax(code)) return;                  // as in SAP: no test run for a program that does not compile
   const res = interpreter.runUnitTests(code);
   const file = files.find(x => x.id === activeFileId);
   lastResult = { output: res.output, errors: res.errors, stats: res.stats, tests: res.tests, title: interpreter.programName || (file ? file.name : 'Program') };
@@ -817,8 +856,11 @@ function clearOutput() {
 
 function checkSyntax() {
   const code   = editor?.getValue() || '';
-  const issues = interpreter.checkSyntax(code);
-  renderSyntaxIssues(issues);
+  renderSyntaxIssues(syntaxCheck(code));
+  // the full check may still be on its way: show its findings as soon as it is here
+  if (window.ABAP_LINT && !ABAP_LINT.ready()) {
+    ABAP_LINT.load().then(() => { if ((editor?.getValue() || '') === code) renderSyntaxIssues(syntaxCheck(code)); }, () => {});
+  }
 }
 
 let lastSyntaxIssues = [];

@@ -49,6 +49,21 @@
     'ENHANCEMENT ENHANCEMENT-POINT ENHANCEMENT-SECTION').split(/\s+/));
   // single-word event blocks: they must stand alone and end with a period
   const EVENT_STMTS = new Set(['START-OF-SELECTION', 'END-OF-SELECTION', 'INITIALIZATION', 'LOAD-OF-PROGRAM', 'TOP-OF-PAGE', 'END-OF-PAGE']);
+  // a statement -> the keyword(s) ABAP always requires somewhere in it; a string must appear, an array
+  // means "at least one of these". If one is missing, a mandatory keyword was deleted and the line is broken.
+  const REQUIRED_KW = {
+    'AUTHORITY-CHECK': ['OBJECT'], 'CONCATENATE': ['INTO'], 'SPLIT': ['AT', 'INTO'],
+    'FIND': ['IN'], 'MOVE': ['TO'], 'ASSIGN': ['TO'], 'REPLACE': ['WITH'], 'TRANSLATE': [['TO', 'USING']]
+  };
+  // a statement -> the word right after it must be one of these keywords (positional), e.g. CALL FUNCTION
+  const SECOND_WORD = {
+    'CALL': ['FUNCTION', 'METHOD', 'TRANSACTION', 'SCREEN', 'BADI', 'CUSTOMER-FUNCTION', 'DATABASE', 'DIALOG', 'SELECTION-SCREEN'],
+    'CREATE': ['OBJECT', 'DATA'],
+    'LOOP': ['AT'],
+    'READ': ['TABLE', 'DATASET', 'LINE', 'CURRENT', 'REPORT', 'TEXTPOOL', 'SPOOL'],
+    'DESCRIBE': ['TABLE', 'FIELD', 'DISTANCE', 'LIST', 'NUMBER'],
+    'PUBLIC': ['SECTION'], 'PROTECTED': ['SECTION'], 'PRIVATE': ['SECTION']
+  };
   const isNum =s => s !== undefined && s !== null && s !== '' && typeof s !== 'object' && typeof s !== 'boolean' && !isNaN(Number(s));
 
   // Instance of a (local) class. Assignments copy the reference, never the object.
@@ -405,11 +420,13 @@
       return { dbReads: st.dbReads, dbRows: st.dbRows, dbWrites: st.dbWrites, steps: this.steps, repeated };
     }
 
-    // Record a problem that does not stop the simulation
-    problem(t, msg, type = 'warning') {
+    // Record a problem that does not stop the simulation. `extra` adds fields to the error object,
+    // e.g. { compile: true } to mark a compile-time error (an undeclared data object) that, like in SAP,
+    // means the program would not run at all — app.js then suppresses the output.
+    problem(t, msg, type = 'warning', extra) {
       const line = (t && t.lineNo) || this.curLine || 0;
       if (this.errors.some(e => e.line === line && e.msg === msg)) return;
-      this.errors.push({ line, msg, type });
+      this.errors.push(Object.assign({ line, msg, type }, extra));
     }
 
     // ── Pre-processing: comments, statements, chains ─────────
@@ -1358,7 +1375,7 @@
     // Resolve a data object name (variable, struct-component path, <field-symbol>)
     // -> { rec, desc, get(), set(v), isField } or null
     undeclared(name, t) {
-      this.problem(t || this.curT, `"${name}" dipakai tanpa dideklarasikan (DATA ${name.toLowerCase()} TYPE ...). Di SAP ini syntax error; simulator membuatnya otomatis.`, 'warning');
+      this.problem(t || this.curT, `"${name}" belum dideklarasikan — tambahkan DATA ${name.toLowerCase()} TYPE ... terlebih dahulu. Di SAP ini syntax error, jadi program tidak dijalankan.`, 'error', { compile: true });
     }
 
     // "NAME+2(3)" / "NAME(3)" / "NAME+off(len)" -> { base, off, len }  (off / len may be variable names)
@@ -5157,7 +5174,7 @@
       if (name.includes('-') && this.variables[name.split('-')[0]]) return '';
       // looks like a variable name but was never declared
       if (/^[A-Z][A-Z0-9]*_[A-Z0-9_]*$/.test(name)) {
-        this.problem(this.curT, `"${name}" belum dideklarasikan (atau hanya dikenal di dalam FORM / METHOD lain). Di SAP ini syntax error.`, 'warning');
+        this.problem(this.curT, `"${name}" belum dideklarasikan di sini (variabel lokal hanya dikenal di dalam FORM / METHOD tempat ia dibuat). Di SAP ini syntax error, jadi program tidak dijalankan.`, 'error', { compile: true });
       }
       return tok;   // unknown word: return as-is
     }
@@ -6587,12 +6604,68 @@
           if (kw === 'DEFINE') { inDefine = true; continue; }
           if (kw === 'END-OF-DEFINITION') { inDefine = false; continue; }
           if (inDefine) continue;                                   // inside a macro body tokens may be partial (&1 …)
+          const up = w.map(x => U(x).replace(/[:.]+$/, ''));        // every word uppercased, available to all checks below
           if (kw === 'PERFORM' && w[1] && !forms.has(U(w[1])) && !w.some(x => U(x) === 'PROGRAM')) {
             issues.push({ line: t.lineNo, msg: `PERFORM "${U(w[1])}": FORM tidak ditemukan di program ini`, type: 'error' });
           }
           if (kw === 'CALL' && U(w[1]) === 'FUNCTION' && /^'/.test(w[2] || '')) {
             const fn = U(w[2].slice(1, -1));
             if (!fms[fn] && !/^(EN|DE)QUEUE_/.test(fn)) issues.push({ line: t.lineNo, msg: `Function module "${fn}" belum disimulasikan di studio ini (akan dilewati saat Run)`, type: 'warning' });
+          }
+          // "sy" is the structure of all system fields: a condition needs one field of it (sy-subrc), not the structure
+          if (['IF', 'ELSEIF', 'WHILE', 'CHECK', 'ASSERT', 'CASE', 'WHEN'].includes(kw) && up.some(x => x === 'SY' || x === 'SYST')) {
+            issues.push({ line: t.lineNo, type: 'error', msg: `"sy" adalah struktur berisi field sistem, bukan sebuah nilai — pakai salah satu field-nya, misalnya sy-subrc.` });
+          }
+          // every Open SQL SELECT must name its source table with FROM
+          if (kw === 'SELECT' && !w.some(x => U(x) === 'FROM')) {
+            issues.push({ line: t.lineNo, msg: `SELECT tanpa FROM — setiap SELECT harus menyebut tabel sumbernya, misalnya: SELECT ... FROM nama_tabel ...`, type: 'error' });
+          }
+          // strict Open SQL (uses "@" host variables): the column list must be comma-separated.
+          // Old non-strict SQL allows space-separated columns, so only check when "@" is present.
+          if (kw === 'SELECT' && w.some(x => /@/.test(x))) {
+            const lv = this.levels(w);
+            const AGG = new Set(['SUM', 'MIN', 'MAX', 'AVG', 'COUNT']);
+            const SQLKW = new Set(['CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'AS', 'DISTINCT', 'ALL', 'CAST',
+              'BETWEEN', 'AND', 'OR', 'NOT', 'LIKE', 'IN', 'IS', 'NULL', 'ESCAPE', 'SINGLE', 'FIELDS']);
+            const isCol = s => /^[A-Za-z_]\w*$/.test(s) && !SQLKW.has(U(s)) && !AGG.has(U(s));
+            let a = 1;
+            while (a < w.length && ['SINGLE', 'DISTINCT'].includes(up[a])) a++;
+            let fromAt = w.length;
+            for (let j = a; j < w.length; j++) if (lv[j] === 0 && up[j] === 'FROM') { fromAt = j; break; }
+            // a column / alias / closing ")" directly followed by the next column or an aggregate, with no comma
+            for (let j = a + 1; j < fromAt; j++) {
+              if (lv[j] !== 0 || lv[j - 1] !== 0) continue;
+              const prevEnds = isCol(w[j - 1]) || w[j - 1] === ')';
+              const curStarts = isCol(w[j]) || AGG.has(up[j]);
+              if (prevEnds && curStarts) {
+                issues.push({ line: t.lineNo, type: 'error', msg: `Daftar kolom SELECT harus dipisah dengan koma (SELECT a, b, c FROM ...) — sepertinya ada koma yang hilang.` });
+                break;
+              }
+            }
+          }
+          // statements whose named keyword is always mandatory: if it is missing, the line was broken
+          for (const req of REQUIRED_KW[kw] || []) {
+            const need = Array.isArray(req) ? req : [req];
+            if (!need.some(r => up.includes(r))) issues.push({ line: t.lineNo, type: 'error', msg: `Kata kunci ${need.join(' / ')} wajib ada pada pernyataan ${kw} — periksa sintaksnya (mungkin terhapus).` });
+          }
+          // the word right after the statement keyword must be one of a fixed set (e.g. CALL FUNCTION)
+          if (SECOND_WORD[kw] && !SECOND_WORD[kw].includes(up[1])) {
+            issues.push({ line: t.lineNo, type: 'error', msg: `${kw} harus langsung diikuti kata kunci seperti ${SECOND_WORD[kw].slice(0, 4).join(' / ')} — periksa sintaksnya (mungkin ada yang terhapus).` });
+          }
+          // CALL FUNCTION structure: every "param = value" must sit under a section keyword
+          // (EXPORTING / IMPORTING / …). A pair before the first section means a section keyword was deleted.
+          if (kw === 'CALL' && up[1] === 'FUNCTION') {
+            const SECT = new Set(['EXPORTING', 'IMPORTING', 'CHANGING', 'TABLES', 'EXCEPTIONS', 'RECEIVING']);
+            const lv = this.levels(w);
+            let seen = false;
+            for (let j = 3; j < w.length; j++) {
+              if (lv[j] !== 0) continue;
+              if (SECT.has(up[j])) { seen = true; continue; }
+              if (w[j] === '=' && !seen && j >= 4 && /^[A-Za-z_]\w*$/.test(w[j - 1])) {
+                issues.push({ line: t.lineNo, type: 'error', msg: `Parameter "${w[j - 1].toLowerCase()}" pada CALL FUNCTION harus berada di bawah EXPORTING / IMPORTING / CHANGING / TABLES / EXCEPTIONS — kata kunci bagiannya mungkin terhapus.` });
+                break;
+              }
+            }
           }
           // a statement whose first word is a plain word that is not an ABAP keyword, a macro or a FORM,
           // and that is neither an assignment (=) nor a method call ( obj->m( ) / m( ) ): a typo or an unfinished line.
@@ -6604,6 +6677,46 @@
               issues.push({ line: t.lineNo, type: 'error', msg: `"${kw}" bukan perintah ABAP yang dikenal — mungkin salah ketik, atau barisnya belum lengkap.` });
             }
           }
+        }
+
+        // ── double declaration: the same name declared twice in one scope ──────────────
+        // Scopes: the program (global), and each FORM / METHOD / FUNCTION / CLASS or INTERFACE definition.
+        // A name may shadow one in an outer scope (that is legal), so each scope is checked on its own.
+        const DECL = new Set(['DATA', 'CONSTANTS', 'STATICS', 'CLASS-DATA', 'FIELD-SYMBOLS', 'PARAMETERS', 'SELECT-OPTIONS', 'RANGES']);
+        const STRUCT_KW = new Set(['DATA', 'TYPES', 'CONSTANTS', 'STATICS', 'CLASS-DATA']);
+        const scopes = [new Map()];                       // stack of (name -> first line); [0] = global
+        const curScope = () => scopes[scopes.length - 1];
+        const declName = (name, line) => {
+          if (!/^<?[A-Za-z_]\w*>?$/.test(name)) return;
+          const s = curScope();
+          if (s.has(name)) issues.push({ line, type: 'error', msg: `"${name.toLowerCase()}" sudah dideklarasikan sebelumnya di baris ${s.get(name)} — di SAP sebuah nama hanya boleh dideklarasikan satu kali dalam scope yang sama.` });
+          else s.set(name, line);
+        };
+        let structDepth = 0, dDefine = false;
+        for (const t of tokens) {
+          const w = t.words;
+          const kw = U(w[0]).replace(/[:.]+$/, '');
+          const w1 = U(w[1] || '').replace(/[:.]+$/, '');
+          if (kw === 'DEFINE') { dDefine = true; continue; }
+          if (kw === 'END-OF-DEFINITION') { dDefine = false; continue; }
+          if (dDefine) continue;
+          // open a new scope (skip forward declarations CLASS/INTERFACE ... DEFERRED | LOAD, which have no body)
+          if (kw === 'FORM' || kw === 'METHOD' || kw === 'FUNCTION'
+            || ((kw === 'CLASS' || kw === 'INTERFACE') && !w.some(x => /^(DEFERRED|LOAD)$/.test(U(x))))) {
+            scopes.push(new Map()); structDepth = 0; continue;
+          }
+          if (kw === 'ENDFORM' || kw === 'ENDMETHOD' || kw === 'ENDFUNCTION' || kw === 'ENDCLASS' || kw === 'ENDINTERFACE') {
+            if (scopes.length > 1) scopes.pop();
+            structDepth = 0; continue;
+          }
+          // BEGIN OF x … END OF x: the struct name is one declaration, its components are not standalone
+          if (STRUCT_KW.has(kw) && w1 === 'BEGIN' && U(w[2] || '') === 'OF') {
+            if (structDepth === 0 && kw !== 'TYPES') declName(U(w[3] || '').replace(/[:.]+$/, ''), t.lineNo);
+            structDepth++; continue;
+          }
+          if (STRUCT_KW.has(kw) && w1 === 'END' && U(w[2] || '') === 'OF') { if (structDepth > 0) structDepth--; continue; }
+          if (structDepth > 0) continue;                  // inside a structure: skip component lines
+          if (DECL.has(kw)) declName(w1, t.lineNo);
         }
       } catch (e) { /* statement checks are best-effort */ }
 
